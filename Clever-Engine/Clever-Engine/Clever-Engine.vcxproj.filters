@@ -30,6 +30,6 @@
     <ClInclude Include="Source Code\p2Point.h" />
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\Timer.h" />
-    <ClInclude Include="OpenGl.h" />
+    <ClInclude Include="Source Code\OpenGl.h" />
   </ItemGroup>
 </Project>

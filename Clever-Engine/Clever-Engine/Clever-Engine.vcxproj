@@ -43,7 +43,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -120,10 +120,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source Code\Dependencies;$(ProjectDir)Source Code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)Source Code\Dependencies;$(ProjectDir)Source Code\Dependencies\Assimp\libx86;$(ProjectDir)Source Code\Dependencies\Devil\libx86;$(ProjectDir)Source Code\Dependencies\glew\libx86\Win32;$(ProjectDir)Source Code\Dependencies\ImGui\lib;$(ProjectDir)Source Code\Dependencies\SDL\libx86</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,7 +159,6 @@
     <ClCompile Include="Source Code\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="OpenGl.h" />
     <ClInclude Include="Source Code\Application.h" />
     <ClInclude Include="Source Code\Color.h" />
     <ClInclude Include="Source Code\glmath.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Source Code\ModuleInput.h" />
     <ClInclude Include="Source Code\ModuleRenderer3D.h" />
     <ClInclude Include="Source Code\ModuleWindow.h" />
+    <ClInclude Include="Source Code\OpenGl.h" />
     <ClInclude Include="Source Code\p2DynArray.h" />
     <ClInclude Include="Source Code\p2List.h" />
     <ClInclude Include="Source Code\p2Point.h" />
