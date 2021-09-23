@@ -67,7 +67,7 @@ update_status ModuleUI::PostUpdate(float dt)
 }
 
 // Called before quitting
-bool ModuleRenderer3D::CleanUp()
+bool ModuleUI::CleanUp()
 {
 	LOG("Cleaning up UI");
 
