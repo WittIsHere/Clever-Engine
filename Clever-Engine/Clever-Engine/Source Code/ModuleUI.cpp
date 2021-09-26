@@ -39,7 +39,7 @@ bool ModuleUI::Start()
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
-        style.WindowRounding = 7.0f;
+        style.WindowRounding = 7.0f;    
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
@@ -55,15 +55,92 @@ bool ModuleUI::Start()
 
 update_status ModuleUI::PreUpdate(float dt)
 {
+    //Begin new ImGui Frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame(App->window->window);
+    ImGui::NewFrame();
 
-	return UPDATE_CONTINUE;
+    //Update ImGui input usage
+    ImGuiIO& io = ImGui::GetIO();
+    usingKeyboard = io.WantCaptureKeyboard;
+    usingMouse = io.WantCaptureMouse;
+
+    return UPDATE_CONTINUE;
 }
 
+update_status ModuleUI::Update(float dt)
+{
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Create"))
+		{
+			if (ImGui::MenuItem("Cube"))
+			{
+				//Create Cube
+			}
+			if (ImGui::MenuItem("Sphere"))
+			{
+				//Create Sphere
+			}
+			if (ImGui::MenuItem("Cylinder"))
+			{
+				//Create Cylinder
+			}
+			if (ImGui::MenuItem("Pyramid"))
+			{
+				//Create Pyramid
+			}
 
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Help"))
+		{
+			if (ImGui::MenuItem("Gui Demo")) {}
+
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("About"))
+		{
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+		ImGui::End();
+	}
+    if (showDemoWindow)
+        ImGui::ShowDemoWindow(&showDemoWindow);
+    {
+        ImGui::Begin("DEMO");
+        ImGui::Checkbox("Demo Window", &showDemoWindow);
+        ImGui::End();
+    }
+
+    return UPDATE_CONTINUE;
+}
 update_status ModuleUI::PostUpdate(float dt)
 {
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleUI::Render()
+{
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+        SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+    }
 }
 
 // Called before quitting
