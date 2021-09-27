@@ -40,4 +40,9 @@ private:
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
+
+public:
+	// Add other functions here
+	void RequestBrowser(char* path);
+
 };

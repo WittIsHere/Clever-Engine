@@ -176,6 +176,9 @@
     <ClInclude Include="Source Code\Dependencies\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Source Code\Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Source Code\Dependencies\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\MathBuildConfig.h" />
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\MathGeoLib.h" />
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\MathGeoLibFwd.h" />
     <ClInclude Include="Source Code\glmath.h" />
     <ClInclude Include="Source Code\Globals.h" />
     <ClInclude Include="Source Code\Light.h" />

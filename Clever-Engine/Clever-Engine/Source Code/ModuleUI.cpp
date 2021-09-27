@@ -74,43 +74,73 @@ update_status ModuleUI::Update(float dt)
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			
+            if (ImGui::MenuItem("New Scene"))
+            {
+                // New Scene code
+            }
+            if (ImGui::MenuItem("Open Scene"))
+            {
+                // Open Scene code
+            }
+            if (ImGui::MenuItem("Save Scene"))
+            {
+                // Save Scene code
+            }
+            if (ImGui::MenuItem("Save Scene as"))
+            {
+                // New Scene code
+            }
+            ImGui::Separator();
+            if (ImGui::MenuItem("Exit"))
+            {
+                //return UPDATE_STOP;
+            }
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Create"))
-		{
-			if (ImGui::MenuItem("Cube"))
-			{
-				//Create Cube
-			}
-			if (ImGui::MenuItem("Sphere"))
-			{
-				//Create Sphere
-			}
-			if (ImGui::MenuItem("Cylinder"))
-			{
-				//Create Cylinder
-			}
-			if (ImGui::MenuItem("Pyramid"))
-			{
-				//Create Pyramid
-			}
 
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Help"))
-		{
-			if (ImGui::MenuItem("Gui Demo")) {}
+        if (ImGui::BeginMenu("Create"))
+        {
+            // Insert options here
 
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("About"))
-		{
-			ImGui::EndMenu();
-		}
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Window"))
+        {
+            // Insert options here
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Help"))
+        {
+            // Insert options here
+
+            ImGui::EndMenu();
+        }
+        // Engine->RequestBrowser("https://github.com/markitus18/Game-Engine/wiki")
+        if (ImGui::BeginMenu("Development"))
+        {
+
+            ImGui::BulletText("ImGui Github: https://github.com/ocornut/imgui");
+            ImGui::BulletText("MathGeoLib Github: https://github.com/juj/MathGeoLib");
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("About"))
+        {
+            ImGui::BulletText("Github Link: https://github.com/WittIsHere/Clever-Engine");
+           
+            //App->RequestBrowser((char*)"https://github.com/WittIsHere/Clever-Engine");
+
+            ImGui::EndMenu();
+        }
+
 		ImGui::EndMenuBar();
 		ImGui::End();
 	}
+
     if (showDemoWindow)
         ImGui::ShowDemoWindow(&showDemoWindow);
     {

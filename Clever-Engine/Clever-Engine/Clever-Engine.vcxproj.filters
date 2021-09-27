@@ -114,9 +114,6 @@
     <ClInclude Include="Source Code\ModuleWindow.h">
       <Filter>Source Code\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\OpenGl.h">
-      <Filter>External Libraries</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\Primitive.h">
       <Filter>Source Code\Resources</Filter>
     </ClInclude>
@@ -125,6 +122,18 @@
     </ClInclude>
     <ClInclude Include="Source Code\ModuleUI.h">
       <Filter>Source Code\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\MathBuildConfig.h">
+      <Filter>External Libraries\MathGeoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\MathGeoLib.h">
+      <Filter>External Libraries\MathGeoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\MathGeoLibFwd.h">
+      <Filter>External Libraries\MathGeoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\OpenGl.h">
+      <Filter>Source Code</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +169,9 @@
     </Filter>
     <Filter Include="External Libraries\ImGui">
       <UniqueIdentifier>{7deec091-ee5d-4429-9852-19b8f9cf769c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Libraries\MathGeoLib">
+      <UniqueIdentifier>{465318cc-1b4c-4cb4-b9f0-2daf1b89b7ee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
