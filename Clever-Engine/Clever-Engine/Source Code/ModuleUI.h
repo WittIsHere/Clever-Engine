@@ -16,7 +16,6 @@ public:
 	void Render();
 	bool CleanUp();
 
-
 public:
 	bool showDemoWindow;
 	bool usingKeyboard;

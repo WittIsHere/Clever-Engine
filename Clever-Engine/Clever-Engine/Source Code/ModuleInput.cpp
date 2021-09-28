@@ -36,6 +36,7 @@ bool ModuleInput::Init()
 // Called every draw update
 update_status ModuleInput::PreUpdate(float dt)
 {
+	update_status ret = UPDATE_CONTINUE;
 	SDL_PumpEvents();
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
@@ -84,7 +85,6 @@ update_status ModuleInput::PreUpdate(float dt)
 
 	mouse_x_motion = mouse_y_motion = 0;
 
-	bool quit = false;
 	SDL_Event e;
 	while(SDL_PollEvent(&e))
 	{
@@ -108,16 +108,19 @@ update_status ModuleInput::PreUpdate(float dt)
 
 			case SDL_WINDOWEVENT:
 			{
-				if(e.window.event == SDL_WINDOWEVENT_RESIZED)
+				if (e.window.event == SDL_WINDOWEVENT_RESIZED)
 					App->renderer3D->OnResize(e.window.data1, e.window.data2);
+
+				if (e.window.event == SDL_WINDOWEVENT_CLOSE)
+					ExitApp();
 			}
 		}
 	}
 
-	if(quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
-		return UPDATE_STOP;
+	if(quit == true)
+		ret = update_status::UPDATE_STOP;
 
-	return UPDATE_CONTINUE;
+	return ret;
 }
 
 // Called before quitting
@@ -126,4 +129,9 @@ bool ModuleInput::CleanUp()
 	LOG("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
+}
+
+void ModuleInput::ExitApp()
+{
+	quit = true;
 }

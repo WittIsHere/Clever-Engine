@@ -70,6 +70,11 @@ update_status ModuleUI::PreUpdate(float dt)
 
 update_status ModuleUI::Update(float dt)
 {
+    if ((App->input->GetKey(SDL_SCANCODE_LALT) == KEY_DOWN) && (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN))
+    {
+        App->input->ExitApp();
+    }
+
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -93,7 +98,7 @@ update_status ModuleUI::Update(float dt)
             ImGui::Separator();
             if (ImGui::MenuItem("Exit"))
             {
-                //return UPDATE_STOP;
+                App->input->ExitApp();
             }
 			ImGui::EndMenu();
 		}
@@ -118,12 +123,14 @@ update_status ModuleUI::Update(float dt)
 
             ImGui::EndMenu();
         }
-        // Engine->RequestBrowser("https://github.com/markitus18/Game-Engine/wiki")
+
         if (ImGui::BeginMenu("Development"))
         {
-
-            ImGui::BulletText("ImGui Github: https://github.com/ocornut/imgui");
-            ImGui::BulletText("MathGeoLib Github: https://github.com/juj/MathGeoLib");
+            if (ImGui::MenuItem("ImGui Github:"))
+                App->RequestBrowser(" https://github.com/ocornut/imgui");
+           
+            if (ImGui::MenuItem("MathGeoLib Github:"))
+                App->RequestBrowser("https://github.com/juj/MathGeoLib");
 
             ImGui::EndMenu();
         }

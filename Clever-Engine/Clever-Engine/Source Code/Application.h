@@ -25,6 +25,7 @@ private:
 	Timer ms_timer;
 	float dt;
 	std::vector<Module*> list_modules;
+	bool exit = false;
 
 public:
 

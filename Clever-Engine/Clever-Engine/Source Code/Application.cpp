@@ -78,21 +78,38 @@ update_status Application::Update()
 	{
 		Module* module = *e;
 		ret = module->PreUpdate(dt);
+		if (ret == update_status::UPDATE_STOP)
+		{
+			exit = true;
+		}
 	}
 
 	for (std::vector<Module*>::iterator e = list_modules.begin(); e != list_modules.end(); e++)
 	{
 		Module* module = *e;
 		ret = module->Update(dt);
+		if (ret == update_status::UPDATE_STOP)
+		{
+			exit = true;
+		}
 	}
 
 	for (std::vector<Module*>::iterator e = list_modules.begin(); e != list_modules.end(); e++)
 	{
 		Module* module = *e;
 		ret = module->PostUpdate(dt);
+		if (ret == update_status::UPDATE_STOP)
+		{
+			exit = true;
+		}
+	}
+	FinishUpdate();
+
+	if (exit)
+	{
+		ret = update_status::UPDATE_STOP;
 	}
 
-	FinishUpdate();
 	return ret;
 }
 
