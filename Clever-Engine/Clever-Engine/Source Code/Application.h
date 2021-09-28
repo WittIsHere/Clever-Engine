@@ -43,6 +43,6 @@ private:
 
 public:
 	// Add other functions here
-	void RequestBrowser(char* path);
+	void RequestBrowser(const char* path) const;
 
 };

@@ -127,13 +127,16 @@ update_status ModuleUI::Update(float dt)
 
             ImGui::EndMenu();
         }
-
         if (ImGui::BeginMenu("About"))
         {
-            ImGui::BulletText("Github Link: https://github.com/WittIsHere/Clever-Engine");
-           
-            //App->RequestBrowser((char*)"https://github.com/WittIsHere/Clever-Engine");
+            if (ImGui::MenuItem("Documentation"))
+                App->RequestBrowser("https://github.com/WittIsHere/Clever-Engine/wiki");
 
+            if (ImGui::MenuItem("Download latest"))
+                App->RequestBrowser("https://github.com/WittIsHere/Clever-Engine/releases");
+
+            if (ImGui::MenuItem("Report a bug"))
+                App->RequestBrowser("https://github.com/WittIsHere/Clever-Engine/issues");
             ImGui::EndMenu();
         }
 
