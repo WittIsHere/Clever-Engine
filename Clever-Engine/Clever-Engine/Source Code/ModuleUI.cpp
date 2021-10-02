@@ -172,10 +172,10 @@ update_status ModuleUI::Update(float dt)
 
         if (ImGui::BeginMenu("Development"))
         {
-            if (ImGui::MenuItem("ImGui Github:"))
-                App->RequestBrowser(" https://github.com/ocornut/imgui");
+            if (ImGui::MenuItem("ImGui Github"))
+                App->RequestBrowser("https://github.com/ocornut/imgui");
            
-            if (ImGui::MenuItem("MathGeoLib Github:"))
+            if (ImGui::MenuItem("MathGeoLib Github"))
                 App->RequestBrowser("https://github.com/juj/MathGeoLib");
 
             ImGui::EndMenu();
