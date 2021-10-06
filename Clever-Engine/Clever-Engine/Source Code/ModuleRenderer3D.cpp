@@ -22,6 +22,7 @@ ModuleRenderer3D::~ModuleRenderer3D()
 bool ModuleRenderer3D::Init()
 {
 	LOG("Creating 3D Renderer context");
+	const char* logout;
 	bool ret = true;
 	
 	//Create context
@@ -156,7 +157,6 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
-
 void ModuleRenderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
@@ -168,4 +168,24 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+bool ModuleRenderer3D::GetVSync() const
+{
+	return vsync;
+}
+
+void ModuleRenderer3D::SetVSync(bool vsync)
+{
+	if (this->vsync != vsync)
+	{
+		this->vsync = vsync;
+		if (SDL_GL_SetSwapInterval(vsync ? 1 : 0) < 0)
+			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+	}
+}
+
+uint* ModuleRenderer3D::GetOpenGLVersion() const
+{
+	return (uint*)glGetString(GL_VERSION);
 }

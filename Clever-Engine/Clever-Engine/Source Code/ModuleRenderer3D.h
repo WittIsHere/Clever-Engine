@@ -19,10 +19,15 @@ public:
 
 	void OnResize(int width, int height);
 
-public:
+	bool GetVSync() const;
+	void SetVSync(bool vsync);
+	uint* GetOpenGLVersion() const;
 
+public:
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
+
+	bool vsync = true;
 };

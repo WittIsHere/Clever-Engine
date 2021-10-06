@@ -34,7 +34,7 @@ Application::~Application()
 bool Application::Init()
 {
 	bool ret = true;
-
+	titleName = ENGINE_NAME;
 	// Call Init() in all modules
 
 	for (std::vector<Module*>::iterator e = list_modules.begin(); e != list_modules.end(); e++)
@@ -134,3 +134,14 @@ void Application::RequestBrowser(const char* path) const
 {
 	ShellExecuteA(NULL, "open", path, NULL, NULL, SW_SHOWNORMAL);
 }
+
+const char* Application::GetTitleName() const
+{
+	return titleName.c_str();
+}
+
+void Application::SetTitleName(const char* title)
+{
+	titleName = title;
+}
+

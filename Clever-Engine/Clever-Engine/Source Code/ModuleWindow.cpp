@@ -92,3 +92,108 @@ void ModuleWindow::SetTitle(const char* title)
 {
 	SDL_SetWindowTitle(window, title);
 }
+
+uint ModuleWindow::GetWidth() const
+{
+	int width, height;
+	SDL_GetWindowSize(window, &width, &height);
+	return width;
+}
+
+void ModuleWindow::SetWidth(uint width)
+{
+	SDL_SetWindowSize(window, width, GetHeight());
+}
+
+uint ModuleWindow::GetHeight() const
+{
+	int width, height;
+	SDL_GetWindowSize(window, &width, &height);
+	return height;
+}
+
+void ModuleWindow::SetHeight(uint height)
+{
+	SDL_SetWindowSize(window, GetWidth(), height);
+}
+
+bool ModuleWindow::IsFullscreen() const
+{
+	return isFullScreen;
+}
+
+void ModuleWindow::SetFullscreen(bool set)
+{
+	if (set != isFullScreen)
+	{
+		isFullScreen = set;
+		if (isFullScreen == true)
+		{
+			if (SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN) != 0)
+			{
+				LOG("Could not switch to fullscreen: %s\n", SDL_GetError());
+			}
+
+			isFullScreenDesktop = false;
+		}
+		else
+		{
+			if (SDL_SetWindowFullscreen(window, 0) != 0)
+			{
+				LOG("Could not exit fullscreen: %s\n", SDL_GetError());
+			}
+
+		}
+	}
+}
+
+bool ModuleWindow::IsResizable() const
+{
+	return isResizable;
+}
+
+void ModuleWindow::SetResizable(bool set)
+{
+	isResizable = true;
+}
+
+bool ModuleWindow::IsBorderless() const
+{
+	return isBorderless;
+}
+
+void ModuleWindow::SetBorderless(bool set)
+{
+	if (set != isBorderless)
+	{
+		isBorderless = set;
+		if (isBorderless == true)
+		{
+			SDL_SetWindowBordered(window, (SDL_bool)false);
+		}
+	}
+}
+
+bool ModuleWindow::IsFullscreenDesktop() const
+{
+	return isFullScreenDesktop;
+}
+
+void ModuleWindow::SetFullscreenDesktop(bool set)
+{
+	if (set != isFullScreenDesktop)
+	{
+		isFullScreenDesktop = set;
+		if (isFullScreenDesktop == true)
+		{
+			if (SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
+				LOG("Could not switch to fullscreen desktop: %s\n", SDL_GetError());
+			isFullScreen = false;
+		}
+		else
+		{
+			if (SDL_SetWindowFullscreen(window, 0) != 0)
+				LOG("Could not exit full screen desktop: %s\n", SDL_GetError());
+		}
+	}
+}

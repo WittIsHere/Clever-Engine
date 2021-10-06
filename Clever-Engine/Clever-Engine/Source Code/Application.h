@@ -10,6 +10,7 @@
 #include "ModuleUI.h"
 
 #include <vector>
+#include <string>
 
 class Application
 {
@@ -21,14 +22,14 @@ public:
 	ModuleUI* ui;
 
 private:
-
 	Timer ms_timer;
 	float dt;
 	std::vector<Module*> list_modules;
 	bool exit = false;
 
-public:
+	std::string titleName;
 
+public:
 	Application();
 	~Application();
 
@@ -37,7 +38,6 @@ public:
 	bool CleanUp();
 
 private:
-
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
@@ -45,5 +45,7 @@ private:
 public:
 	// Add other functions here
 	void RequestBrowser(const char* path) const;
+	const char* GetTitleName() const;
+	void SetTitleName(const char* title);
 
 };
