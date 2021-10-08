@@ -372,10 +372,10 @@ void ModuleUI::DrawConfigurationSpace(bool active)
 
                 if (ImGui::Checkbox("Resizable ", &resizable))
                 {
-                    App->window->SetResizable(resizable);
+                    App->window->SetResizable(resizable); 
                 }
                 if (ImGui::IsItemHovered())
-                {
+                { 
                     ImGui::SetTooltip("Must restart to apply");
                 }
 

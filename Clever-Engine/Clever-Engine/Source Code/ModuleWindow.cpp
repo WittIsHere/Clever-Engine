@@ -166,11 +166,8 @@ void ModuleWindow::SetBorderless(bool set)
 {
 	if (set != isBorderless)
 	{
+		SDL_SetWindowBordered(window, (SDL_bool)set);
 		isBorderless = set;
-		if (isBorderless == true)
-		{
-			SDL_SetWindowBordered(window, (SDL_bool)false);
-		}
 	}
 }
 
