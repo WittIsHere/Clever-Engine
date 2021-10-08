@@ -23,9 +23,17 @@ public:
 
 private:
 	Timer ms_timer;
+	Timer	fps_timer;
 	float dt;
 	std::vector<Module*> list_modules;
 	bool exit = false;
+
+	//Framerate variables
+	int	miliseconds; //max miliseconds per frame
+	int contFPS;
+	int	last_ms;
+	int	last_fps;
+	Uint32 frames;
 
 	std::string titleName;
 
@@ -45,7 +53,10 @@ private:
 public:
 	// Add other functions here
 	void RequestBrowser(const char* path) const;
+	uint GetFRLimit() const;
+	void SetFRLimit(uint max_framerate);
 	const char* GetTitleName() const;
 	void SetTitleName(const char* title);
 
 };
+extern Application* App;

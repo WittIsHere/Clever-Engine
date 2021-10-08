@@ -21,11 +21,14 @@ private:
 	void DrawDockingSpace(bool active);
 	void DrawConsoleSpace(bool active);
 
-	void ConsoleLog(const char* text);
+
 	void DrawConfigurationSpace(bool active);
 
-	void AddLogFPS(float fps, float ms);
 	void ShowDockingDisabledMessage();
+
+public:
+	void ConsoleLog(const char* text);
+	void AddLogFPS(float fps, float ms);
 
 public:
 	bool showDemoWindow;
@@ -34,7 +37,7 @@ public:
 
 	bool changeFPSlimit = false;
 	bool changeTitleName = false;
-	int max_fps = 140;
+	int max_fps = 60;
 
 private:
 	//Bool variables to activate the different windows
