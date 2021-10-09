@@ -20,7 +20,6 @@ public:
 private:
 	void DrawConsoleSpace(bool active);
 	void DrawConfigurationSpace(bool active);
-	void DrawAboutSpace(bool active);
 
 	void ShowDockingDisabledMessage();
 
@@ -39,11 +38,9 @@ public:
 
 private:
 	//Bool variables to activate the different windows
+	bool activeConsole = true;
+	bool activeConfiguration = true;
 	bool activeDockingSpace = false;
-	bool activeConsole = false;
-	bool activeConfiguration = false;
-
-	bool activeAbout = false;
 
 	//Configuration window variables
 	bool need_scroll = false;
