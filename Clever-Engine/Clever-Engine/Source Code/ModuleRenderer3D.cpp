@@ -116,7 +116,7 @@ bool ModuleRenderer3D::Init()
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	// Drawing stuff
-	DrawCubeInit();
+	DrawCube();
 
 	return ret;
 }
@@ -148,8 +148,10 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
 
-	DrawCube();
+	//glRotatef(0.1f, 1.0f, 1.0f, 0.0f);
 
 	//ImGui Render
 	App->ui->Render();
@@ -201,7 +203,7 @@ uint* ModuleRenderer3D::GetOpenGLVersion() const
 	return (uint*)glGetString(GL_VERSION);
 }
 
-void ModuleRenderer3D::DrawCubeInit()
+void ModuleRenderer3D::DrawCube()
 {
 	GLfloat vertices[] = { 0.0f,0.0f,0.0f,     // 0
 					       1.0f,0.0f,0.0f,     // 1
@@ -212,26 +214,22 @@ void ModuleRenderer3D::DrawCubeInit()
 					       1.0f,1.0f,-1.0f,    // 6
 					       0.0f,1.0f,-1.0f };  // 7
 
-	GLuint indices[] = { 0,1,2,    // ¿Cambiarlo a GLushort para optimizar?
-						 0,2,3,
-		                 1,5,6,
-		                 1,6,2,
-		                 0,5,1,
-		                 0,4,5,
-		                 0,7,4,
-		                 0,3,7,
-		                 4,7,6,
-		                 4,6,5,
-		                 3,2,6,
-		                 3,6,7};
+	GLushort indices[] = { 0,1,2,
+						   0,2,3,
+		                   1,5,6,
+		                   1,6,2,
+		                   0,5,1,
+		                   0,4,5,
+		                   0,7,4,
+		                   0,3,7,
+		                   4,7,6,
+		                   4,6,5,
+		                   3,2,6,
+		                   3,6,7};
 
 
 	glGenBuffers(1, &vertex_Buffer);
 	glGenBuffers(1, &indices_Buffer);
-}
-
-void ModuleRenderer3D::DrawCube()
-{
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_Buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -242,11 +240,4 @@ void ModuleRenderer3D::DrawCube()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-
-	
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-
-	//glRotatef(0.1f, 1.0f, 1.0f, 0.0f);
 }
-

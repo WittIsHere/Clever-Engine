@@ -32,14 +32,9 @@ public:
 
 	// Draw Cube vars
 	void DrawCube();
-	void DrawCubeInit();
 
-	GLuint vertex_Buffer;
-	GLuint indices_Buffer;
+	uint vertex_Buffer;
+	uint indices_Buffer;
 
-	GLfloat vertices[24];
-	GLuint indices[36];
-
-
-	bool vsync = true;
+    bool vsync = true;
 };
