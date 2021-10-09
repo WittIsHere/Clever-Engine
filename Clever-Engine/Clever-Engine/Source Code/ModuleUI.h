@@ -18,11 +18,9 @@ public:
 	bool CleanUp();
 
 private:
-	void DrawDockingSpace(bool active);
 	void DrawConsoleSpace(bool active);
-
-
 	void DrawConfigurationSpace(bool active);
+	void DrawAboutSpace(bool active);
 
 	void ShowDockingDisabledMessage();
 
@@ -44,6 +42,8 @@ private:
 	bool activeDockingSpace = false;
 	bool activeConsole = false;
 	bool activeConfiguration = false;
+
+	bool activeAbout = false;
 
 	//Configuration window variables
 	bool need_scroll = false;
