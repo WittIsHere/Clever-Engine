@@ -147,7 +147,14 @@ update_status ModuleUI::Update(float dt)
 
             if (ImGui::BeginMenu("Help"))
             {
-                // Insert options here
+                if (ImGui::MenuItem("Documentation"))
+                    App->RequestBrowser("https://github.com/WittIsHere/Clever-Engine/wiki");
+
+                if (ImGui::MenuItem("Download latest"))
+                    App->RequestBrowser("https://github.com/WittIsHere/Clever-Engine/releases");
+
+                if (ImGui::MenuItem("Report a bug"))
+                    App->RequestBrowser("https://github.com/WittIsHere/Clever-Engine/issues");  
 
                 ImGui::EndMenu();
             }
@@ -164,17 +171,24 @@ update_status ModuleUI::Update(float dt)
             }
             if (ImGui::BeginMenu("About"))
             {
-                if (ImGui::MenuItem("Documentation"))
-                    App->RequestBrowser("https://github.com/WittIsHere/Clever-Engine/wiki");
-
-                if (ImGui::MenuItem("Download latest"))
-                    App->RequestBrowser("https://github.com/WittIsHere/Clever-Engine/releases");
-
-                if (ImGui::MenuItem("Report a bug"))
-                    App->RequestBrowser("https://github.com/WittIsHere/Clever-Engine/issues");
+                ImGui::TextWrapped("Clever Engine\n\n");
+                ImGui::Text("Open 3D Game Engine developed during the 3rd course of Design and Development of Videogames at CITM (UPC-Barcelona)\n\n");
+                ImGui::Text("By Aram Galarza & Albert Espinosa\n");
+                ImGui::Text("3rd party libraries used:\n\n");
+                ImGui::Text("- SDL\n\n- Glew\n\n- OpenGL\n\n- ImGui\n\n- MathGeoLib\n\n- Assimp\n\n");
+                ImGui::Text("License:\n");
+                ImGui::Text("MIT License\n");
+                ImGui::Text("Copyright (c) 2021 Albert Espinosa & Aram Galarza\n");
+                ImGui::Text("Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files(the 'Software'),"); 
+                ImGui::Text("to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,");
+                ImGui::Text("and /or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: \n\n");
+                ImGui::Text("The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n");
+                ImGui::Text("THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \n");
+                ImGui::Text("FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\n");
+                ImGui::Text("WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n");
+                
                 ImGui::EndMenu();
             }
-
             ImGui::EndMenuBar();
             ImGui::End();
         }
@@ -429,7 +443,6 @@ void ModuleUI::AddLogFPS(float fps, float ms)
     fps_log[count - 1] = fps;
     ms_log[count - 1] = ms;
 }
-
 
 void ModuleUI::ShowDockingDisabledMessage()
 {
