@@ -10,8 +10,6 @@
 #pragma comment (lib, "glew32.lib") /* link Microsoft OpenGL lib   */
 
 
-void DrawCube();
-
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
@@ -64,7 +62,7 @@ bool ModuleRenderer3D::Init()
 		//Initialize Modelview Matrix
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-
+		
 		//Check for error
 		error = glGetError();
 		if(error != GL_NO_ERROR)
@@ -111,6 +109,9 @@ bool ModuleRenderer3D::Init()
 
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	// Drawing stuff
+	DrawCubeInit();
 
 	return ret;
 }
@@ -195,45 +196,43 @@ uint* ModuleRenderer3D::GetOpenGLVersion() const
 	return (uint*)glGetString(GL_VERSION);
 }
 
-
-void DrawCube()
+void ModuleRenderer3D::DrawCubeInit()
 {
-
 	GLfloat vertices[] = { 0.0f,0.0f,0.0f,     // 0
-						   2.0f,0.0f,0.0f,     // 1
-						   2.0f,2.0f,0.0f,     // 2
-						   0.0f,2.0f,0.0f,     // 3
-						   0.0f,0.0f,-2.0f,    // 4
-						   2.0f,0.0f,-2.0f,    // 5
-						   2.0f,2.0f,-2.0f,    // 6
-						   0.0f,2.0f,-2.0f };  // 7
+					       1.0f,0.0f,0.0f,     // 1
+					       1.0f,1.0f,0.0f,     // 2
+					       0.0f,1.0f,0.0f,     // 3
+					       0.0f,0.0f,-1.0f,    // 4
+					       1.0f,0.0f,-1.0f,    // 5
+					       1.0f,1.0f,-1.0f,    // 6
+					       0.0f,1.0f,-1.0f };  // 7
 
-	GLuint indices[] = {  0,1,2,    // ¿Cambiarlo a GLushort para optimizar?
-						  0,2,3,
-						  1,5,6,
-						  1,6,2,
-						  0,5,1,
-						  0,4,5,
-						  0,7,4,
-						  0,3,7,
-						  4,7,6,
-						  4,6,5,
-						  3,2,6,
-						  3,6,7 };
+	GLuint indices[] = { 0,1,2,    // ¿Cambiarlo a GLushort para optimizar?
+						 0,2,3,
+		                 1,5,6,
+		                 1,6,2,
+		                 0,5,1,
+		                 0,4,5,
+		                 0,7,4,
+		                 0,3,7,
+		                 4,7,6,
+		                 4,6,5,
+		                 3,2,6,
+		                 3,6,7};
 
-
-	GLuint vertex_Buffer;
-	GLuint indices_Buffer;
 
 	glGenBuffers(1, &vertex_Buffer);
+	glGenBuffers(1, &indices_Buffer);
+}
+
+void ModuleRenderer3D::DrawCube()
+{
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_Buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
-
-	glGenBuffers(1, &indices_Buffer);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -245,3 +244,4 @@ void DrawCube()
 
 	//glRotatef(0.1f, 1.0f, 1.0f, 0.0f);
 }
+

@@ -29,5 +29,17 @@ public:
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
+
+	// Draw Cube vars
+	void DrawCube();
+	void DrawCubeInit();
+
+	GLuint vertex_Buffer;
+	GLuint indices_Buffer;
+
+	GLfloat vertices[24];
+	GLuint indices[36];
+
+
 	bool vsync = true;
 };
