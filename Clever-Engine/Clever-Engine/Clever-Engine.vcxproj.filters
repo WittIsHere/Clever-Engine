@@ -157,6 +157,9 @@
     <ClCompile Include="Source Code\Dependencies\parson\parson.c">
       <Filter>External Libraries\parson</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\ModuleImporter.cpp">
+      <Filter>Source Code\Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h">
@@ -407,6 +410,9 @@
     </ClInclude>
     <ClInclude Include="Source Code\Dependencies\parson\parson.h">
       <Filter>External Libraries\parson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ModuleImporter.h">
+      <Filter>Source Code\Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

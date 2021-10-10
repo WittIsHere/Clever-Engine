@@ -112,7 +112,6 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_COLOR_MATERIAL);
 	}
 
-
 	// Drawing stuff
 	DrawCube();
 
