@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "Primitive.h"
+#include "ModuleImporter.h"
 
 #include "OpenGl.h"
 
@@ -146,6 +147,8 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
+	//DrawScene(App->importer->myScene);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
 
@@ -201,6 +204,31 @@ uint* ModuleRenderer3D::GetOpenGLVersion() const
 	return (uint*)glGetString(GL_VERSION);
 }
 
+//void ModuleRenderer3D::DrawScene(SceneData scene)
+//{
+//	/*for (int i = 0; i < scene.numOfMeshes;i++)
+//	{
+//		DrawMesh(scene.myMeshes[i]);
+//	}*/
+//}
+//
+//void ModuleRenderer3D::DrawMesh(MeshData* mesh)
+//{
+//	/*glGenBuffers(1, &mesh->id_vertex);
+//	glGenBuffers(1, &mesh->id_index);
+//
+//	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertex);
+//	glBufferData(GL_ARRAY_BUFFER, sizeof(mesh->vertex), mesh->vertex, GL_STATIC_DRAW);
+//
+//	glEnableVertexAttribArray(0);
+//	glVertexAttribPointer(0, 3, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
+//
+//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
+//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(mesh->id_index), mesh->index, GL_STATIC_DRAW);
+//
+//	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, 0);*/
+//}
+
 void ModuleRenderer3D::DrawCube()
 {
 	GLfloat vertices[] = { 0.0f,0.0f,0.0f,     // 0
@@ -237,5 +265,6 @@ void ModuleRenderer3D::DrawCube()
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
 }
+
+

@@ -2,6 +2,8 @@
 #include "Module.h"
 #include "Globals.h"
 
+#include <vector>
+
 struct aiMesh;
 
 struct MeshData
@@ -17,8 +19,8 @@ struct MeshData
 
 struct SceneData
 {
-	MeshData myMeshes[10];
-	//std::vector<MeshData*> myMeshes; 
+	//int numOfMeshes;
+	std::vector<MeshData*> myMeshes; 
 };
 
 class ModuleImporter : public Module
@@ -33,7 +35,7 @@ public:
 	bool CleanUp();
 
 	void ImportScene(const char* file_path);
-	void ImportMesh(aiMesh* mesh, MeshData myMesh);
+	void ImportMesh(aiMesh* mesh, MeshData* myMesh);
 
 	SceneData myScene;
 

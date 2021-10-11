@@ -33,8 +33,8 @@ public:
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
-	void DrawScene(SceneData scene);
-	void DrawMesh(MeshData mesh);
+	//void DrawScene(SceneData scene);
+	//void DrawMesh(MeshData* mesh);
 
 	// Draw Cube vars
 	void DrawCube();

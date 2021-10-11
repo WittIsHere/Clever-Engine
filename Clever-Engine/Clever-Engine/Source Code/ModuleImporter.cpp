@@ -29,7 +29,7 @@ bool ModuleImporter::Init()
 
 	LOG("Importing scene test");
 
-	const char* warriorPath = ("Project Files/Assets/Models/warrior.FBX");
+	const char* warriorPath = ("Assets/Models/warrior.FBX");
 	ImportScene(warriorPath);
 
 	return ret;
@@ -57,12 +57,15 @@ void ModuleImporter::ImportScene(const char* file_path)
 	const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (aiScene != nullptr && aiScene-> HasMeshes())
 	{
+		//myScene.numOfMeshes = aiScene->mNumMeshes;
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < aiScene->mNumMeshes; i++)
 		{
+			MeshData* meshTest = new MeshData;
+			myScene.myMeshes.push_back(meshTest);
 			ImportMesh(aiScene->mMeshes[i], myScene.myMeshes[i]);
 		}
-		aiReleaseImport(aiScene);
+		//aiReleaseImport(aiScene);
 	}
 	else
 	{
@@ -70,19 +73,19 @@ void ModuleImporter::ImportScene(const char* file_path)
 	}
 }
 
-void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData myMesh)
+void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 {
-	myMesh.num_vertex = mesh->mNumVertices;
-	myMesh.vertex = new float[myMesh.num_vertex * 3];
-	memcpy(myMesh.vertex, mesh->mVertices, sizeof(float) * myMesh.num_vertex * 3);
+	myMesh->num_vertex = mesh->mNumVertices;
+	myMesh->vertex = new float[myMesh->num_vertex * 3];
+	memcpy(myMesh->vertex, mesh->mVertices, sizeof(float) * myMesh->num_vertex * 3);
 
-	LOG("New mesh with %d vertices", myMesh.num_vertex);
-	
+	LOG("New mesh with %d vertices", myMesh->num_vertex);
+
 	// Copying faces
 	if (mesh->HasFaces())
 	{
-		myMesh.num_index = mesh->mNumFaces * 3;
-		myMesh.index = new uint[mesh->mNumFaces];
+		myMesh->num_index = mesh->mNumFaces * 3;
+		myMesh->index = new uint[mesh->mNumFaces];
 
 		for (uint i = 0; i < mesh->mNumFaces; i++)
 		{
@@ -91,7 +94,7 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData myMesh)
 				LOG("Warning, geometry face with != indices!");
 			}
 			else
-				memcpy(&myMesh.index[i * 3], mesh->mFaces[i].mIndices, 3 * sizeof(uint));
+				memcpy(&myMesh->index[i * 3], mesh->mFaces[i].mIndices, 3 * sizeof(uint));
 		}
 	}
 }
