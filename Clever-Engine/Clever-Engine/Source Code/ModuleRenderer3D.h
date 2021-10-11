@@ -22,12 +22,16 @@ public:
 
 	void OnResize(int width, int height);
 
-	void DrawScene(SceneData scene);
-	void DrawMesh(MeshData* mesh);
+	void PrepareDrawScene(SceneData* scene);
 
 	bool GetVSync() const;
 	void SetVSync(bool vsync);
 	uint* GetOpenGLVersion() const;
+
+private:
+	void PrepareDrawMesh(MeshData* mesh);
+	void DrawScene();
+	void DrawMesh(MeshData* mesh);
 
 public:
 	Light lights[MAX_LIGHTS];
@@ -42,4 +46,8 @@ public:
 	uint indices_Buffer;
 
     bool vsync = true;
+
+private:
+
+	SceneData* currentScene = nullptr;
 };

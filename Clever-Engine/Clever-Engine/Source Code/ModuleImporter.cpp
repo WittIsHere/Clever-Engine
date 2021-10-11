@@ -62,8 +62,8 @@ void ModuleImporter::ImportScene(const char* file_path)
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < aiScene->mNumMeshes; i++)
 		{
-			MeshData* meshTest = new MeshData;
-			myScene.myMeshes.push_back(meshTest);
+			MeshData* tempMesh = new MeshData;
+			myScene.myMeshes.push_back(tempMesh);
 			ImportMesh(aiScene->mMeshes[i], myScene.myMeshes[i]);
 		}
 		aiReleaseImport(aiScene);

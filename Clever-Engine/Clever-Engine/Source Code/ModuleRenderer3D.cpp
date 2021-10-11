@@ -114,8 +114,10 @@ bool ModuleRenderer3D::Init()
 	}
 
 	// Drawing stuff
-	DrawCube();
-
+	//DrawCube();
+	currentScene = &App->importer->myScene;
+	PrepareDrawScene(currentScene);
+	
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -147,10 +149,9 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	//DrawScene(App->importer->myScene);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
+	DrawScene();
+	/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
+	glDrawElements(GL_TRIANGLES, , GL_UNSIGNED_SHORT, 0);*/
 
 	//glRotatef(0.1f, 1.0f, 1.0f, 0.0f);
 
@@ -204,15 +205,15 @@ uint* ModuleRenderer3D::GetOpenGLVersion() const
 	return (uint*)glGetString(GL_VERSION);
 }
 
-void ModuleRenderer3D::DrawScene(SceneData scene)
+void ModuleRenderer3D::PrepareDrawScene(SceneData* scene)
 {
-	for (int i = 0; i < scene.myMeshes.size();i++)
+	for (int i = 0; i < scene->myMeshes.size(); i++)
 	{
-		DrawMesh(scene.myMeshes[i]);
+		PrepareDrawMesh(scene->myMeshes[i]);
 	}
 }
 
-void ModuleRenderer3D::DrawMesh(MeshData* mesh)
+void ModuleRenderer3D::PrepareDrawMesh(MeshData* mesh)
 {
 	glGenBuffers(1, &mesh->id_vertex);
 	glGenBuffers(1, &mesh->id_index);
@@ -225,6 +226,22 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(mesh->id_index), mesh->index, GL_STATIC_DRAW);
+
+	//glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, 0);
+}
+
+void ModuleRenderer3D::DrawScene()
+{
+	for (int i = 0; i < currentScene->myMeshes.size(); i++)
+	{
+		DrawMesh(currentScene->myMeshes[i]);
+	}
+}
+
+void ModuleRenderer3D::DrawMesh(MeshData* mesh)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertex);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 
 	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, 0);
 }
