@@ -115,6 +115,7 @@ bool ModuleRenderer3D::Init()
 
 	// Drawing stuff
 	//DrawCube();
+
 	currentScene = &App->importer->myScene;
 	PrepareDrawScene(currentScene);
 	
@@ -150,6 +151,9 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
 	DrawScene();
+
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
+	//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
 
 	//ImGui Render
 	App->ui->Render();
@@ -215,13 +219,13 @@ void ModuleRenderer3D::PrepareDrawMesh(MeshData* mesh)
 	glGenBuffers(1, &mesh->id_index);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(mesh->vertex), mesh->vertex, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 3, mesh->vertex, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(mesh->id_index), mesh->index, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->num_index, mesh->index, GL_STATIC_DRAW);
 
 }
 
