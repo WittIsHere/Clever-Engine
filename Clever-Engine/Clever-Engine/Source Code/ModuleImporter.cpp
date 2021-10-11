@@ -58,7 +58,6 @@ void ModuleImporter::ImportScene(const char* file_path)
 	const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (aiScene != nullptr && aiScene-> HasMeshes())
 	{
-		//myScene.numOfMeshes = aiScene->mNumMeshes;
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < aiScene->mNumMeshes; i++)
 		{

@@ -150,10 +150,6 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
 	DrawScene();
-	/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
-	glDrawElements(GL_TRIANGLES, , GL_UNSIGNED_SHORT, 0);*/
-
-	//glRotatef(0.1f, 1.0f, 1.0f, 0.0f);
 
 	//ImGui Render
 	App->ui->Render();
@@ -227,7 +223,6 @@ void ModuleRenderer3D::PrepareDrawMesh(MeshData* mesh)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(mesh->id_index), mesh->index, GL_STATIC_DRAW);
 
-	//glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, 0);
 }
 
 void ModuleRenderer3D::DrawScene()
