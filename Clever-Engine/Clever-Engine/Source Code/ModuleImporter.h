@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 
+struct aiMesh;
 
 struct MeshData
 {
@@ -12,6 +13,12 @@ struct MeshData
 	uint id_index = 0;        // Index Buffer
 	uint num_index = 0;       // num of Index
 	uint* index = nullptr;    // Index Array
+};
+
+struct SceneData
+{
+	MeshData myMeshes[10];
+	//std::vector<MeshData*> myMeshes; 
 };
 
 class ModuleImporter : public Module
@@ -26,8 +33,8 @@ public:
 	bool CleanUp();
 
 	void ImportScene(const char* file_path);
+	void ImportMesh(aiMesh* mesh, MeshData myMesh);
 
-private:
-
+	SceneData myScene;
 
 };
