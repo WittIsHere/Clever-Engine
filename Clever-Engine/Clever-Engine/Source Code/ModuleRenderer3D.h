@@ -3,7 +3,6 @@
 #include "Globals.h"
 #include "glmath.h"
 #include "Light.h"
-#include "ModuleImporter.h"
 
 #define MAX_LIGHTS 8
 
@@ -23,6 +22,9 @@ public:
 
 	void OnResize(int width, int height);
 
+	void DrawScene(SceneData scene);
+	void DrawMesh(MeshData* mesh);
+
 	bool GetVSync() const;
 	void SetVSync(bool vsync);
 	uint* GetOpenGLVersion() const;
@@ -33,9 +35,6 @@ public:
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
-	//void DrawScene(SceneData scene);
-	//void DrawMesh(MeshData* mesh);
-
 	// Draw Cube vars
 	void DrawCube();
 
@@ -43,5 +42,4 @@ public:
 	uint indices_Buffer;
 
     bool vsync = true;
-
 };

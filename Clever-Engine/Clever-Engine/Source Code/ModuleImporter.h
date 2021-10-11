@@ -19,7 +19,6 @@ struct MeshData
 
 struct SceneData
 {
-	//int numOfMeshes;
 	std::vector<MeshData*> myMeshes; 
 };
 

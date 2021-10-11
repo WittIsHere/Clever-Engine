@@ -52,6 +52,7 @@ bool ModuleImporter::CleanUp()
 	return true;
 }
 
+//TODO: make this method be of type myScene and return the loaded scene
 void ModuleImporter::ImportScene(const char* file_path)
 {
 	const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
@@ -65,7 +66,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 			myScene.myMeshes.push_back(meshTest);
 			ImportMesh(aiScene->mMeshes[i], myScene.myMeshes[i]);
 		}
-		//aiReleaseImport(aiScene);
+		aiReleaseImport(aiScene);
 	}
 	else
 	{
@@ -75,6 +76,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 
 void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 {
+	// Copying vertex
 	myMesh->num_vertex = mesh->mNumVertices;
 	myMesh->vertex = new float[myMesh->num_vertex * 3];
 	memcpy(myMesh->vertex, mesh->mVertices, sizeof(float) * myMesh->num_vertex * 3);
@@ -85,7 +87,7 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 	if (mesh->HasFaces())
 	{
 		myMesh->num_index = mesh->mNumFaces * 3;
-		myMesh->index = new uint[mesh->mNumFaces];
+		myMesh->index = new uint[myMesh->num_index];
 
 		for (uint i = 0; i < mesh->mNumFaces; i++)
 		{

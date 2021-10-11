@@ -204,30 +204,30 @@ uint* ModuleRenderer3D::GetOpenGLVersion() const
 	return (uint*)glGetString(GL_VERSION);
 }
 
-//void ModuleRenderer3D::DrawScene(SceneData scene)
-//{
-//	/*for (int i = 0; i < scene.numOfMeshes;i++)
-//	{
-//		DrawMesh(scene.myMeshes[i]);
-//	}*/
-//}
-//
-//void ModuleRenderer3D::DrawMesh(MeshData* mesh)
-//{
-//	/*glGenBuffers(1, &mesh->id_vertex);
-//	glGenBuffers(1, &mesh->id_index);
-//
-//	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertex);
-//	glBufferData(GL_ARRAY_BUFFER, sizeof(mesh->vertex), mesh->vertex, GL_STATIC_DRAW);
-//
-//	glEnableVertexAttribArray(0);
-//	glVertexAttribPointer(0, 3, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
-//
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
-//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(mesh->id_index), mesh->index, GL_STATIC_DRAW);
-//
-//	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, 0);*/
-//}
+void ModuleRenderer3D::DrawScene(SceneData scene)
+{
+	for (int i = 0; i < scene.myMeshes.size();i++)
+	{
+		DrawMesh(scene.myMeshes[i]);
+	}
+}
+
+void ModuleRenderer3D::DrawMesh(MeshData* mesh)
+{
+	glGenBuffers(1, &mesh->id_vertex);
+	glGenBuffers(1, &mesh->id_index);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(mesh->vertex), mesh->vertex, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(mesh->id_index), mesh->index, GL_STATIC_DRAW);
+
+	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, 0);
+}
 
 void ModuleRenderer3D::DrawCube()
 {
