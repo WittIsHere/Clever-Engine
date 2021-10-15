@@ -30,7 +30,7 @@ bool ModuleImporter::Init()
 	LOG("Importing scene test");
 
 	const char* warriorPath = ("Assets/Models/warrior.FBX");
-	ImportScene(warriorPath);
+	//ImportScene(warriorPath);
 
 	return ret;
 }

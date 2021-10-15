@@ -5,6 +5,8 @@
 #include "Light.h"
 
 #define MAX_LIGHTS 8
+#define CHECKERS_HEIGHT 124
+#define CHECKERS_WIDTH 124
 
 struct SceneData;
 struct MeshData;
@@ -41,9 +43,14 @@ public:
 
 	// Draw Cube vars
 	void DrawCube();
+	void DMPlane();
+	void TestPlane();
+	void CreateCheckerTex();
 
 	uint vertex_Buffer;
 	uint indices_Buffer;
+	uint texture_Buffer;
+	uint checker_Buffer;
 
     bool vsync = true;
 

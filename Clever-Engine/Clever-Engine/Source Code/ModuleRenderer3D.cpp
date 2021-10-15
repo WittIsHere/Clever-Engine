@@ -111,15 +111,20 @@ bool ModuleRenderer3D::Init()
 		lights[0].Active(true);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
+		glEnable(GL_TEXTURE_2D);
 	}
 
 	// Drawing stuff
-	//DrawCube();
+	// DrawCube();
+	TestPlane();
 
-	currentScene = &App->importer->myScene;
-	PrepareDrawScene(currentScene);
+	//currentScene = &App->importer->myScene;
+	//PrepareDrawScene(currentScene);
 	
 	// Projection matrix for
+
+	//CreateCheckerTex();
+
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	return ret;
@@ -150,10 +155,11 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	DrawScene();
+	//DrawScene();
+	//DMPlane();
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
-	//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 
 	//ImGui Render
 	App->ui->Render();
@@ -281,6 +287,87 @@ void ModuleRenderer3D::DrawCube()
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+
+}
+
+void ModuleRenderer3D::DMPlane()
+{
+	glLineWidth(2.0f);
+	glBegin(GL_TRIANGLES);
+
+	glTexCoord2f(0.0f, 0.f);       glVertex3f(-2.f, 1.f, 0.f);
+	glTexCoord2f(1.f, 0.f);        glVertex3f(2.f, 1.f, 0.f);
+	glTexCoord2f(0.f, 1.f);        glVertex3f(-2.f, 4.f, 0.f);
+
+	glTexCoord2f(0.f, 1.f);        glVertex3f(-2.f, 4.f, 0.f);
+	glTexCoord2f(1.f, 0.f);        glVertex3f(2.f, 1.f, 0.f);
+	glTexCoord2f(1.f, 1.f);        glVertex3f(2.f, 4.f, 0.f);
+
+	glEnd();
+	glFlush();
+}
+
+void ModuleRenderer3D::TestPlane()
+{
+	GLfloat vertices[] = { 0.0f,0.0f,0.0f, 0.0f,0.0f,    // 0
+						   1.0f,0.0f,0.0f, 1.0f,0.0f,    // 1
+						   1.0f,1.0f,0.0f, 1.0f,1.0f,    // 2
+						   0.0f,1.0f,0.0f, 0.0f,1.0f };  // 3  
+
+	GLushort indices[] = { 0,1,2,
+						   0,2,3};
+
+	GLfloat textCoords[] = { 0.0f,0.0f,
+		                     1.0f,0.0f,
+		                     1.0f,1.0f,
+	                         0.0f,1.0f};
+
+	glGenBuffers(1, &vertex_Buffer);
+	glGenBuffers(1, &indices_Buffer);
+	//glGenBuffers(1, &texture_Buffer);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_Buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+	/*glBindBuffer(GL_TEXTURE_BUFFER, texture_Buffer);
+	glBufferData(GL_TEXTURE_BUFFER, sizeof(textCoords), textCoords, GL_STATIC_DRAW);*/
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)(sizeof(float)*3));
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+}
+
+void ModuleRenderer3D::CreateCheckerTex()
+{
+	GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
+	for (int i = 0; i < CHECKERS_HEIGHT; i++) {
+		for (int j = 0; j < CHECKERS_WIDTH; j++) {
+			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
+			checkerImage[i][j][0] = (GLubyte)c;
+			checkerImage[i][j][1] = (GLubyte)c;
+			checkerImage[i][j][2] = (GLubyte)c;
+			checkerImage[i][j][3] = (GLubyte)255;
+		}
+	}
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &checker_Buffer);
+	glBindTexture(GL_TEXTURE_2D, checker_Buffer);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
+
 }
 
 
