@@ -46,10 +46,11 @@ public:
 	void DMPlane();
 	void TestPlane();
 	void CreateCheckerTex();
+	void BindCheckerTex();
 
 	uint vertex_Buffer;
 	uint indices_Buffer;
-	uint texture_Buffer;
+	uint texCoords_Buffer;
 	uint checker_Buffer;
 
     bool vsync = true;

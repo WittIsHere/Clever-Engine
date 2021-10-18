@@ -123,7 +123,7 @@ bool ModuleRenderer3D::Init()
 	
 	// Projection matrix for
 
-	//CreateCheckerTex();
+	CreateCheckerTex();
 
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -158,8 +158,27 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	//DrawScene();
 	//DMPlane();
 
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	//vertices
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_Buffer);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	//textures
+	glBindBuffer(GL_ARRAY_BUFFER, texCoords_Buffer);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
+	//indices
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
+
+	BindCheckerTex();
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	//ImGui Render
 	App->ui->Render();
@@ -310,37 +329,37 @@ void ModuleRenderer3D::DMPlane()
 
 void ModuleRenderer3D::TestPlane()
 {
-	GLfloat vertices[] = { 0.0f,0.0f,0.0f, 0.0f,0.0f,    // 0
-						   1.0f,0.0f,0.0f, 1.0f,0.0f,    // 1
-						   1.0f,1.0f,0.0f, 1.0f,1.0f,    // 2
-						   0.0f,1.0f,0.0f, 0.0f,1.0f };  // 3  
-
-	GLushort indices[] = { 0,1,2,
-						   0,2,3};
+	GLfloat vertices[] = { 0.0f,0.0f,0.0f,			//0.0f,0.0f,    // 0
+						   1.0f,0.0f,0.0f,			//1.0f,0.0f,    // 1
+						   1.0f,1.0f,0.0f,			//1.0f,1.0f,    // 2
+						   0.0f,1.0f,0.0f, };		//0.0f,1.0f };  // 3  
 
 	GLfloat textCoords[] = { 0.0f,0.0f,
 		                     1.0f,0.0f,
 		                     1.0f,1.0f,
 	                         0.0f,1.0f};
 
+	GLushort indices[] = { 0,1,2,
+						   0,2,3};
+
+
 	glGenBuffers(1, &vertex_Buffer);
+	glGenBuffers(1, &texCoords_Buffer);
 	glGenBuffers(1, &indices_Buffer);
-	//glGenBuffers(1, &texture_Buffer);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_Buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 4, vertices, GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	/*glBindBuffer(GL_TEXTURE_BUFFER, texture_Buffer);
-	glBufferData(GL_TEXTURE_BUFFER, sizeof(textCoords), textCoords, GL_STATIC_DRAW);*/
-
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)(sizeof(float)*3));
+	glBindBuffer(GL_ARRAY_BUFFER, texCoords_Buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float)* 2* 4, textCoords, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void ModuleRenderer3D::CreateCheckerTex()
@@ -367,7 +386,14 @@ void ModuleRenderer3D::CreateCheckerTex()
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT,
 		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
+	
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
 
+void ModuleRenderer3D::BindCheckerTex()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, checker_Buffer);
 }
 
 
