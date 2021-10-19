@@ -48,14 +48,16 @@ public:
 	void CreateCheckerTex();
 	void BindCheckerTex();
 
-	uint vertex_Buffer;
-	uint indices_Buffer;
-	uint texCoords_Buffer;
 	uint checker_Buffer;
+	bool defaultTexture = false;
 
     bool vsync = true;
 
 private:
-
 	SceneData* currentScene = nullptr;
+
+	//test meshes buffers
+	uint vertex_Buffer;
+	uint indices_Buffer;
+	uint texCoords_Buffer;
 };

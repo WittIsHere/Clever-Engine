@@ -30,7 +30,7 @@ bool ModuleImporter::Init()
 	LOG("Importing scene test");
 
 	const char* warriorPath = ("Assets/Models/warrior.FBX");
-	//ImportScene(warriorPath);
+	ImportScene(warriorPath);
 
 	return ret;
 }
@@ -75,18 +75,20 @@ void ModuleImporter::ImportScene(const char* file_path)
 
 void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 {
-	// Copying vertex
-	myMesh->num_vertex = mesh->mNumVertices;
-	myMesh->vertex = new float[myMesh->num_vertex * 3];
-	memcpy(myMesh->vertex, mesh->mVertices, sizeof(float) * myMesh->num_vertex * 3);
+	// Copying number of vertices
+	myMesh->vertexCount = mesh->mNumVertices;
 
-	LOG("New mesh with %d vertices", myMesh->num_vertex);
+	// Copying vertex positions
+	myMesh->vPosData = new float[myMesh->vertexCount * 3];
+	memcpy(myMesh->vPosData, mesh->mVertices, sizeof(float) * myMesh->vertexCount * 3);
+
+	LOG("New mesh with %d vertices", myMesh->vertexCount);
 
 	// Copying faces
 	if (mesh->HasFaces())
 	{
-		myMesh->num_index = mesh->mNumFaces * 3;
-		myMesh->index = new uint[myMesh->num_index];
+		myMesh->indicesCount = mesh->mNumFaces * 3;
+		myMesh->indicesData = new uint[myMesh->indicesCount];
 
 		for (uint i = 0; i < mesh->mNumFaces; i++)
 		{
@@ -95,8 +97,44 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 				LOG("Warning, geometry face with != indices!");
 			}
 			else
-				memcpy(&myMesh->index[i * 3], mesh->mFaces[i].mIndices, 3 * sizeof(uint));
+			{
+				memcpy(&myMesh->indicesData[i * 3], mesh->mFaces[i].mIndices, 3 * sizeof(uint));
+			}
 		}
 	}
+
+	// Copying Texture coordinates
+	if (mesh->mTextureCoords)
+	{
+		myMesh->vTexCoordsData = new float[myMesh->vertexCount * 2];
+
+		for (uint i = 0; i < myMesh->vertexCount; i++)
+		{
+			if (mesh->mTextureCoords[i] != nullptr)
+			{
+				myMesh->vTexCoordsData[(i*2)] = mesh->mTextureCoords[i]->x;
+				myMesh->vTexCoordsData[(i*2) + 1] = mesh->mTextureCoords[i]->y;
+			}
+		}
+	}
+	else
+	{
+		LOG("Warning, No texture coordinates found");
+	}
+
+	// Copying Normals
+	//if (mesh->HasNormals())
+	//{
+	//	myMesh->vNormData = new float[myMesh->vertexCount * 3];
+
+	//	for (uint i = 0; i < myMesh->vertexCount; i++)
+	//	{
+	//		memcpy(&myMesh->vNormData[i * 3], mesh->mNormals[i], 3 * sizeof(float));
+	//	}
+	//}
+	//else
+	//{
+	//	LOG("Warning, No texture coordinates found");
+	//}
 }
 

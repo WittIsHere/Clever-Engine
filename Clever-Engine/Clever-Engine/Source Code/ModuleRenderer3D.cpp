@@ -114,15 +114,17 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_TEXTURE_2D);
 	}
 
-	// Drawing stuff
+	defaultTexture = true;
+
+	// Test meshes -------
 	// DrawCube();
-	TestPlane();
+	//TestPlane();
 
-	//currentScene = &App->importer->myScene;
-	//PrepareDrawScene(currentScene);
+	// Import Scene -------
+	currentScene = &App->importer->myScene;
+	PrepareDrawScene(currentScene);
 	
-	// Projection matrix for
-
+	// Create (not bind) checker texture
 	CreateCheckerTex();
 
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -155,30 +157,17 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	//DrawScene();
-	//DMPlane();
+	static bool emptyScene = false; //TODO: FIX THIS
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	//vertices
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_Buffer);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-	//textures
-	glBindBuffer(GL_ARRAY_BUFFER, texCoords_Buffer);
-	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-
-	//indices
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
-
-	BindCheckerTex();
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	if (currentScene == nullptr)
+	{
+		emptyScene = true;
+		//LOG("Error: Empty Scene");
+	}
+	if(!emptyScene)
+	{
+		DrawScene();
+	}
 
 	//ImGui Render
 	App->ui->Render();
@@ -232,6 +221,12 @@ uint* ModuleRenderer3D::GetOpenGLVersion() const
 
 void ModuleRenderer3D::PrepareDrawScene(SceneData* scene)
 {
+	if (scene == nullptr)
+	{
+		LOG("ERROR: Scene is null");
+		return;
+	}
+
 	for (int i = 0; i < scene->myMeshes.size(); i++)
 	{
 		PrepareDrawMesh(scene->myMeshes[i]);
@@ -240,22 +235,28 @@ void ModuleRenderer3D::PrepareDrawScene(SceneData* scene)
 
 void ModuleRenderer3D::PrepareDrawMesh(MeshData* mesh)
 {
-	glGenBuffers(1, &mesh->id_vertex);
-	glGenBuffers(1, &mesh->id_index);
+	glGenBuffers(1, &mesh->vPosID);
+	glGenBuffers(1, &mesh->indicesID);
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->num_vertex * 3, mesh->vertex, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vPosID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->vertexCount * 3, mesh->vPosData, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->num_index, mesh->index, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indicesID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->indicesCount, mesh->indicesData, GL_STATIC_DRAW);
 
 }
 
 void ModuleRenderer3D::DrawScene()
 {
+	if (currentScene->myMeshes.size() == 0)
+	{
+		LOG("ERROR: meshes array is empty");
+		return;
+	}
+
 	for (int i = 0; i < currentScene->myMeshes.size(); i++)
 	{
 		DrawMesh(currentScene->myMeshes[i]);
@@ -264,11 +265,48 @@ void ModuleRenderer3D::DrawScene()
 
 void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->id_vertex);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->id_index);
+	//vertices
+	if (mesh->vPosID != 0)
+	{
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->vPosID);
+		glVertexPointer(3, GL_FLOAT, 0, NULL);
+	}
+	else
+		LOG("INFO: vertex positions buffer ID not found");
 
-	glDrawElements(GL_TRIANGLES, mesh->num_index, GL_UNSIGNED_INT, 0);
+	//textures
+	if (mesh->vTexCoordsID != 0)
+	{
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->vTexCoordsID);
+		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+	}
+	else
+	{
+		LOG("INFO: texture coords buffer ID not found");
+	}
+
+	//indices
+	if (mesh->indicesID != 0)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indicesID);
+	}
+	else
+	{
+		LOG("INFO: indices buffer ID not found");
+	}
+
+	if (defaultTexture)
+		BindCheckerTex();
+
+	glDrawElements(GL_TRIANGLES, mesh->indicesCount, GL_UNSIGNED_INT, 0);
+	
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
+
 
 void ModuleRenderer3D::DrawCube()
 {
