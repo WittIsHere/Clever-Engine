@@ -29,7 +29,7 @@ bool ModuleImporter::Init()
 
 	LOG("Importing scene test");
 
-	const char* warriorPath = ("Assets/Models/warrior.FBX");
+	const char* warriorPath = ("Assets/Models/BakerHouse.FBX");
 	ImportScene(warriorPath);
 
 	return ret;
@@ -104,17 +104,14 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 	}
 
 	// Copying Texture coordinates
-	if (mesh->mTextureCoords)
+	if (mesh->mTextureCoords != NULL)
 	{
 		myMesh->vTexCoordsData = new float[myMesh->vertexCount * 2];
 
 		for (uint i = 0; i < myMesh->vertexCount; i++)
 		{
-			if (mesh->mTextureCoords[i] != nullptr)
-			{
-				myMesh->vTexCoordsData[(i*2)] = mesh->mTextureCoords[i]->x;
-				myMesh->vTexCoordsData[(i*2) + 1] = mesh->mTextureCoords[i]->y;
-			}
+				myMesh->vTexCoordsData[i*2] = mesh->mTextureCoords[0][i].x;
+				myMesh->vTexCoordsData[(i*2)+1] = mesh->mTextureCoords[0][i].y;
 		}
 	}
 	else

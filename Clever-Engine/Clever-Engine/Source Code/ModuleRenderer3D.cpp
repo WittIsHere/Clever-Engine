@@ -236,16 +236,22 @@ void ModuleRenderer3D::PrepareDrawScene(SceneData* scene)
 void ModuleRenderer3D::PrepareDrawMesh(MeshData* mesh)
 {
 	glGenBuffers(1, &mesh->vPosID);
+	glGenBuffers(1, &mesh->vTexCoordsID);
 	glGenBuffers(1, &mesh->indicesID);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vPosID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->vertexCount * 3, mesh->vPosData, GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vTexCoordsID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * mesh->vertexCount, mesh->vTexCoordsData, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indicesID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->indicesCount, mesh->indicesData, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint)*mesh->indicesCount, mesh->indicesData, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 }
 
@@ -276,16 +282,10 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 		LOG("INFO: vertex positions buffer ID not found");
 
 	//textures
-	if (mesh->vTexCoordsID != 0)
-	{
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->vTexCoordsID);
-		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-	}
-	else
-	{
-		LOG("INFO: texture coords buffer ID not found");
-	}
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vTexCoordsID);
+	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
 
 	//indices
 	if (mesh->indicesID != 0)
@@ -306,7 +306,6 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
-
 
 void ModuleRenderer3D::DrawCube()
 {
