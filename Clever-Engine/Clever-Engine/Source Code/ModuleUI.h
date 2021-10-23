@@ -18,8 +18,8 @@ public:
 	bool CleanUp();
 
 private:
-	void DrawConsoleSpace(bool active);
-	void DrawConfigurationSpace(bool active);
+	void DrawConsoleSpace(bool* active);
+	void DrawConfigurationSpace(bool* active);
 
 	void ShowDockingDisabledMessage();
 

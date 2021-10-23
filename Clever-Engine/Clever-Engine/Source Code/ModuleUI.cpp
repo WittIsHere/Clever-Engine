@@ -197,15 +197,10 @@ update_status ModuleUI::Update(float dt)
 
     if (showDemoWindow)
         ImGui::ShowDemoWindow(&showDemoWindow);
-    {
-        ImGui::Begin("DEMO");
-        ImGui::Checkbox("Demo Window", &showDemoWindow);
-        ImGui::End();
-    }
 
     //draw windows
-    DrawConsoleSpace(activeConsole);
-    DrawConfigurationSpace(activeConfiguration);
+    DrawConsoleSpace(&activeConsole);
+    DrawConfigurationSpace(&activeConfiguration);
 
     return UPDATE_CONTINUE;
 }
@@ -247,24 +242,27 @@ bool ModuleUI::CleanUp()
 	return true;
 }
 
-void ModuleUI::DrawConsoleSpace(bool active)
+void ModuleUI::DrawConsoleSpace(bool* active)
 {
-    if (!active)
+    if (*active == false)
         return;
-    if (ImGui::Begin("Console", &active))
+
+    if (!ImGui::Begin("Console", active))
     {
+        ImGui::End();
+        return;
+    }
+    {//console space
         for (uint i = 0; i < buffer.size(); i++)
         {
             const char* item = buffer[i];
             ImGui::TextUnformatted(item);
         }
-
         if (scrollToBottom)
         {
             ImGui::SetScrollHere(1.0f);
             scrollToBottom = false;
         }
-
     }
     ImGui::End();
 }
@@ -275,13 +273,17 @@ void ModuleUI::ConsoleLog(const char* text)
     scrollToBottom = true;
 }
 
-void ModuleUI::DrawConfigurationSpace(bool active)
+void ModuleUI::DrawConfigurationSpace(bool* active)
 {
-    if (!active)
+    if (*active == false)
         return;
 
-    if (ImGui::Begin("Configuration", &active))
+    if (!ImGui::Begin("Configuration", active))
     {
+        ImGui::End();
+        return;
+    }
+    {//configuration space
         if (ImGui::CollapsingHeader("Application"))
         {
             char appName[100];
@@ -336,91 +338,95 @@ void ModuleUI::DrawConfigurationSpace(bool active)
             ImGui::Text("Accumulated Alloc Unit Count: %u", stats.accumulatedAllocUnitCount);
             ImGui::Text("Total Alloc Unit Count: %u", stats.totalAllocUnitCount);
             ImGui::Text("Peak Alloc Unit Count: %u", stats.peakAllocUnitCount);
+            */
+        }
 
-        }*/
-            if (ImGui::CollapsingHeader("Render"))
+        if (ImGui::CollapsingHeader("Render"))
+        {
+            //DEPTH BUFFER
+           /* if (ImGui::Checkbox("Depth Buffer", &App->renderer3D->depthEnabled))
             {
-                //DEPTH BUFFER
-               /* if (ImGui::Checkbox("Depth Buffer", &App->renderer3D->depthEnabled))
-                {
-                    App->renderer3D->SetDepthBufferEnabled();
-                }*/
-                //if (ImGui::Checkbox("Wireframe Mode", &App->renderer3D->wireframeMode)) {}
+                App->renderer3D->SetDepthBufferEnabled();
+            }*/
+            //if (ImGui::Checkbox("Wireframe Mode", &App->renderer3D->wireframeMode)) {}
 
-                bool vsync = App->renderer3D->GetVSync();
-                if (ImGui::Checkbox("Vertical Sync", &vsync))
-                {
-                    changeFPSlimit = true;
-                    App->renderer3D->SetVSync(vsync);
-                }
-            }
-            if (ImGui::CollapsingHeader("Input"))
+            bool vsync = App->renderer3D->GetVSync();
+            if (ImGui::Checkbox("Vertical Sync", &vsync))
             {
-                ImGui::Text("Mouse position: %i, %i", App->input->GetMouseX(), App->input->GetMouseY());
-                ImGui::Text("Mouse motion: %i, %i", App->input->GetMouseXMotion(), App->input->GetMouseYMotion());
-                ImGui::Text("Mouse wheel: %i", App->input->GetMouseZ());
-            }
-            if (ImGui::CollapsingHeader("Window"))
-            {
-                int w = App->window->GetWidth();
-                int h = App->window->GetHeight();
-                if (ImGui::SliderInt("Width", &w, 0, 1920)) { App->window->SetWidth(w); }
-                if (ImGui::SliderInt("Height", &h, 0, 1080)) { App->window->SetHeight(h); }
-
-                bool fullscreen = App->window->IsFullscreen();
-                bool resizable = App->window->IsResizable();
-                bool borderless = App->window->IsBorderless();
-                bool full_desktop = App->window->IsFullscreenDesktop();
-
-                if (ImGui::Checkbox("Fullscreen", &fullscreen))
-                {
-                    //App->window->SetFullscreen(fullscreen);			//Doesn't work properly
-                }
-
-                ImGui::SameLine();
-                if (ImGui::Checkbox("Fullscreen Desktop", &full_desktop))
-                {
-                    App->window->SetFullscreenDesktop(full_desktop);
-                }
-
-                if (ImGui::Checkbox("Resizable ", &resizable))
-                {
-                    App->window->SetResizable(resizable); 
-                }
-                if (ImGui::IsItemHovered())
-                { 
-                    ImGui::SetTooltip("Must restart to apply");
-                }
-
-                ImGui::SameLine();
-                if (ImGui::Checkbox("Borderless", &borderless))
-                {
-                    App->window->SetBorderless(borderless);
-                }
-
-            }
-            if (ImGui::CollapsingHeader("Software"))
-            {
-                ImGui::Text("ImGui Version:");
-                ImGui::SameLine();
-                ImGui::TextColored(YELLOW, "%s", IMGUI_VERSION);
-
-                SDL_version sdl_version;
-                SDL_GetVersion(&sdl_version);
-                ImGui::Text("SDL Version:");
-                ImGui::SameLine();
-                ImGui::TextColored(YELLOW, "%d.%d.%d", sdl_version.major, sdl_version.minor, sdl_version.patch);
-
-                ImGui::Text("OpenGL Version:");
-                ImGui::SameLine();
-                ImGui::TextColored(YELLOW, "%s", App->renderer3D->GetOpenGLVersion());
-
-                ImGui::Text("DevIL Version:");
-                ImGui::SameLine();
-                ImGui::TextColored(YELLOW, "%s", IMGUI_VERSION);		//change ImGui for Devil
+                changeFPSlimit = true;
+                App->renderer3D->SetVSync(vsync);
             }
         }
-    };
+        if (ImGui::CollapsingHeader("Input"))
+        {
+            ImGui::Text("Mouse position: %i, %i", App->input->GetMouseX(), App->input->GetMouseY());
+            ImGui::Text("Mouse motion: %i, %i", App->input->GetMouseXMotion(), App->input->GetMouseYMotion());
+            ImGui::Text("Mouse wheel: %i", App->input->GetMouseZ());
+        }
+        if (ImGui::CollapsingHeader("Window"))
+        {
+            int w = App->window->GetWidth();
+            int h = App->window->GetHeight();
+            if (ImGui::SliderInt("Width", &w, 0, 1920)) { App->window->SetWidth(w); }
+            if (ImGui::SliderInt("Height", &h, 0, 1080)) { App->window->SetHeight(h); }
+
+            bool fullscreen = App->window->IsFullscreen();
+            bool resizable = App->window->IsResizable();
+            bool borderless = App->window->IsBorderless();
+            bool full_desktop = App->window->IsFullscreenDesktop();
+
+            if (ImGui::Checkbox("Fullscreen", &fullscreen))
+            {
+                //App->window->SetFullscreen(fullscreen);			//Doesn't work properly
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Checkbox("Fullscreen Desktop", &full_desktop))
+            {
+                App->window->SetFullscreenDesktop(full_desktop);
+            }
+
+            if (ImGui::Checkbox("Resizable ", &resizable))
+            {
+                App->window->SetResizable(resizable);
+            }
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::SetTooltip("Must restart to apply");
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Checkbox("Borderless", &borderless))
+            {
+                App->window->SetBorderless(borderless);
+            }
+
+        }
+        if (ImGui::CollapsingHeader("Software"))
+        {
+            ImGui::Text("ImGui Version:");
+            ImGui::SameLine();
+            ImGui::TextColored(YELLOW, "%s", IMGUI_VERSION);
+
+            SDL_version sdl_version;
+            SDL_GetVersion(&sdl_version);
+            ImGui::Text("SDL Version:");
+            ImGui::SameLine();
+            ImGui::TextColored(YELLOW, "%d.%d.%d", sdl_version.major, sdl_version.minor, sdl_version.patch);
+
+            ImGui::Text("OpenGL Version:");
+            ImGui::SameLine();
+            ImGui::TextColored(YELLOW, "%s", App->renderer3D->GetOpenGLVersion());
+
+            ImGui::Text("DevIL Version:");
+            ImGui::SameLine();
+            ImGui::TextColored(YELLOW, "%s", IMGUI_VERSION);		//change ImGui for Devil
+        }
+    }
+    if (ImGui::CollapsingHeader("ImGui Demo"))
+    {
+        ImGui::Checkbox("Demo Window", &showDemoWindow);
+    }
     ImGui::End();
 }
 
