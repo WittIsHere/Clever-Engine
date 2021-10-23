@@ -414,6 +414,9 @@
     <ClInclude Include="Source Code\ModuleImporter.h">
       <Filter>Source Code\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\Mesh.h">
+      <Filter>Source Code\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">

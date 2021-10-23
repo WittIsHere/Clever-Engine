@@ -1,11 +1,18 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleImporter.h"
+#include "Mesh.h"
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
+
+#pragma comment( lib, "Devil/libx86/DevIL.lib" )
+#include "Devil\include\ilu.h"
+#pragma comment( lib, "Devil/libx86/ILU.lib" )
+#include "Devil\include\ilut.h"
+#pragma comment( lib, "Devil/libx86/ILUT.lib" )
 
 ModuleImporter::ModuleImporter(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -22,6 +29,11 @@ bool ModuleImporter::Init()
 	LOG("Init Module Imput");
 	bool ret = true;
 	
+	ilInit();
+	iluInit();
+	ilutInit();
+	ilutRenderer(ILUT_OPENGL);
+
 	// Stream log messages to Debug window
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
@@ -29,8 +41,9 @@ bool ModuleImporter::Init()
 
 	LOG("Importing scene test");
 
-	const char* warriorPath = ("Assets/Models/BakerHouse.FBX");
-	ImportScene(warriorPath);
+	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
+	textPath = ("Assets/Textures/Baker_house.PNG");
+	ImportScene(fbxPath);
 
 	return ret;
 }
@@ -56,20 +69,25 @@ bool ModuleImporter::CleanUp()
 void ModuleImporter::ImportScene(const char* file_path)
 {
 	const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
-	if (aiScene != nullptr && aiScene-> HasMeshes())
+	if (aiScene != nullptr)
 	{
-		// Use scene->mNumMeshes to iterate on scene->mMeshes array
-		for (int i = 0; i < aiScene->mNumMeshes; i++)
+		if (aiScene->HasMeshes())
 		{
-			MeshData* tempMesh = new MeshData;
-			myScene.myMeshes.push_back(tempMesh);
-			ImportMesh(aiScene->mMeshes[i], myScene.myMeshes[i]);
+			// Use scene->mNumMeshes to iterate on scene->mMeshes array
+			for (int i = 0; i < aiScene->mNumMeshes; i++)
+			{
+				MeshData* tempMesh = new MeshData;
+				myScene.myMeshes.push_back(tempMesh);
+				ImportMesh(aiScene->mMeshes[i], myScene.myMeshes[i]);
+				LoadTextureFromPath(textPath, myScene.myMeshes[i]);
+			}
 		}
+		else
+		{
+			LOG("Error loading meshes, scene % s", file_path);
+		}
+
 		aiReleaseImport(aiScene);
-	}
-	else
-	{
-		LOG("Error loading scene % s", file_path);
 	}
 }
 
@@ -135,3 +153,48 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 	//}
 }
 
+bool ModuleImporter::LoadTextureFromPath(const char* path, MeshData* myMesh)
+{
+	uint tex = 0;
+	uint id_img = 0;
+
+	if (path != nullptr)
+	{
+		ilGenImages(1, (ILuint*)&id_img);
+		ilBindImage(id_img);
+
+		if (ilLoadImage(path))
+		{
+			if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
+			{
+				myMesh->textureData = FillTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_FORMAT), path);
+			}
+			else LOG("ERROR: Failed converting image: %s", iluErrorString(ilGetError()));
+		}
+		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
+	}
+	else LOG("ERROR: Failed loading image from path: %s", path);
+
+	return tex;
+}
+
+
+uint ModuleImporter::FillTexture(const void* text, uint width, uint height, int format, uint format2, const char* path)
+{
+	uint tex = 0;
+
+	glGenTextures(1, (GLuint*)&tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format2, GL_UNSIGNED_BYTE, text);
+	//glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return tex;
+}

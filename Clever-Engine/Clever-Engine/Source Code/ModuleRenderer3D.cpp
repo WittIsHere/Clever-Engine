@@ -3,6 +3,7 @@
 #include "ModuleRenderer3D.h"
 #include "Primitive.h"
 #include "ModuleImporter.h"
+#include "Mesh.h"
 
 #include "OpenGl.h"
 
@@ -297,8 +298,14 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 		LOG("INFO: indices buffer ID not found");
 	}
 
-	if (defaultTexture)
-		BindCheckerTex();
+	/*if (defaultTexture)
+		BindCheckerTex();*/
+
+	if (mesh->textureData != 0)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, (GLuint)mesh->textureData);
+	}
 
 	glDrawElements(GL_TRIANGLES, mesh->indicesCount, GL_UNSIGNED_INT, 0);
 	

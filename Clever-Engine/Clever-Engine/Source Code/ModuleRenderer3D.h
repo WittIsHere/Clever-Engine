@@ -5,8 +5,8 @@
 #include "Light.h"
 
 #define MAX_LIGHTS 8
-#define CHECKERS_HEIGHT 124
-#define CHECKERS_WIDTH 124
+#define CHECKERS_HEIGHT 128
+#define CHECKERS_WIDTH 128
 
 struct SceneData;
 struct MeshData;
