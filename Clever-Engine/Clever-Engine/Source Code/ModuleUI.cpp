@@ -102,7 +102,7 @@ update_status ModuleUI::Update(float dt)
         ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
         
-        if (ImGui::BeginMainMenuBar())
+        if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File"))
             {
@@ -190,7 +190,6 @@ update_status ModuleUI::Update(float dt)
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
-            ImGui::End();
         }
 
         ImGui::End();
