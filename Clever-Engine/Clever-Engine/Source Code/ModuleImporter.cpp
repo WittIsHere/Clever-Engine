@@ -39,13 +39,19 @@ bool ModuleImporter::Init()
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
 	aiAttachLogStream(&stream);
 
+	return ret;
+}
+
+bool ModuleImporter::Start()
+{
 	LOG("Importing scene test");
 
 	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
 	textPath = ("Assets/Textures/Baker_house.PNG");
 	ImportScene(fbxPath);
+	App->renderer3D->houseTexture_Buffer = LoadTextureFromPath("Assets/Textures/Baker_house.PNG");
 
-	return ret;
+	return true;
 }
 
 update_status ModuleImporter::PreUpdate(float dt)
@@ -79,7 +85,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 				MeshData* tempMesh = new MeshData;
 				myScene.myMeshes.push_back(tempMesh);
 				ImportMesh(aiScene->mMeshes[i], myScene.myMeshes[i]);
-				LoadTextureFromPath(textPath, myScene.myMeshes[i]);
+				LoadTextureFromPathAndFill(textPath, myScene.myMeshes[i]);
 			}
 		}
 		else
@@ -153,9 +159,8 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 	//}
 }
 
-bool ModuleImporter::LoadTextureFromPath(const char* path, MeshData* myMesh)
+void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMesh)
 {
-	uint tex = 0;
 	uint id_img = 0;
 
 	if (path != nullptr)
@@ -167,7 +172,7 @@ bool ModuleImporter::LoadTextureFromPath(const char* path, MeshData* myMesh)
 		{
 			if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
 			{
-				myMesh->textureData = FillTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_FORMAT), path);
+				myMesh->textureID = App->renderer3D->FillTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_FORMAT), path);
 			}
 			else LOG("ERROR: Failed converting image: %s", iluErrorString(ilGetError()));
 		}
@@ -175,26 +180,30 @@ bool ModuleImporter::LoadTextureFromPath(const char* path, MeshData* myMesh)
 	}
 	else LOG("ERROR: Failed loading image from path: %s", path);
 
-	return tex;
 }
 
-
-uint ModuleImporter::FillTexture(const void* text, uint width, uint height, int format, uint format2, const char* path)
+uint ModuleImporter::LoadTextureFromPath(const char* path)
 {
-	uint tex = 0;
+	uint textureBuffer = 0;
+	uint id_img = 0;
 
-	glGenTextures(1, (GLuint*)&tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
+	if (path != nullptr)
+	{
+		ilGenImages(1, (ILuint*)&id_img);
+		ilBindImage(id_img);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		if (ilLoadImage(path))
+		{
+			if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
+			{
+				textureBuffer = App->renderer3D->FillTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_FORMAT), path);
+			}
+			else LOG("ERROR: Failed converting image: %s", iluErrorString(ilGetError()));
+		}
+		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
+	}
+	else LOG("ERROR: Failed loading image from path: %s", path);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format2, GL_UNSIGNED_BYTE, text);
-	//glGenerateMipmap(GL_TEXTURE_2D);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	return tex;
+	return textureBuffer;
 }
+

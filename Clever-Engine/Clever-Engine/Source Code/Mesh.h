@@ -15,5 +15,5 @@ struct MeshData
 	uint indicesCount = 0;				// Number of Indices
 	uint* indicesData = nullptr;		// Indices Array
 
-	uint textureData = 0;        // Texture array
+	uint textureID = 0;					// Texture ID
 };

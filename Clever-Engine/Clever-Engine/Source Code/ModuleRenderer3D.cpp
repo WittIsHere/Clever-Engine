@@ -120,17 +120,22 @@ bool ModuleRenderer3D::Init()
 	// Test meshes -------
 	// DrawCube();
 	//TestPlane();
-
-	// Import Scene -------
-	currentScene = &App->importer->myScene;
-	PrepareDrawScene(currentScene);
 	
 	// Create (not bind) checker texture
 	CreateCheckerTex();
-
+	
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	return ret;
+}
+
+bool ModuleRenderer3D::Start()
+{
+	// Import Scene -------
+	currentScene = &App->importer->myScene;
+	PrepareDrawScene(currentScene);
+
+	return true;
 }
 
 // PreUpdate: clear buffer
@@ -167,9 +172,16 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	}
 	if(!emptyScene)
 	{
-		DrawScene();
+		//DrawScene();
 	}
 
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, houseTexture_Buffer);
+
+	BindCheckerTex();
+	DMPlane();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 	//ImGui Render
 	App->ui->Render();
 
@@ -198,26 +210,6 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-}
-
-bool ModuleRenderer3D::GetVSync() const
-{
-	return vsync;
-}
-
-void ModuleRenderer3D::SetVSync(bool vsync)
-{
-	if (this->vsync != vsync)
-	{
-		this->vsync = vsync;
-		if (SDL_GL_SetSwapInterval(vsync ? 1 : 0) < 0)
-			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
-	}
-}
-
-uint* ModuleRenderer3D::GetOpenGLVersion() const
-{
-	return (uint*)glGetString(GL_VERSION);
 }
 
 void ModuleRenderer3D::PrepareDrawScene(SceneData* scene)
@@ -287,7 +279,6 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vTexCoordsID);
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
-
 	//indices
 	if (mesh->indicesID != 0)
 	{
@@ -298,15 +289,18 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 		LOG("INFO: indices buffer ID not found");
 	}
 
+	
 	/*if (defaultTexture)
 		BindCheckerTex();*/
 
-	if (mesh->textureData != 0)
+	if (mesh->textureID != 0)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glBindTexture(GL_TEXTURE_2D, (GLuint)mesh->textureData);
+		glBindTexture(GL_TEXTURE_2D, (GLuint)mesh->textureID);
 	}
 
+	PollErrors();
+	
 	glDrawElements(GL_TRIANGLES, mesh->indicesCount, GL_UNSIGNED_INT, 0);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -350,8 +344,6 @@ void ModuleRenderer3D::DrawCube()
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-
 }
 
 void ModuleRenderer3D::DMPlane()
@@ -440,4 +432,54 @@ void ModuleRenderer3D::BindCheckerTex()
 	glBindTexture(GL_TEXTURE_2D, checker_Buffer);
 }
 
+uint ModuleRenderer3D::FillTexture(const void* text, uint width, uint height, int format, uint format2, const char* path)
+{
+	uint tex = 0;
+
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format2, GL_UNSIGNED_BYTE, text);
+	//glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return tex;
+}
+
+bool ModuleRenderer3D::GetVSync() const
+{
+	return vsync;
+}
+
+void ModuleRenderer3D::SetVSync(bool vsync)
+{
+	if (this->vsync != vsync)
+	{
+		this->vsync = vsync;
+		if (SDL_GL_SetSwapInterval(vsync ? 1 : 0) < 0)
+			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+	}
+}
+
+uint* ModuleRenderer3D::GetOpenGLVersion() const
+{
+	return (uint*)glGetString(GL_VERSION);
+}
+
+void ModuleRenderer3D::PollErrors() //Poll and print to the console every openGl error
+{
+	GLenum error = glGetError(); 
+
+	while (error != GL_NO_ERROR)
+	{
+		LOG("OpenGL error found! %s\n", gluErrorString(error));
+		error = glGetError();
+	}
+}
 

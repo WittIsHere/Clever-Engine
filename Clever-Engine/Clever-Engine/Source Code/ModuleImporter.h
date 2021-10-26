@@ -21,18 +21,19 @@ public:
 	~ModuleImporter();
 
 	bool Init();
+	bool Start();
 	update_status PreUpdate(float dt);
 	bool CleanUp();
 
 	void ImportScene(const char* file_path);
 	void ImportMesh(aiMesh* mesh, MeshData* myMesh);
 
-	bool LoadTextureFromPath(const char* path, MeshData* myMesh);
-	uint FillTexture(const void* text, uint width, uint height, int format, uint format2, const char* path);
+	void LoadTextureFromPathAndFill(const char* path, MeshData* myMesh);
+	uint LoadTextureFromPath(const char* path);
 
 	SceneData myScene;
 
 private:
 	const char* textPath;
-
+	//const void* bakerHouseTexData = nullptr;
 };

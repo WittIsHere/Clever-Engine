@@ -18,6 +18,7 @@ public:
 	~ModuleRenderer3D();
 
 	bool Init();
+	bool Start();
 	update_status PreUpdate(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
@@ -29,6 +30,7 @@ public:
 	bool GetVSync() const;
 	void SetVSync(bool vsync);
 	uint* GetOpenGLVersion() const;
+	void PollErrors();
 
 private:
 	void PrepareDrawMesh(MeshData* mesh);
@@ -48,7 +50,10 @@ public:
 	void CreateCheckerTex();
 	void BindCheckerTex();
 
-	uint checker_Buffer;
+	uint FillTexture(const void* text, uint width, uint height, int format, uint format2, const char* path);
+
+	uint houseTexture_Buffer = 0;
+	uint checker_Buffer = 0;
 	bool defaultTexture = false;
 
     bool vsync = true;
