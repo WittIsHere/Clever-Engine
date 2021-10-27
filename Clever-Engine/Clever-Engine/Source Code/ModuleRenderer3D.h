@@ -31,6 +31,7 @@ public:
 	void SetVSync(bool vsync);
 	uint* GetOpenGLVersion() const;
 	void PollErrors();
+	//void PollErrors(const char* additionalString);
 
 private:
 	void PrepareDrawMesh(MeshData* mesh);

@@ -172,16 +172,19 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	}
 	if(!emptyScene)
 	{
-		//DrawScene();
+		DrawScene();
 	}
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
+
 	//glBindTexture(GL_TEXTURE_2D, houseTexture_Buffer);
+	////BindCheckerTex();
 
-	BindCheckerTex();
-	DMPlane();
+	//PollErrors();
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//DMPlane();
+
+	//glBindTexture(GL_TEXTURE_2D, 0);
 	//ImGui Render
 	App->ui->Render();
 
@@ -483,3 +486,13 @@ void ModuleRenderer3D::PollErrors() //Poll and print to the console every openGl
 	}
 }
 
+//void ModuleRenderer3D::PollErrors(const char* additionalString) //Poll and print to the console every openGl error
+//{
+//	GLenum error = glGetError();
+//
+//	while (error != GL_NO_ERROR)
+//	{
+//		LOG("OpenGL error found! %s\n", gluErrorString(error));
+//		error = glGetError();
+//	}
+//}
