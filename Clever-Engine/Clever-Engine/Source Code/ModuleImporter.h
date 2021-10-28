@@ -7,10 +7,12 @@
 
 struct aiMesh;
 struct MeshData;
+struct TextureData;
 
 struct SceneData
 {
 	std::vector<MeshData*> myMeshes; 
+	std::vector<TextureData*> myTextures;
 };
 
 class ModuleImporter : public Module

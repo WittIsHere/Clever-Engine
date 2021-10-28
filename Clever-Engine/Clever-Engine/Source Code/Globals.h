@@ -42,3 +42,6 @@ enum update_status
 #define WIN_BORDERLESS false
 #define WIN_FULLSCREEN_DESKTOP false
 #define WIN_PADDING false
+
+//Dirty assets folder path ----------
+#define ASSETS_PATH "Assets/Textures/"

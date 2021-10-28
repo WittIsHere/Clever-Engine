@@ -85,8 +85,22 @@ void ModuleImporter::ImportScene(const char* file_path)
 			{
 				MeshData* tempMesh = new MeshData;
 				myScene.myMeshes.push_back(tempMesh);
-				ImportMesh(aiScene->mMeshes[i], myScene.myMeshes[i]);
-				LoadTextureFromPathAndFill(textPath, myScene.myMeshes[i]);
+				aiMesh* currentAiMesh = aiScene->mMeshes[i];			
+
+				ImportMesh(currentAiMesh, tempMesh);
+
+				uint tempIndex = currentAiMesh->mMaterialIndex;
+				if (tempIndex >= 0)
+				{
+					aiMaterial* currentMaterial = aiScene->mMaterials[currentAiMesh->mMaterialIndex]; //access the mesh material using the mMaterialIndex
+					aiString texPath;
+					if (currentMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
+					{
+						std::string fullPath = ASSETS_PATH;
+						fullPath += texPath.C_Str();
+						LoadTextureFromPathAndFill(fullPath.c_str(), myScene.myMeshes[i]);
+					}
+				}
 			}
 		}
 		else
@@ -224,6 +238,7 @@ uint ModuleImporter::LoadTextureFromPath(const char* path)
 		ilBindImage(id_img);
 
 		error = ilGetError();
+
 		if (error)
 			LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
 

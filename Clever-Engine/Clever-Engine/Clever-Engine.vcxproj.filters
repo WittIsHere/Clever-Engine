@@ -417,6 +417,9 @@
     <ClInclude Include="Source Code\Mesh.h">
       <Filter>Source Code\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source Code\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">

@@ -1,3 +1,7 @@
+#pragma once
+
+#include "Globals.h"
+
 struct MeshData
 {
 	uint vertexCount = 0;				// Number of Vertex
