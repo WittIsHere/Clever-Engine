@@ -8,10 +8,9 @@
 #include "Assimp/include/postprocess.h"
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 
-
-#include "Devil/include/il.h"
+//#include "Devil/include/il.h"			// not necessary, ilut.h includes it
 #pragma comment( lib, "Devil/libx86/DevIL.lib" )
-#include "Devil/include/ilu.h"
+//#include "Devil/include/ilu.h"		// not necessary, ilut.h includes it
 #pragma comment( lib, "Devil/libx86/ILU.lib" )
 #include "Devil/include/ilut.h"
 #pragma comment( lib, "Devil/libx86/ILUT.lib" )
@@ -176,34 +175,42 @@ void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMe
 		if (error)
 			LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
 
-		if (ilLoad(IL_PNG, path))
+		if (ilLoad(IL_PNG, path)) //or ilLoadImage(path) which behaves the same
 		{
 			myMesh->textureID = ilutGLBindTexImage();
-
 		}
 		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
 
 		ilDeleteImages(1, &id_img); // Because we have already copied image data into texture data we can release memory used by image.
 	}
 	else LOG("ERROR: Failed loading image from path: %s", path);
-
-	//if (path != nullptr)
-	//{
-	//	ilGenImages(1, (ILuint*)&id_img);
-	//	ilBindImage(id_img);
-
-	//	if (ilLoadImage(path))
-	//	{
-	//		if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
-	//		{
-	//			myMesh->textureID = App->renderer3D->FillTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_FORMAT), path);
-	//		}
-	//		else LOG("ERROR: Failed converting image: %s", iluErrorString(ilGetError()));
-	//	}
-	//	else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
-	//}
-
 }
+
+//PREVIOUS TEXTURE LOADING METHOD ---------------
+// 
+//void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMesh)
+//{
+//	uint textureBuffer = 0;
+//	ILuint id_img = 0;
+//	ILenum error;
+//
+//	if (path != nullptr)
+//	{
+//		ilGenImages(1, (ILuint*)&id_img);
+//		ilBindImage(id_img);
+//
+//		if (ilLoadImage(path))
+//		{
+//			if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
+//			{
+//				myMesh->textureID = App->renderer3D->FillTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_FORMAT), path);
+//			}
+//			else LOG("ERROR: Failed converting image: %s", iluErrorString(ilGetError()));
+//		}
+//		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
+//	}
+//	else LOG("ERROR: Failed loading image from path: %s", path); 
+//}
 
 uint ModuleImporter::LoadTextureFromPath(const char* path)
 {
@@ -220,7 +227,7 @@ uint ModuleImporter::LoadTextureFromPath(const char* path)
 		if (error)
 			LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
 
-		if (ilLoad(IL_PNG, path))
+		if (ilLoad(IL_TYPE_UNKNOWN, path)) 
 		{
 			textureBuffer = ilutGLBindTexImage();
 
@@ -232,15 +239,3 @@ uint ModuleImporter::LoadTextureFromPath(const char* path)
 
 	return textureBuffer;
 }
-
-	/*if (ilLoadImage(path))
-{
-	if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
-	{
-		textureBuffer = App->renderer3D->FillTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_FORMAT), path);
-	}
-	else LOG("ERROR: Failed converting image: %s", iluErrorString(ilGetError()));
-}
-else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
-}
-else LOG("ERROR: Failed loading image from path: %s", path);*/
