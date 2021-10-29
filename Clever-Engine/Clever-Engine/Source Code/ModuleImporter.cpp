@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleImporter.h"
 #include "Mesh.h"
+#include "Texture.h"
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
@@ -48,7 +49,6 @@ bool ModuleImporter::Start()
 	LOG("Importing scene test");
 
 	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
-	textPath = ("Assets/Textures/Baker_house.PNG");
 	ImportScene(fbxPath);
 	App->renderer3D->houseTexture_Buffer = LoadTextureFromPath("Assets/Textures/Baker_house.PNG");
 
@@ -191,7 +191,19 @@ void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMe
 
 		if (ilLoad(IL_PNG, path)) //or ilLoadImage(path) which behaves the same
 		{
-			myMesh->textureID = ilutGLBindTexImage();
+			uint tempTextureID = ilutGLBindTexImage();	//bind texture to openGL and get the ID
+		
+			error = ilGetError();
+			if (error)
+				LOG("ERROR: Failed binding the DevIL Texture with OpenGl: %s", iluErrorString(error));
+
+			TextureData* texData = new TextureData;
+			myScene.myTextures.push_back(texData);	//Add a new texture to the textures array
+
+			texData->path = path;	//assign the new texture its path
+			texData->textureID = tempTextureID;	//assign the new texture its ID
+
+			myMesh->texture = texData;	
 		}
 		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
 

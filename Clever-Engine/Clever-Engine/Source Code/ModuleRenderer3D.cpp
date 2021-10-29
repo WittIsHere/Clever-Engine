@@ -4,6 +4,7 @@
 #include "Primitive.h"
 #include "ModuleImporter.h"
 #include "Mesh.h"
+#include "Texture.h"
 
 #include "OpenGl.h"
 
@@ -296,10 +297,10 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 	/*if (defaultTexture)
 		BindCheckerTex();*/
 
-	if (mesh->textureID != 0)
+	if (mesh->texture->textureID != 0)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glBindTexture(GL_TEXTURE_2D, (GLuint)mesh->textureID);
+		glBindTexture(GL_TEXTURE_2D, (GLuint)mesh->texture->textureID);
 	}
 
 	PollErrors();

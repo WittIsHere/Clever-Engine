@@ -2,6 +2,8 @@
 
 #include "Globals.h"
 
+struct TextureData;
+
 struct MeshData
 {
 	uint vertexCount = 0;				// Number of Vertex
@@ -19,5 +21,5 @@ struct MeshData
 	uint indicesCount = 0;				// Number of Indices
 	uint* indicesData = nullptr;		// Indices Array
 
-	uint textureID = 0;					// Texture ID
+	TextureData* texture = 0;			// Pointer to acess the texture inside myTexures() vector
 };
