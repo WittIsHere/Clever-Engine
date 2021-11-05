@@ -1,12 +1,12 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "Mesh.h"
 
 
 #include <vector>
 
 struct aiMesh;
-struct MeshData;
 struct TextureData;
 
 struct SceneData

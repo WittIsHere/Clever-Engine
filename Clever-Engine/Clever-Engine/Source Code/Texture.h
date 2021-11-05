@@ -2,6 +2,8 @@
 
 #include "Globals.h"
 
+class MeshData;
+
 struct TextureData
 {
 	const char* path;

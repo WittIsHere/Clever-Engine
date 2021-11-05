@@ -1,11 +1,22 @@
 #pragma once
 
 #include "Globals.h"
+#include "Component.h"
 
 struct TextureData;
 
-struct MeshData
+class MeshData : public Component
 {
+public:
+	MeshData();
+	~MeshData();
+
+	bool Enable();
+	bool Update();
+	bool Disable();
+
+
+public:
 	uint vertexCount = 0;				// Number of Vertex
 
 	uint vPosID = 0;					// Vertex Positions Buffer ID

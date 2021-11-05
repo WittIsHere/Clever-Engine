@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="Source Code\Application.cpp" />
     <ClCompile Include="Source Code\Color.cpp" />
+    <ClCompile Include="Source Code\Component.cpp" />
     <ClCompile Include="Source Code\Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Source Code\Dependencies\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Source Code\Dependencies\ImGui\imgui_draw.cpp" />
@@ -188,10 +189,12 @@
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Math\TransformOps.cpp" />
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Time\Clock.cpp" />
     <ClCompile Include="Source Code\Dependencies\parson\parson.c" />
+    <ClCompile Include="Source Code\GameObject.cpp" />
     <ClCompile Include="Source Code\glmath.cpp" />
     <ClCompile Include="Source Code\Light.cpp" />
     <ClCompile Include="Source Code\log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
+    <ClCompile Include="Source Code\Mesh.cpp" />
     <ClCompile Include="Source Code\ModuleCamera3D.cpp" />
     <ClCompile Include="Source Code\ModuleImporter.cpp" />
     <ClCompile Include="Source Code\ModuleInput.cpp" />
@@ -204,6 +207,7 @@
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h" />
     <ClInclude Include="Source Code\Color.h" />
+    <ClInclude Include="Source Code\Component.h" />
     <ClInclude Include="Source Code\Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Source Code\Dependencies\ImGui\imgui.h" />
     <ClInclude Include="Source Code\Dependencies\ImGui\imgui_impl_opengl3.h" />
@@ -273,6 +277,7 @@
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\TransformOps.h" />
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Time\Clock.h" />
     <ClInclude Include="Source Code\Dependencies\parson\parson.h" />
+    <ClInclude Include="Source Code\GameObject.h" />
     <ClInclude Include="Source Code\glmath.h" />
     <ClInclude Include="Source Code\Globals.h" />
     <ClInclude Include="Source Code\Light.h" />
