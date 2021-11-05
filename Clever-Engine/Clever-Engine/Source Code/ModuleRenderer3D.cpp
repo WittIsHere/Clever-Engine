@@ -291,17 +291,16 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 	else
 	{
 		LOG("INFO: indices buffer ID not found");
-	}
-
+	}	
 	
-	/*if (defaultTexture)
-		BindCheckerTex();*/
 
-	if (mesh->texture->textureID != 0)
+	if (mesh->texture != nullptr)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindTexture(GL_TEXTURE_2D, (GLuint)mesh->texture->textureID);
 	}
+	else
+		BindCheckerTex();
 
 	PollErrors();
 	
@@ -486,14 +485,3 @@ void ModuleRenderer3D::PollErrors() //Poll and print to the console every openGl
 		error = glGetError();
 	}
 }
-
-//void ModuleRenderer3D::PollErrors(const char* additionalString) //Poll and print to the console every openGl error
-//{
-//	GLenum error = glGetError();
-//
-//	while (error != GL_NO_ERROR)
-//	{
-//		LOG("OpenGL error found! %s\n", gluErrorString(error));
-//		error = glGetError();
-//	}
-//}

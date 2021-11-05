@@ -50,7 +50,8 @@ bool ModuleImporter::Start()
 
 	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
 	ImportScene(fbxPath);
-	App->renderer3D->houseTexture_Buffer = LoadTextureFromPath("Assets/Textures/Baker_house.PNG");
+	const char* fbxPath2 = ("Assets/Models/warrior.FBX");
+	ImportScene(fbxPath2);
 
 	return true;
 }

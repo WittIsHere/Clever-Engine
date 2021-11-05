@@ -286,8 +286,8 @@
     <ClInclude Include="Source Code\ModuleWindow.h" />
     <ClInclude Include="Source Code\OpenGl.h" />
     <ClInclude Include="Source Code\Primitive.h" />
+    <ClInclude Include="Source Code\Texture.h" />
     <ClInclude Include="Source Code\Timer.h" />
-    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source Code\Dependencies\MathGeoLib\include\Geometry\KDTree.inl" />
