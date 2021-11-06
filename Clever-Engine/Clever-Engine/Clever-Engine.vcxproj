@@ -199,10 +199,13 @@
     <ClCompile Include="Source Code\ModuleImporter.cpp" />
     <ClCompile Include="Source Code\ModuleInput.cpp" />
     <ClCompile Include="Source Code\ModuleRenderer3D.cpp" />
+    <ClCompile Include="Source Code\ModuleScene.cpp" />
     <ClCompile Include="Source Code\ModuleUI.cpp" />
     <ClCompile Include="Source Code\ModuleWindow.cpp" />
     <ClCompile Include="Source Code\Primitive.cpp" />
+    <ClCompile Include="Source Code\Texture.cpp" />
     <ClCompile Include="Source Code\Timer.cpp" />
+    <ClCompile Include="Source Code\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h" />
@@ -287,12 +290,14 @@
     <ClInclude Include="Source Code\ModuleImporter.h" />
     <ClInclude Include="Source Code\ModuleInput.h" />
     <ClInclude Include="Source Code\ModuleRenderer3D.h" />
+    <ClInclude Include="Source Code\ModuleScene.h" />
     <ClInclude Include="Source Code\ModuleUI.h" />
     <ClInclude Include="Source Code\ModuleWindow.h" />
     <ClInclude Include="Source Code\OpenGl.h" />
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\Texture.h" />
     <ClInclude Include="Source Code\Timer.h" />
+    <ClInclude Include="Source Code\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source Code\Dependencies\MathGeoLib\include\Geometry\KDTree.inl" />

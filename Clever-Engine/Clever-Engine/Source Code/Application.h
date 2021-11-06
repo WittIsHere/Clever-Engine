@@ -9,6 +9,7 @@
 #include "ModuleCamera3D.h"
 #include "ModuleUI.h"
 #include "ModuleImporter.h"
+#include "ModuleScene.h"
 
 #include <vector>
 #include <string>
@@ -22,6 +23,7 @@ public:
 	ModuleCamera3D* camera;
 	ModuleUI* ui;
 	ModuleImporter* importer;
+	ModuleScene* scene;
 
 private:
 	Timer ms_timer;
