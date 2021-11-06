@@ -3,13 +3,13 @@
 #include "Globals.h"
 #include "Component.h"
 
-struct TextureData;
+struct c_Material;
 
-class MeshData : public Component
+class c_Mesh : public Component
 {
 public:
-	MeshData();
-	~MeshData();
+	c_Mesh();
+	~c_Mesh();
 
 	bool Enable();
 	bool Update();
@@ -32,5 +32,5 @@ public:
 	uint indicesCount = 0;				// Number of Indices
 	uint* indicesData = nullptr;		// Indices Array
 
-	TextureData* texture = 0;			// Pointer to acess the texture inside myTexures() vector
+	c_Material* texture = 0;			// Pointer to acess the texture inside myTexures() vector
 };

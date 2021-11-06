@@ -9,7 +9,7 @@
 #define CHECKERS_WIDTH 128
 
 struct SceneData;
-struct MeshData;
+struct c_Mesh;
 
 class ModuleRenderer3D : public Module
 {
@@ -34,9 +34,9 @@ public:
 	//void PollErrors(const char* additionalString);
 
 private:
-	void PrepareDrawMesh(MeshData* mesh);
+	void PrepareDrawMesh(c_Mesh* mesh);
 	void DrawScene();
-	void DrawMesh(MeshData* mesh);
+	void DrawMesh(c_Mesh* mesh);
 
 public:
 	Light lights[MAX_LIGHTS];

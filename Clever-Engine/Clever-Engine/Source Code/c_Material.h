@@ -4,19 +4,17 @@
 #include "Component.h"
 
 
-class TransformComponent : public Component
+class c_Material : public Component
 {
 public:
-	TransformComponent();
-	~TransformComponent();
+	c_Material();
+	~c_Material();
 
 	bool Enable();
 	bool Update();
 	bool Disable();
 
 public:
-
-
-private:
-	float x, y, z;
+	const char* path;
+	uint textureID;
 };

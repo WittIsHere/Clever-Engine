@@ -25,7 +25,7 @@ public:
 
 
 public:
-	ComponentType type = ComponentType::NONE;
+	ComponentType type;
 	bool isActive = true;
 
 private:

@@ -194,7 +194,7 @@
     <ClCompile Include="Source Code\Light.cpp" />
     <ClCompile Include="Source Code\log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
-    <ClCompile Include="Source Code\Mesh.cpp" />
+    <ClCompile Include="Source Code\c_Mesh.cpp" />
     <ClCompile Include="Source Code\ModuleCamera3D.cpp" />
     <ClCompile Include="Source Code\ModuleImporter.cpp" />
     <ClCompile Include="Source Code\ModuleInput.cpp" />
@@ -203,9 +203,9 @@
     <ClCompile Include="Source Code\ModuleUI.cpp" />
     <ClCompile Include="Source Code\ModuleWindow.cpp" />
     <ClCompile Include="Source Code\Primitive.cpp" />
-    <ClCompile Include="Source Code\Texture.cpp" />
+    <ClCompile Include="Source Code\c_Material.cpp" />
     <ClCompile Include="Source Code\Timer.cpp" />
-    <ClCompile Include="Source Code\Transform.cpp" />
+    <ClCompile Include="Source Code\c_Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h" />
@@ -284,7 +284,7 @@
     <ClInclude Include="Source Code\glmath.h" />
     <ClInclude Include="Source Code\Globals.h" />
     <ClInclude Include="Source Code\Light.h" />
-    <ClInclude Include="Source Code\Mesh.h" />
+    <ClInclude Include="Source Code\c_Mesh.h" />
     <ClInclude Include="Source Code\Module.h" />
     <ClInclude Include="Source Code\ModuleCamera3D.h" />
     <ClInclude Include="Source Code\ModuleImporter.h" />
@@ -295,9 +295,9 @@
     <ClInclude Include="Source Code\ModuleWindow.h" />
     <ClInclude Include="Source Code\OpenGl.h" />
     <ClInclude Include="Source Code\Primitive.h" />
-    <ClInclude Include="Source Code\Texture.h" />
+    <ClInclude Include="Source Code\c_Material.h" />
     <ClInclude Include="Source Code\Timer.h" />
-    <ClInclude Include="Source Code\Transform.h" />
+    <ClInclude Include="Source Code\c_Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source Code\Dependencies\MathGeoLib\include\Geometry\KDTree.inl" />

@@ -3,8 +3,8 @@
 #include "ModuleRenderer3D.h"
 #include "Primitive.h"
 #include "ModuleImporter.h"
-#include "Mesh.h"
-#include "Texture.h"
+#include "c_Mesh.h"
+#include "c_Material.h"
 
 #include "OpenGl.h"
 
@@ -230,7 +230,7 @@ void ModuleRenderer3D::PrepareDrawScene(SceneData* scene)
 	}
 }
 
-void ModuleRenderer3D::PrepareDrawMesh(MeshData* mesh)
+void ModuleRenderer3D::PrepareDrawMesh(c_Mesh* mesh)
 {
 	glGenBuffers(1, &mesh->vPosID);
 	glGenBuffers(1, &mesh->vTexCoordsID);
@@ -266,7 +266,7 @@ void ModuleRenderer3D::DrawScene()
 	}
 }
 
-void ModuleRenderer3D::DrawMesh(MeshData* mesh)
+void ModuleRenderer3D::DrawMesh(c_Mesh* mesh)
 {
 	//vertices
 	if (mesh->vPosID != 0)

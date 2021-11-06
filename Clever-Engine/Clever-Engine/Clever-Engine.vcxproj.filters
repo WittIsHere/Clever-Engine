@@ -169,13 +169,13 @@
     <ClCompile Include="Source Code\log.cpp">
       <Filter>Source Code\Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\Mesh.cpp">
+    <ClCompile Include="Source Code\c_Material.cpp">
       <Filter>Source Code\GameObjects\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\Texture.cpp">
+    <ClCompile Include="Source Code\c_Transform.cpp">
       <Filter>Source Code\GameObjects\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\Transform.cpp">
+    <ClCompile Include="Source Code\c_Mesh.cpp">
       <Filter>Source Code\GameObjects\Components</Filter>
     </ClCompile>
   </ItemGroup>
@@ -438,16 +438,16 @@
     <ClInclude Include="Source Code\Component.h">
       <Filter>Source Code\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\Texture.h">
-      <Filter>Source Code\GameObjects\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\Mesh.h">
-      <Filter>Source Code\GameObjects\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\ModuleScene.h">
       <Filter>Source Code\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\Transform.h">
+    <ClInclude Include="Source Code\c_Material.h">
+      <Filter>Source Code\GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\c_Transform.h">
+      <Filter>Source Code\GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\c_Mesh.h">
       <Filter>Source Code\GameObjects\Components</Filter>
     </ClInclude>
   </ItemGroup>

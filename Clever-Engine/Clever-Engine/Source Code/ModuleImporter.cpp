@@ -1,8 +1,8 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleImporter.h"
-#include "Mesh.h"
-#include "Texture.h"
+#include "c_Mesh.h"
+#include "c_Material.h"
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
@@ -84,7 +84,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 			// Use scene->mNumMeshes to iterate on scene->mMeshes array
 			for (int i = 0; i < aiScene->mNumMeshes; i++)
 			{
-				MeshData* tempMesh = new MeshData;
+				c_Mesh* tempMesh = new c_Mesh;
 				myScene.myMeshes.push_back(tempMesh);
 				aiMesh* currentAiMesh = aiScene->mMeshes[i];			
 
@@ -113,7 +113,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 	}
 }
 
-void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
+void ModuleImporter::ImportMesh(aiMesh* mesh, c_Mesh* myMesh)
 {
 	// Copying number of vertices
 	myMesh->vertexCount = mesh->mNumVertices;
@@ -175,7 +175,7 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 	//}
 }
 
-void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMesh)
+void ModuleImporter::LoadTextureFromPathAndFill(const char* path, c_Mesh* myMesh)
 {
 	uint textureBuffer = 0;
 	ILuint id_img = 0;
@@ -198,7 +198,7 @@ void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMe
 			if (error)
 				LOG("ERROR: Failed binding the DevIL Texture with OpenGl: %s", iluErrorString(error));
 
-			TextureData* texData = new TextureData;
+			c_Material* texData = new c_Material;
 			myScene.myTextures.push_back(texData);	//Add a new texture to the textures array
 
 			texData->path = path;	//assign the new texture its path
