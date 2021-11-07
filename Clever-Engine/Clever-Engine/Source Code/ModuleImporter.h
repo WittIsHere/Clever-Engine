@@ -3,11 +3,11 @@
 #include "Globals.h"
 #include "c_Mesh.h"
 
-
 #include <vector>
 
 struct aiMesh;
 struct c_Material;
+struct meshData;
 
 struct SceneData
 {
@@ -28,7 +28,7 @@ public:
 	bool CleanUp();
 
 	void ImportScene(const char* file_path);
-	void ImportMesh(aiMesh* mesh, c_Mesh* myMesh);
+	void ImportMesh(aiMesh* mesh, meshData* myMesh);
 
 	void LoadTextureFromPathAndFill(const char* path, c_Mesh* myMesh);
 	uint LoadTextureFromPath(const char* path);

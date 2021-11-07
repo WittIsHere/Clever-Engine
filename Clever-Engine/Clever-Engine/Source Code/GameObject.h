@@ -29,6 +29,7 @@ public:
 public:
 
 	char* name = nullptr;
+	bool isRoot = false;
 	bool isActive = true;
 	bool toDestroy = false;
 

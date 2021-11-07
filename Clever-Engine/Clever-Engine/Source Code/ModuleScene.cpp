@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleCamera3D.h"
+#include "GameObject.h"
 
 ModuleScene::ModuleScene(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -37,4 +38,18 @@ bool ModuleScene::CleanUp()
 	LOG("Cleaning up ModuleScene");
 
 	return true;
+}
+
+
+GameObject* ModuleScene::CreateRoot()
+{
+	GameObject* ret = new GameObject("Root Node", nullptr);
+	return ret;
+}
+
+
+GameObject* ModuleScene::CreateGameObject()
+{
+	GameObject* ret = new GameObject;
+	return ret;
 }

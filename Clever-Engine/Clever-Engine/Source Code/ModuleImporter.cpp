@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleImporter.h"
+#include "ModuleScene.h"
 #include "c_Mesh.h"
 #include "c_Material.h"
 
@@ -84,15 +85,20 @@ void ModuleImporter::ImportScene(const char* file_path)
 			// Use scene->mNumMeshes to iterate on scene->mMeshes array
 			for (int i = 0; i < aiScene->mNumMeshes; i++)
 			{
-				c_Mesh* tempMesh = new c_Mesh;
-				myScene.myMeshes.push_back(tempMesh);
+				//create empty meshData and add it to the array
+				meshData* tempMesh = new meshData;
+				App->scene->meshPool.push_back(tempMesh);
 				aiMesh* currentAiMesh = aiScene->mMeshes[i];			
 
-				ImportMesh(currentAiMesh, tempMesh);
+				//import the data into the struct
+				ImportMesh(currentAiMesh, tempMesh); 
 
+				//create a new GO with a component mesh using meshData
+				App->scene->CreateGameObject();
 				uint tempIndex = currentAiMesh->mMaterialIndex;
 				if (tempIndex >= 0)
 				{
+					//in case there is a texture add the component texture to the previous GO
 					aiMaterial* currentMaterial = aiScene->mMaterials[currentAiMesh->mMaterialIndex]; //access the mesh material using the mMaterialIndex
 					aiString texPath;
 					if (currentMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
@@ -113,7 +119,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 	}
 }
 
-void ModuleImporter::ImportMesh(aiMesh* mesh, c_Mesh* myMesh)
+void ModuleImporter::ImportMesh(aiMesh* mesh, meshData* myMesh)
 {
 	// Copying number of vertices
 	myMesh->vertexCount = mesh->mNumVertices;
