@@ -2,6 +2,7 @@
 
 #include "Globals.h"
 #include "Component.h"
+#include "c_Mesh.h"
 
 #include <vector>
 
@@ -10,6 +11,7 @@ class GameObject
 {
 public:
 	GameObject(char* name, GameObject* parent);
+	GameObject(char* name, GameObject* parent, Component* mesh);
 	~GameObject();
 
 	// Methods
@@ -17,14 +19,14 @@ public:
 	void Init();
 	void Update();
 
-	Component* CreateComponent(ComponentType type, GameObject* parent);
+	Component* CreateComponent(ComponentType type); //empty component with type 
+
+	void AddComponent(Component* copyCmp); //copy an existing "component"
 
 	void PrepareDraw();
 	void Draw();  // ??
 
 public:
-
-	//GameObject* parent;
 
 	char* name = nullptr;
 	bool isActive = true;
@@ -32,6 +34,8 @@ public:
 
 private:
 
-	std::vector<Component*> myComponents;
+	GameObject* parent;
 	std::vector<GameObject*> myChilds;
+	
+	std::vector<Component*> myComponents;
 };

@@ -3,7 +3,7 @@
 
 c_Mesh::c_Mesh()
 {
-
+	type = ComponentType::MESH;
 }
 
 c_Mesh::~c_Mesh()

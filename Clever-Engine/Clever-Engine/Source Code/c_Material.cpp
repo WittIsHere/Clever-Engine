@@ -3,7 +3,7 @@
 
 c_Material::c_Material()
 {
-
+	type = ComponentType::MATERIAL;
 }
 
 c_Material::~c_Material()
