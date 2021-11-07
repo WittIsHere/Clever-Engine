@@ -134,7 +134,6 @@ bool ModuleRenderer3D::Start()
 {
 	// Import Scene -------
 	currentScene = &App->importer->myScene;
-	PrepareDrawScene(currentScene);
 
 	return true;
 }
@@ -254,11 +253,6 @@ void ModuleRenderer3D::PrepareDrawMesh(c_Mesh* mesh)
 
 void ModuleRenderer3D::DrawScene()
 {
-	if (currentScene->myMeshes.size() == 0)
-	{
-		LOG("ERROR: meshes array is empty");
-		return;
-	}
 
 	for (int i = 0; i < currentScene->myMeshes.size(); i++)
 	{

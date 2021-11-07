@@ -26,15 +26,17 @@ public:
 	void OnResize(int width, int height);
 
 	void PrepareDrawScene(SceneData* scene);
+	void PrepareDrawMesh(c_Mesh* mesh);
 
 	bool GetVSync() const;
 	void SetVSync(bool vsync);
 	uint* GetOpenGLVersion() const;
 	void PollErrors();
 	//void PollErrors(const char* additionalString);
+	
 
 private:
-	void PrepareDrawMesh(c_Mesh* mesh);
+	
 	void DrawScene();
 	void DrawMesh(c_Mesh* mesh);
 

@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleInput.h"
 
+
 #define MAX_KEYS 300
 
 ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -113,17 +114,32 @@ update_status ModuleInput::PreUpdate(float dt)
 
 				if (e.window.event == SDL_WINDOWEVENT_CLOSE)
 					ExitApp();
+				break;
 			}
 
-			case (SDL_DROPFILE): {      // In case if dropped file
-				char* dropped_filedir = e.drop.file;
+			case (SDL_DROPFILE):  // In case if dropped file
+			{
+				std::string dropped_filedir;
+				dropped_filedir.assign(e.drop.file);
+				const char* impPath = dropped_filedir.c_str();
+
 				// Shows directory of dropped file
-				SDL_ShowSimpleMessageBox(
+			/*	SDL_ShowSimpleMessageBox(
 					SDL_MESSAGEBOX_INFORMATION,
 					"File dropped on window",
-					dropped_filedir,
-					App->window->window);
-				SDL_free(dropped_filedir);    // Free dropped_filedir memory
+					impPath,
+					App->window->window);*/
+
+				if (!dropped_filedir.empty())
+				{
+					if ((dropped_filedir.find(".FBX") != std::string::npos) || (dropped_filedir.find(".fbx") != std::string::npos))
+					{
+						LOG("File fbx type %s Loading", impPath);
+						App->importer->ImportScene(impPath);
+					}
+				}
+				
+				//SDL_free(dropped_filedir);    // Free dropped_filedir memory
 				break;
 			}
 		}

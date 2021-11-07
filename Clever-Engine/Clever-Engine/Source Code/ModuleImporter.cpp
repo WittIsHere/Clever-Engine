@@ -50,8 +50,6 @@ bool ModuleImporter::Start()
 
 	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
 	ImportScene(fbxPath);
-	const char* fbxPath2 = ("Assets/Models/warrior.FBX");
-	ImportScene(fbxPath2);
 
 	return true;
 }
@@ -158,6 +156,7 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, c_Mesh* myMesh)
 	{
 		LOG("Warning, No texture coordinates found");
 	}
+	App->renderer3D->PrepareDrawMesh(myMesh);
 
 	// Copying Normals
 	//if (mesh->HasNormals())
