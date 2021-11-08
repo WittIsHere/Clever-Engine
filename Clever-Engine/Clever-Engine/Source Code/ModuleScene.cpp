@@ -15,7 +15,7 @@ bool ModuleScene::Init()
 {
 	LOG("ModuleScene Init");
 	bool ret = true;
-
+	CreateRootNode();
 	return ret;
 }
 
@@ -24,7 +24,7 @@ bool ModuleScene::Start()
 	LOG("ModuleScene Starting");
 	bool ret = true;
 
-	CreateRootNode();
+	
 	return ret;
 }
 

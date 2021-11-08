@@ -13,7 +13,11 @@ enum COMPONENT_TYPE
 
 class ComponentData
 {
+//public:
+//	ComponentData();
+//	ComponentData(COMPONENT_TYPE cType);
+//	~ComponentData();
 public:
-	COMPONENT_TYPE type = COMPONENT_TYPE::NONE;
+	COMPONENT_TYPE type;
 	//UID?
 };

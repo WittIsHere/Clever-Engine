@@ -123,13 +123,6 @@ update_status ModuleInput::PreUpdate(float dt)
 				dropped_filedir.assign(e.drop.file);
 				const char* impPath = dropped_filedir.c_str();
 
-				// Shows directory of dropped file
-			/*	SDL_ShowSimpleMessageBox(
-					SDL_MESSAGEBOX_INFORMATION,
-					"File dropped on window",
-					impPath,
-					App->window->window);*/
-
 				if (!dropped_filedir.empty())
 				{
 					if ((dropped_filedir.find(".FBX") != std::string::npos) || (dropped_filedir.find(".fbx") != std::string::npos))

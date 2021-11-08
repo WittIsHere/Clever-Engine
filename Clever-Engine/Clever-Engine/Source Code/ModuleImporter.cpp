@@ -89,7 +89,9 @@ void ModuleImporter::ImportScene(const char* file_path)
 			{
 				//create empty meshData and add it to the array
 				MeshData* tempMesh = new MeshData();
+				tempMesh->type = COMPONENT_TYPE::MESH;
 				App->scene->meshPool.push_back(tempMesh);
+
 				aiMesh* currentAiMesh = aiScene->mMeshes[i];			
 
 				//import the data into the struct
@@ -117,6 +119,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 						if (tempTextureID > 0)
 						{
 							TextureData* texData = new TextureData();
+							texData->type = COMPONENT_TYPE::MATERIAL;
 							App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
 
 							texData->path = texPath.C_Str();	//assign the new texture its path

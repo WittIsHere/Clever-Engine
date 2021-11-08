@@ -8,7 +8,7 @@ struct meshData;
 class c_Mesh : public Component
 {
 public:
-	c_Mesh();
+	c_Mesh(GameObject* parent, ComponentData* data);
 	~c_Mesh();
 
 	bool Enable();
@@ -16,6 +16,4 @@ public:
 	bool Disable();
 
 
-public:
-	meshData* resourceMesh;
 };

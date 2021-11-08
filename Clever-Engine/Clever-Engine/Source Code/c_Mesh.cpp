@@ -2,7 +2,7 @@
 #include "ModuleScene.h"
 
 
-c_Mesh::c_Mesh()
+c_Mesh::c_Mesh(GameObject* parent, ComponentData* data) : Component(parent, data)
 {
 	type = COMPONENT_TYPE::MESH;
 }

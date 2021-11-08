@@ -1,9 +1,8 @@
 #include "c_Transform.h"
 
-
-c_Transform::c_Transform()
+c_Transform::c_Transform(GameObject* parent, ComponentData* data) : Component(parent, data)
 {
-
+	this->type = COMPONENT_TYPE::TRANSFORM;
 }
 
 c_Transform::~c_Transform()

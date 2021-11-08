@@ -1,7 +1,9 @@
 #include "Component.h"
 
-Component::Component()
+Component::Component(GameObject* parent, ComponentData* data)
 {
+	this->parent = parent;
+	this->data = data;
 }
 
 Component::~Component()

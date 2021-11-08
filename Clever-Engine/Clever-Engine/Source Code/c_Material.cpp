@@ -2,16 +2,9 @@
 #include "ModuleScene.h"
 
 
-c_Material::c_Material()
+c_Material::c_Material(GameObject* parent, ComponentData* data) : Component(parent, data)
 {
 	type = COMPONENT_TYPE::MATERIAL;
-	resourceTexture = nullptr;
-}
-
-c_Material::c_Material(textureData* data)
-{
-	type = COMPONENT_TYPE::MATERIAL;
-	resourceTexture = data;
 }
 
 c_Material::~c_Material()

@@ -4,11 +4,12 @@
 #include "ComponentData.h"
 
 class GameObject;
+class ComponentData;
 
 class Component
 {
 public:
-	Component();
+	Component(GameObject* parent, ComponentData* data);
 	~Component();
 
 	virtual bool Enable();
@@ -19,8 +20,7 @@ public:
 
 public:
 	COMPONENT_TYPE type;
-	ComponentData data;
-
+	ComponentData* data;
 	bool isActive = true;
 
 private:

@@ -62,23 +62,23 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	Component* ret = nullptr;
 	switch (CD->type)
 	{
-	case(COMPONENT_TYPE::TRANSFORM):
+	/*case(COMPONENT_TYPE::TRANSFORM):
 	{
-		c_Transform* cmp = new c_Transform();
-		myComponents.push_back((Component*)cmp);
+		c_Transform* cmp = new c_Transform(CD);
+		myComponents.push_back(this, (Component*)cmp);
 		ret = cmp;
 		break;
-	}
+	}*/
 	case(COMPONENT_TYPE::MATERIAL):
 	{
-		c_Material* cmp = new c_Material();
+		c_Material* cmp = new c_Material(this, CD);
 		myComponents.push_back((Component*)cmp);
 		ret = cmp;
 		break;
 	}
 	case(COMPONENT_TYPE::MESH):
 	{
-		c_Mesh* cmp = new c_Mesh();
+		c_Mesh* cmp = new c_Mesh(this, CD);
 		myComponents.push_back((Component*)cmp);
 		ret = cmp;
 		break;
@@ -97,6 +97,6 @@ void GameObject::Draw()
 	for (int i = 0; i < myComponents.size(); i++)
 	{
 		if(myComponents[i]->type == COMPONENT_TYPE::MESH)
-			App->renderer3D->DrawMesh((MeshData*)myComponents[i]);
+			App->renderer3D->DrawMesh((MeshData*)myComponents[i]->data);
 	}
 }
