@@ -29,7 +29,8 @@ Menus of all the functionalities of the engine
 * **Drag & Drop:** meshes and textures can be dropped to the engine.
 * **Game Object:** structure with Component Pattern implemented.
 * **ImGUI interface:** fully functional user interface created using ImGui.
-* **Camera** unity-like camera to explore the scene and view the geometry.
+* **Camera:** unity-like camera to explore the scene and view the geometry.
+* **Basic Shapes Lib:** implemented a library with many basic shapes on the menu "Create".
 
 ### Extra Features
 
@@ -40,11 +41,10 @@ Menus of all the functionalities of the engine
 ### Camera Controls
 
 * **Right Click: change camera orientation.
-* WASD / QE**: move camera in different directions.
+* **WASD**: move camera while right clicking in different directions.
+* **Q/E**: move upwards and downwards.
+* **Mouse wheel**: Zoom in and out.
 
-### Shortcuts
-
-* **ALT + F4:** close the engine.
 
 ## Authors
 
@@ -56,6 +56,7 @@ Menus of all the functionalities of the engine
 ### Aram Galarza
 
 - Github: [WittIsHere](https://github.com/WittIsHere)
+
 
 ## License
 
