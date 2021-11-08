@@ -460,10 +460,6 @@ void ModuleUI::DrawConfigurationSpace(bool* active)
             ImGui::TextColored(YELLOW, "%s", IMGUI_VERSION);		//change ImGui for Devil
         }
     }
-    if (ImGui::CollapsingHeader("ImGui Demo"))
-    {
-        ImGui::Checkbox("Demo Window", &showDemoWindow);
-    }
     ImGui::End();
 }
 
