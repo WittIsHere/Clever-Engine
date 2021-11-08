@@ -40,7 +40,7 @@ Menus of all the functionalities of the engine
 
 ### Camera Controls
 
-* **Right Click: change camera orientation.
+* **Right Click**: change camera orientation.
 * **WASD**: move camera while right clicking in different directions.
 * **Q/E**: move upwards and downwards.
 * **Mouse wheel**: Zoom in and out.
