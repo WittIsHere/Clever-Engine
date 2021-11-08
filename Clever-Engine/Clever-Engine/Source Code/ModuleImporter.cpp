@@ -216,10 +216,11 @@ void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene)
 {
 	if (sceneRoot->mNumChildren > 0)
 	{
-		GameObject* GO = App->scene->CreateGameObject(ROOT_NAME, App->scene->rootNode);
+		GameObject* GO = App->scene->CreateGameObject("GameObject", App->scene->rootNode);
+		App->scene->rootNode->AddChild(GO);
 		for (int i = 0; i < sceneRoot->mNumChildren; i++)
 		{
-			LoadNode(App->scene->rootNode, sceneRoot->mChildren[i], currentScene);
+			LoadNode(GO, sceneRoot->mChildren[i], currentScene);
 		}
 	}
 	else LOG("ERROR: Trying to load empty scene!");

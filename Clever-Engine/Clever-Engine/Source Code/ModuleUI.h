@@ -4,6 +4,8 @@
 
 #include <vector>
 
+class GameObject;
+
 class ModuleUI : public Module
 {
 public:
@@ -20,6 +22,8 @@ public:
 private:
 	void DrawConsoleSpace(bool* active);
 	void DrawConfigurationSpace(bool* active);
+	void DrawHierarchySpace(bool* active);
+	void ShowChildData(GameObject* GO);
 
 	void ShowDockingDisabledMessage();
 
@@ -41,6 +45,7 @@ private:
 	bool activeConsole = true;
 	bool activeConfiguration = false;
 	bool activeDockingSpace = false;
+	bool activeHierarchy = true;
 
 	//Configuration window variables
 	bool need_scroll = false;

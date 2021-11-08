@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Globals.h"
+#include "GameObject.h"
 #include "ModuleUI.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer3D.h"
@@ -178,7 +179,7 @@ update_status ModuleUI::Update(float dt)
             {
                 ImGui::Checkbox("Console", &activeConsole);
                 ImGui::Checkbox("Configuration", &activeConfiguration);
-
+                ImGui::Checkbox("Hierarchy", &activeHierarchy);
                 ImGui::EndMenu();
             }
 
@@ -238,6 +239,7 @@ update_status ModuleUI::Update(float dt)
     //draw windows
     DrawConsoleSpace(&activeConsole);
     DrawConfigurationSpace(&activeConfiguration);
+    DrawHierarchySpace(&activeHierarchy);
 
     return UPDATE_CONTINUE;
 }
@@ -462,6 +464,33 @@ void ModuleUI::DrawConfigurationSpace(bool* active)
     }
     ImGui::End();
 }
+
+void ModuleUI::DrawHierarchySpace(bool* active)
+{
+    if (*active == false)
+        return; 
+    
+    ImGui::Begin("Hierarchy", active, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    GameObject* root = App->scene->rootNode;
+    ShowChildData(root);
+    
+    ImGui::End();   
+}
+ void ModuleUI::ShowChildData(GameObject* GO)
+ {
+     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+
+     if (GO == App->scene->rootNode) flags |= ImGuiTreeNodeFlags_DefaultOpen;
+
+     if (ImGui::TreeNodeEx(GO->name.c_str(), flags))
+     {
+         for (int i = 0; i < GO->myChildren.size(); i++)
+         {
+             ShowChildData(GO->myChildren[i]);
+         }
+         ImGui::TreePop();
+     }
+ }
 
 void ModuleUI::AddLogFPS(float fps, float ms)
 {

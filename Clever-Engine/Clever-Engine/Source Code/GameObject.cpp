@@ -10,7 +10,7 @@
 
 GameObject::GameObject(const char* name)
 {
-	this->name = *name;
+	this->name = name;
 	parent = nullptr;
 	isRoot = true;
 	toDestroy = false;
@@ -18,7 +18,7 @@ GameObject::GameObject(const char* name)
 
 GameObject::GameObject(const char* name, GameObject* parent)
 {
-	this->name = *name;
+	this->name = name;
 	this->parent = parent;
 	toDestroy = false;
 }

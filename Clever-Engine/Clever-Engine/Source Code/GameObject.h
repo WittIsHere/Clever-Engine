@@ -35,10 +35,9 @@ public:
 	bool isActive = true;
 	bool toDestroy = false;
 
+	std::vector<GameObject*> myChildren;
 private:
 
 	GameObject* parent;
-	std::vector<GameObject*> myChildren;
-	
 	std::vector<Component*> myComponents;
 };
