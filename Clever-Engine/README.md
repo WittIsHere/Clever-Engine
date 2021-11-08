@@ -18,9 +18,10 @@ Shows the properties of the engine and its rendering
 **Main Tab:**
 Menus of all the functionalities of the engine
 * File
-* GameObject
+* GameObject creation
 * Windows
 * Help
+* Hierarchy window displaying GO names
 
 ### Functionalities
 
