@@ -232,8 +232,8 @@ update_status ModuleUI::Update(float dt)
         ImGui::End();
     }
 
-    if (showDemoWindow)
-        ImGui::ShowDemoWindow(&showDemoWindow);
+    //if (showDemoWindow)
+    //    ImGui::ShowDemoWindow(&showDemoWindow);
 
     //draw windows
     DrawConsoleSpace(&activeConsole);

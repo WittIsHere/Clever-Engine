@@ -39,7 +39,7 @@ public:
 private:
 	//Bool variables to activate the different windows
 	bool activeConsole = true;
-	bool activeConfiguration = true;
+	bool activeConfiguration = false;
 	bool activeDockingSpace = false;
 
 	//Configuration window variables
