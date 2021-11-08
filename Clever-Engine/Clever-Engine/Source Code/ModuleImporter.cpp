@@ -82,6 +82,15 @@ void ModuleImporter::ImportScene(const char* file_path)
 	const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (aiScene != nullptr)
 	{
+		if (aiScene->mRootNode != nullptr)
+		{
+			LoadRoot(aiScene->mRootNode, aiScene);
+		}
+	}
+	/*
+	const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
+	if (aiScene != nullptr)
+	{
 		if (aiScene->HasMeshes())
 		{
 			// Use scene->mNumMeshes to iterate on scene->mMeshes array
@@ -92,7 +101,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 				tempMesh->type = COMPONENT_TYPE::MESH;
 				App->scene->meshPool.push_back(tempMesh);
 
-				aiMesh* currentAiMesh = aiScene->mMeshes[i];			
+				aiMesh* currentAiMesh = aiScene->mMeshes[i];
 
 				//import the data into the struct
 				ImportMesh(currentAiMesh, tempMesh); 
@@ -137,7 +146,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 		}
 
 		aiReleaseImport(aiScene);
-	}
+	}*/
 }
 
 void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
@@ -201,6 +210,81 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 	//{
 	//	LOG("Warning, No texture coordinates found");
 	//}
+}
+
+void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene)
+{
+	if (sceneRoot->mNumChildren > 0)
+	{
+		for (int i = 0; i < sceneRoot->mNumChildren; i++)
+		{
+			LoadNode(App->scene->rootNode, sceneRoot->mChildren[i], currentScene);
+		}
+	}
+	else LOG("ERROR: Trying to load empty scene!");
+}
+
+void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene)
+{
+	GameObject* GO = App->scene->CreateGameObject(currentNode->mName.C_Str(), parent);
+	parent->AddChild(GO); //add child to parent->myChildren to complete hierarchy
+
+	if (currentNode->mNumMeshes > 0) 
+	{
+		for (int i = 0; i < currentNode->mNumMeshes; i++)
+		{
+			//create empty meshData and add it to the array
+			MeshData* tempMesh = new MeshData();
+			tempMesh->type = COMPONENT_TYPE::MESH;
+			App->scene->meshPool.push_back(tempMesh);
+
+			uint currentAiMeshIndex = currentNode->mMeshes[i];
+			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
+
+			//import the data into the struct
+			ImportMesh(currentAiMesh, tempMesh);
+
+			//create a new GO with a component mesh using meshData
+			std::string GOName = "GO" + i;	//TODO: filename
+			//should add parent depending on the hierarchy but there is no hierarchy yet so parent is root.
+			GameObject* GO = App->scene->CreateGameObject(GOName.c_str(), App->scene->rootNode);
+			GO->CreateComponent((ComponentData*)tempMesh);
+
+			uint tempIndex = currentAiMesh->mMaterialIndex;
+			if (tempIndex >= 0)
+			{
+				//in case there is a texture add the component texture to the previous GO
+				aiMaterial* currentMaterial = currentScene->mMaterials[currentAiMesh->mMaterialIndex]; //access the mesh material using the mMaterialIndex
+				aiString texPath;
+				if (currentMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
+				{
+					std::string fullPath = ASSETS_PATH;
+					fullPath += texPath.C_Str();
+
+					uint tempTextureID = LoadTextureFromPath(fullPath.c_str());
+
+					if (tempTextureID > 0)
+					{
+						TextureData* texData = new TextureData();
+						texData->type = COMPONENT_TYPE::MATERIAL;
+						App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
+
+						texData->path = texPath.C_Str();	//assign the new texture its path
+						texData->textureID = tempTextureID;	//assign the new texture its ID
+
+						tempMesh->texture = texData;	//assign the texture to the current mesh
+					}
+				}
+			}
+		}
+	}
+	if (currentNode->mNumChildren > 0)
+	{
+		for (int i = 0; i < currentNode->mNumChildren; i++)
+		{
+			LoadNode(GO, currentNode->mChildren[i], currentScene);
+		}
+	}
 }
 
 void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMesh)

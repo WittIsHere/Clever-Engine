@@ -87,9 +87,9 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	return ret;
 }
 
-void GameObject::AddComponent(Component* copyCmp)
+void GameObject::AddChild(GameObject* child)
 {
-	myComponents.push_back(copyCmp);
+	myChildren.push_back(child);
 }
 
 void GameObject::Draw()

@@ -4,7 +4,10 @@
 
 #include <vector>
 
+struct GameObject;
 struct aiMesh;
+struct aiNode;
+struct aiScene;
 struct c_Material;
 struct MeshData;
 struct MaterialData;
@@ -23,6 +26,9 @@ public:
 
 	void ImportScene(const char* file_path);
 	void ImportMesh(aiMesh* mesh, MeshData* myMesh);
+
+	void LoadRoot(aiNode* sceneRoot, const aiScene* currentScene);
+	void LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene);
 
 	void LoadTextureFromPathAndFill(const char* path, MeshData* myMesh);
 	uint LoadTextureFromPath(const char* path);

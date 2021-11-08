@@ -24,7 +24,7 @@ public:
 
 	Component* CreateComponent(ComponentData* CD);
 
-	void AddComponent(Component* copyCmp); //copy an existing "component"
+	void AddChild(GameObject* child); //copy an existing "component"
 
 	void Draw(); 
 
@@ -38,7 +38,7 @@ public:
 private:
 
 	GameObject* parent;
-	std::vector<GameObject*> myChilds;
+	std::vector<GameObject*> myChildren;
 	
 	std::vector<Component*> myComponents;
 };
