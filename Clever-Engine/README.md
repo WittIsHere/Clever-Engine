@@ -4,8 +4,6 @@
 
 ## Features
 
-### Windows
-
 **Console:**
 Logs real-time information about the engine's processes
 * Autoscroll
@@ -60,4 +58,4 @@ Menus of all the functionalities of the engine
 
 ## License
 
-Licensed under the [MIT License](https://github.com/xavimarin35/TonicEngine/blob/master/LICENSE)
+Licensed under the MIT LICENCE
