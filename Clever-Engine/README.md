@@ -1,6 +1,6 @@
-# Tonic Engine
+# Clever Engine
 
-[Tonic Engine](https://github.com/WittIsHere/Clever-Engine) is a 3D Game Engine developed in C & C++ made by Aram Galarza and Albert Espinosa, students of [CITM](https://www.citm.upc.edu/) in Barcelona during our [Game Design and Development Bachelor's Degree](https://www.citm.upc.edu/cat/estudis/grau-videojocs-bcn/).
+[Clever Engine](https://github.com/WittIsHere/Clever-Engine) is a 3D Game Engine developed in C & C++ made by Aram Galarza and Albert Espinosa, students of [CITM](https://www.citm.upc.edu/) in Barcelona during our [Game Design and Development Bachelor's Degree](https://www.citm.upc.edu/cat/estudis/grau-videojocs-bcn/).
 
 ## Features
 
