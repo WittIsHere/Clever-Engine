@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleCamera3D.h"
 #include "GameObject.h"
+#include "ModuleScene.h"
 
 ModuleScene::ModuleScene(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -40,13 +41,12 @@ bool ModuleScene::CleanUp()
 	return true;
 }
 
-
-GameObject* ModuleScene::CreateRoot()
+void ModuleScene::CreateRootNode()
 {
-	GameObject* ret = new GameObject("Root Node", nullptr);
-	return ret;
-}
+	//root node creation
+	GameObject* RN = new GameObject()
 
+}
 
 GameObject* ModuleScene::CreateGameObject()
 {

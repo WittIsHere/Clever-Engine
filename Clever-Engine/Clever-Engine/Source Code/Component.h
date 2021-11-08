@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Globals.h"
+#include "ComponentData.h"
 
 class GameObject;
 
@@ -12,7 +13,6 @@ enum ComponentType
 	MATERIAL
 };
 
-
 class Component
 {
 public:
@@ -23,9 +23,12 @@ public:
 	virtual bool Update();
 	virtual bool Disable();
 
+	//addcomponent()
 
 public:
 	ComponentType type;
+	ComponentData data;
+
 	bool isActive = true;
 
 private:

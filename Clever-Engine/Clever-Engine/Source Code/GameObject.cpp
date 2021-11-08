@@ -1,17 +1,20 @@
 #include "GameObject.h"
+#include "ModuleScene.h"	//cutre
 #include "c_Transform.h"
 #include "c_Mesh.h"
 #include "c_Material.h"
 
 GameObject::GameObject(char* name, GameObject* parent)
 {
-	toDestroy = false;
-	this->name = name;
-	this->parent = parent;
+	if (parent == nullptr)
+		isRoot = true;
 
+	this->parent = parent;
+	this->name = name;
+	toDestroy = false;
 }
 
-GameObject::GameObject(char* name, GameObject* parent, Component* mesh)
+GameObject::GameObject(char* name, GameObject* parent, MeshData* mesh)
 {
 	toDestroy = false;
 	this->name = name;
@@ -24,26 +27,39 @@ GameObject::~GameObject()
 
 }
 
-void GameObject::Init()
+bool GameObject::Init()
 {
+	bool ret = false;
+	//enable all components (inactive also?)
 	for (int i = 0; i < myComponents.size(); i++)
 	{
-		myComponents[i]->Update();
+		if (myComponents[i]->Enable() == true)
+		{
+			ret = true;
+		}
+		
 	}
+	return ret;
 }
 
-void GameObject::Update()
+bool GameObject::Update()
 {
+	bool ret = false;
+
 	for (int i = 0; i < myComponents.size(); i++)
 	{
-		myComponents[i]->Update();
+		if (myComponents[i]->Update() == true)
+		{
+			ret = true;
+		}
 	}
+	return ret;
 }
 
-Component* GameObject::CreateComponent(ComponentType type)
+Component* GameObject::CreateComponent(ComponentData* CD)
 {
 	Component* ret = nullptr;
-	switch (type)
+	switch (CD.type)
 	{
 	case(ComponentType::TRANSFORM):
 	{

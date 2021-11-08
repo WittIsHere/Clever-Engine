@@ -92,7 +92,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 				ImportMesh(currentAiMesh, tempMesh); 
 
 				//create a new GO with a component mesh using meshData
-				App->scene->CreateGameObject();
+				App->scene->CreateGameObject(); //parent needed, if null maybe it should default to null 
 				uint tempIndex = currentAiMesh->mMaterialIndex;
 				if (tempIndex >= 0)
 				{

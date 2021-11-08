@@ -6,20 +6,21 @@
 
 #include <vector>
 
+class MeshData;
 
 class GameObject
 {
 public:
-	GameObject(char* name, GameObject* parent);
-	GameObject(char* name, GameObject* parent, Component* mesh);
+	GameObject(char* name, GameObject* parent);//If prent is null then GO is set to be the root 
+	//GameObject(char* name, GameObject* parent, MeshData* CD);
 	~GameObject();
 
 	// Methods
 
-	void Init();
-	void Update();
+	bool Init();
+	bool Update();
 
-	Component* CreateComponent(ComponentType type); //empty component with type 
+	Component* CreateComponent(ComponentType type, ComponentData* data);
 
 	void AddComponent(Component* copyCmp); //copy an existing "component"
 

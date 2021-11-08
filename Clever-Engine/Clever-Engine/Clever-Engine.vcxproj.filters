@@ -450,6 +450,9 @@
     <ClInclude Include="Source Code\c_Mesh.h">
       <Filter>Source Code\GameObjects\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\ComponentData.h">
+      <Filter>Source Code\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">

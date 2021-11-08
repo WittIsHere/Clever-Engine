@@ -43,11 +43,16 @@ public:
 	update_status Update(float ft);
 	bool CleanUp();
 
-	GameObject* CreateGameObject();
+	GameObject* CreateGameObject(d);
 
 public:
+	GameObject* rootNode;
 	std::vector<GameObject*> gameObjects;
 
 	std::vector<meshData*> meshPool;
 	std::vector<textureData*> texturePool;
+
+private:
+
+	void CreateRootNode();
 };
