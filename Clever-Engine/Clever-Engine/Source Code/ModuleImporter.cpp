@@ -216,6 +216,7 @@ void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene)
 {
 	if (sceneRoot->mNumChildren > 0)
 	{
+		GameObject* GO = App->scene->CreateGameObject(ROOT_NAME, App->scene->rootNode);
 		for (int i = 0; i < sceneRoot->mNumChildren; i++)
 		{
 			LoadNode(App->scene->rootNode, sceneRoot->mChildren[i], currentScene);
