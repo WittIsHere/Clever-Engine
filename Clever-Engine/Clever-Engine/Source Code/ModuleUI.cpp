@@ -132,8 +132,45 @@ update_status ModuleUI::Update(float dt)
 
             if (ImGui::BeginMenu("Create"))
             {
-                // Insert options here
+                if (ImGui::BeginMenu("GameObject"))
+                {
+                    if (ImGui::MenuItem("Cube"))
+                    {
+                        LOG("Loading Basic Shape Cube");
+                        App->importer->ImportScene("Assets/Basic Shapes/Cube.FBX");
+                    }
 
+                    if (ImGui::MenuItem("Cone"))
+                    {
+                        LOG("Loading Basic Shape Cone");
+                        App->importer->ImportScene("Assets/Basic Shapes/Cone.FBX");
+                    }
+
+                    if (ImGui::MenuItem("Sphere"))
+                    {
+                        LOG("Loading Basic Shape Sphere");
+                        App->importer->ImportScene("Assets/Basic Shapes/Sphere.FBX");
+                    }
+
+                    if (ImGui::MenuItem("Cylinder"))
+                    {
+                        LOG("Loading Basic Shape Cylinder");
+                        App->importer->ImportScene("Assets/Basic Shapes/Cylinder.FBX");
+                    }
+
+                    if (ImGui::MenuItem("Pyramid"))
+                    {
+                        LOG("Loading Basic Shape Pyramid");
+                        App->importer->ImportScene("Assets/Basic Shapes/Pyramid.FBX");
+                    }
+
+                    if (ImGui::MenuItem("Torus"))
+                    {
+                        LOG("Loading Basic Shape Torus");
+                        App->importer->ImportScene("Assets/Basic Shapes/Torus.FBX");
+                    }
+                    ImGui::EndMenu();
+                }
                 ImGui::EndMenu();
             }
 

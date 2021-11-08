@@ -22,7 +22,7 @@ bool ModuleCamera3D::Start()
 {
 	LOG("Setting up the camera");
 
-	Move(vec3(1.0f, 1.0f, 0.0f));
+	Move(vec3(3.0f, 3.0f, 3.0f));
 	LookAt(vec3(0, 0, 0));
 
 	bool ret = true;
