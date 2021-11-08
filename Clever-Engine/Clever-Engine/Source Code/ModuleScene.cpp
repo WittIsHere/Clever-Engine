@@ -24,6 +24,7 @@ bool ModuleScene::Start()
 	LOG("ModuleScene Starting");
 	bool ret = true;
 
+	CreateRootNode();
 	return ret;
 }
 
@@ -44,12 +45,14 @@ bool ModuleScene::CleanUp()
 void ModuleScene::CreateRootNode()
 {
 	//root node creation
-	GameObject* RN = new GameObject()
+	const char* rootName = "RootNode";
+	GameObject* RN = new GameObject(rootName);
 
+	rootNode = RN;	//assign a root node
 }
 
 GameObject* ModuleScene::CreateGameObject()
 {
-	GameObject* ret = new GameObject;
+	GameObject* ret = new GameObject();
 	return ret;
 }

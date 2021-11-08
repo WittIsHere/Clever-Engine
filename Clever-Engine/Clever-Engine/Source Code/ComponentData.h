@@ -13,6 +13,7 @@ enum DATA_TYPE
 
 class ComponentData
 {
+public:
 	DATA_TYPE type = DATA_TYPE::NONE;
 	//UID?
 };

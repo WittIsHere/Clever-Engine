@@ -453,6 +453,12 @@
     <ClInclude Include="Source Code\ComponentData.h">
       <Filter>Source Code\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\MeshData.h">
+      <Filter>Source Code\GameObjects\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\MaterialData.h">
+      <Filter>Source Code\GameObjects\ComponentData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">
@@ -508,6 +514,9 @@
     </Filter>
     <Filter Include="Source Code\GameObjects\Components">
       <UniqueIdentifier>{d3a4a9a3-1b13-42a7-8717-d1b9becc9d07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\GameObjects\ComponentData">
+      <UniqueIdentifier>{df1b5fe8-6a3a-4367-8eb0-3aaea3afdaf3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

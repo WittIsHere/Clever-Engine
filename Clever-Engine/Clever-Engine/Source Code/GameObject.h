@@ -5,14 +5,16 @@
 #include "c_Mesh.h"
 
 #include <vector>
+#include <string>
 
 class MeshData;
+class ComponentData;
 
 class GameObject
 {
 public:
-	GameObject(char* name, GameObject* parent);//If prent is null then GO is set to be the root 
-	//GameObject(char* name, GameObject* parent, MeshData* CD);
+	GameObject(const char* name);	//If prent is null then GO is set to be the root 
+	GameObject(const char* name, GameObject* parent, ComponentData* mesh);	//shortcut to create directly with a mesh?
 	~GameObject();
 
 	// Methods
@@ -20,7 +22,7 @@ public:
 	bool Init();
 	bool Update();
 
-	Component* CreateComponent(ComponentType type, ComponentData* data);
+	Component* CreateComponent(ComponentData* CD);
 
 	void AddComponent(Component* copyCmp); //copy an existing "component"
 
@@ -29,7 +31,7 @@ public:
 
 public:
 
-	char* name = nullptr;
+	std::string name = nullptr;
 	bool isRoot = false;
 	bool isActive = true;
 	bool toDestroy = false;

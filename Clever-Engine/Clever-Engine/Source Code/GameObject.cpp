@@ -1,25 +1,25 @@
 #include "GameObject.h"
-#include "ModuleScene.h"	//cutre
+#include "ComponentData.h"
+#include "MeshData.h"
+#include "MaterialData.h"
 #include "c_Transform.h"
 #include "c_Mesh.h"
 #include "c_Material.h"
 
-GameObject::GameObject(char* name, GameObject* parent)
+GameObject::GameObject(const char* name)
 {
-	if (parent == nullptr)
-		isRoot = true;
-
-	this->parent = parent;
-	this->name = name;
+	this->name = *name;
+	parent = nullptr;
+	isRoot = true;
 	toDestroy = false;
 }
 
-GameObject::GameObject(char* name, GameObject* parent, MeshData* mesh)
+GameObject::GameObject(const char* name, GameObject* parent, ComponentData* mesh)
 {
 	toDestroy = false;
-	this->name = name;
+	this->name = *name;
 	this->parent = parent;
-	CreateComponent(mesh->type);
+	CreateComponent(mesh);
 }
 
 GameObject::~GameObject()
@@ -59,7 +59,7 @@ bool GameObject::Update()
 Component* GameObject::CreateComponent(ComponentData* CD)
 {
 	Component* ret = nullptr;
-	switch (CD.type)
+	switch (CD->type)
 	{
 	case(ComponentType::TRANSFORM):
 	{

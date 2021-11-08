@@ -2,8 +2,11 @@
 #include "Application.h"
 #include "ModuleImporter.h"
 #include "ModuleScene.h"
+
 #include "c_Mesh.h"
+#include "MeshData.h"
 #include "c_Material.h"
+#include "MaterialData.h"
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
