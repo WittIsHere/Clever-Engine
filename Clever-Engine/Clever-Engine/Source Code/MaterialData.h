@@ -1,8 +1,10 @@
 #pragma once
 #include "ComponentData.h"
 
-class textureData : public ComponentData
+class TextureData : public ComponentData
 {
-	const char* path;
+	//create constructors
+public:
+	const char* path = nullptr;
 	uint textureID;
 };

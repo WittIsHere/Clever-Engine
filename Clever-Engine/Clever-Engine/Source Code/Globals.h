@@ -29,6 +29,7 @@ enum update_status
 };
 //Basic info ---------------
 #define ENGINE_NAME "Clever Engine"
+#define ROOT_NAME "Root Node"
 
 // Configuration -----------
 #define LOG_LENGTH 50

@@ -1,19 +1,13 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "c_Mesh.h"
 
 #include <vector>
 
 struct aiMesh;
 struct c_Material;
-struct meshData;
-
-struct SceneData
-{
-	std::vector<c_Mesh*> myMeshes; 
-	std::vector<c_Material*> myTextures;
-};
+struct MeshData;
+struct MaterialData;
 
 class ModuleImporter : public Module
 {
@@ -28,12 +22,10 @@ public:
 	bool CleanUp();
 
 	void ImportScene(const char* file_path);
-	void ImportMesh(aiMesh* mesh, meshData* myMesh);
+	void ImportMesh(aiMesh* mesh, MeshData* myMesh);
 
-	void LoadTextureFromPathAndFill(const char* path, c_Mesh* myMesh);
+	void LoadTextureFromPathAndFill(const char* path, MeshData* myMesh);
 	uint LoadTextureFromPath(const char* path);
-
-	SceneData myScene;
 
 private:
 	const char* textPath;

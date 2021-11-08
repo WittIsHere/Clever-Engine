@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleImporter.h"
 #include "ModuleScene.h"
+#include "GameObject.h"
 
 #include "c_Mesh.h"
 #include "MeshData.h"
@@ -87,7 +88,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 			for (int i = 0; i < aiScene->mNumMeshes; i++)
 			{
 				//create empty meshData and add it to the array
-				meshData* tempMesh = new meshData;
+				MeshData* tempMesh = new MeshData();
 				App->scene->meshPool.push_back(tempMesh);
 				aiMesh* currentAiMesh = aiScene->mMeshes[i];			
 
@@ -95,7 +96,11 @@ void ModuleImporter::ImportScene(const char* file_path)
 				ImportMesh(currentAiMesh, tempMesh); 
 
 				//create a new GO with a component mesh using meshData
-				App->scene->CreateGameObject(); //parent needed, if null maybe it should default to null 
+				std::string GOName = "GO" + i;
+				//should add parent depending on the hierarchy but there is no hierarchy yet so parent is root.
+				GameObject* GO = App->scene->CreateGameObject(GOName.c_str(), App->scene->rootNode);
+				GO->CreateComponent((ComponentData*)tempMesh);
+
 				uint tempIndex = currentAiMesh->mMaterialIndex;
 				if (tempIndex >= 0)
 				{
@@ -106,7 +111,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 					{
 						std::string fullPath = ASSETS_PATH;
 						fullPath += texPath.C_Str();
-						LoadTextureFromPathAndFill(fullPath.c_str(), myScene.myMeshes[i]);
+						LoadTextureFromPathAndFill(fullPath.c_str(), App->scene->meshPool[i]);
 					}
 				}
 			}
@@ -183,7 +188,7 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, meshData* myMesh)
 	//}
 }
 
-void ModuleImporter::LoadTextureFromPathAndFill(const char* path, c_Mesh* myMesh)
+void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMesh)
 {
 	uint textureBuffer = 0;
 	ILuint id_img = 0;
@@ -206,8 +211,8 @@ void ModuleImporter::LoadTextureFromPathAndFill(const char* path, c_Mesh* myMesh
 			if (error)
 				LOG("ERROR: Failed binding the DevIL Texture with OpenGl: %s", iluErrorString(error));
 
-			c_Material* texData = new c_Material;
-			myScene.myTextures.push_back(texData);	//Add a new texture to the textures array
+			TextureData* texData = new TextureData();
+			App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
 
 			texData->path = path;	//assign the new texture its path
 			texData->textureID = tempTextureID;	//assign the new texture its ID

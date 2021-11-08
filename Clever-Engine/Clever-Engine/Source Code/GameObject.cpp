@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Globals.h"
 #include "ComponentData.h"
 #include "MeshData.h"
 #include "MaterialData.h"
@@ -14,12 +15,11 @@ GameObject::GameObject(const char* name)
 	toDestroy = false;
 }
 
-GameObject::GameObject(const char* name, GameObject* parent, ComponentData* mesh)
+GameObject::GameObject(const char* name, GameObject* parent)
 {
-	toDestroy = false;
 	this->name = *name;
 	this->parent = parent;
-	CreateComponent(mesh);
+	toDestroy = false;
 }
 
 GameObject::~GameObject()

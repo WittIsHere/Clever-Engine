@@ -1,8 +1,11 @@
 #pragma once
 #include "ComponentData.h"
 
-class meshData : public ComponentData
+class MeshData : public ComponentData
 {
+	//create constructors
+
+public:
 	uint vertexCount = 0;				// Number of Vertex
 
 	uint vPosID = 0;					// Vertex Positions Buffer ID

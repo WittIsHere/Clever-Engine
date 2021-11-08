@@ -51,8 +51,8 @@ void ModuleScene::CreateRootNode()
 	rootNode = RN;	//assign a root node
 }
 
-GameObject* ModuleScene::CreateGameObject()
+GameObject* ModuleScene::CreateGameObject(const char* name, GameObject* parent)
 {
-	GameObject* ret = new GameObject();
+	GameObject* ret = new GameObject(name, parent);
 	return ret;
 }

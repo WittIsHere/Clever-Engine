@@ -13,8 +13,8 @@ class ComponentData;
 class GameObject
 {
 public:
-	GameObject(const char* name);	//If prent is null then GO is set to be the root 
-	GameObject(const char* name, GameObject* parent, ComponentData* mesh);	//shortcut to create directly with a mesh?
+	GameObject(const char* name);	//If no parent specified, then GO is set to be the root 
+	GameObject(const char* name, GameObject* parent);
 	~GameObject();
 
 	// Methods

@@ -18,14 +18,14 @@ public:
 	update_status Update(float ft);
 	bool CleanUp();
 
-	GameObject* CreateGameObject(d);
+	GameObject* CreateGameObject(const char* name, GameObject* parent);
 
 public:
 	GameObject* rootNode;
 	std::vector<GameObject*> gameObjects;
 
-	std::vector<meshData*> meshPool;
-	std::vector<textureData*> texturePool;
+	std::vector<MeshData*> meshPool;
+	std::vector<TextureData*> texturePool;
 
 private:
 
