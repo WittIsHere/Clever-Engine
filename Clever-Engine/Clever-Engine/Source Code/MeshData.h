@@ -1,11 +1,12 @@
 #pragma once
 #include "ComponentData.h"
 
+class TextureData;
+
 class MeshData : public ComponentData
 {
-	//create constructors
-
 public:
+
 	uint vertexCount = 0;				// Number of Vertex
 
 	uint vPosID = 0;					// Vertex Positions Buffer ID
@@ -21,5 +22,5 @@ public:
 	uint indicesCount = 0;				// Number of Indices
 	uint* indicesData = nullptr;		// Indices Array
 
-	c_Material* texture = 0;			// Pointer to acess the texture inside myTexures() vector
+	TextureData* texture = 0;			// Pointer to acess the texture inside myTexures() vector
 };

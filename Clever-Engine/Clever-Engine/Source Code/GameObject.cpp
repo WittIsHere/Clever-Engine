@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Application.h"
 #include "Globals.h"
 #include "ComponentData.h"
 #include "MeshData.h"
@@ -61,21 +62,21 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	Component* ret = nullptr;
 	switch (CD->type)
 	{
-	case(ComponentType::TRANSFORM):
+	case(COMPONENT_TYPE::TRANSFORM):
 	{
 		c_Transform* cmp = new c_Transform();
 		myComponents.push_back((Component*)cmp);
 		ret = cmp;
 		break;
 	}
-	case(ComponentType::MATERIAL):
+	case(COMPONENT_TYPE::MATERIAL):
 	{
 		c_Material* cmp = new c_Material();
 		myComponents.push_back((Component*)cmp);
 		ret = cmp;
 		break;
 	}
-	case(ComponentType::MESH):
+	case(COMPONENT_TYPE::MESH):
 	{
 		c_Mesh* cmp = new c_Mesh();
 		myComponents.push_back((Component*)cmp);
@@ -91,10 +92,11 @@ void GameObject::AddComponent(Component* copyCmp)
 	myComponents.push_back(copyCmp);
 }
 
-void GameObject::PrepareDraw()
-{
-}
-
 void GameObject::Draw()
 {
+	for (int i = 0; i < myComponents.size(); i++)
+	{
+		if(myComponents[i]->type == COMPONENT_TYPE::MESH)
+			App->renderer3D->DrawMesh((MeshData*)myComponents[i]);
+	}
 }

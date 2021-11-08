@@ -1,10 +1,13 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
-#include "Primitive.h"
 #include "ModuleImporter.h"
+#include "ModuleScene.h"
+#include "MeshData.h"
+#include "MaterialData.h"
 #include "c_Mesh.h"
 #include "c_Material.h"
+#include "Primitive.h"
 
 #include "OpenGl.h"
 
@@ -133,7 +136,7 @@ bool ModuleRenderer3D::Init()
 bool ModuleRenderer3D::Start()
 {
 	// Import Scene -------
-	currentScene = &App->importer->myScene;
+	/*currentScene = &App->importer->myScene;*/
 
 	return true;
 }
@@ -163,17 +166,17 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	static bool emptyScene = false; //TODO: FIX THIS
+	//static bool emptyScene = false; //TODO: FIX THIS
 
-	if (currentScene == nullptr)
-	{
-		emptyScene = true;
-		//LOG("Error: Empty Scene");
-	}
-	if(!emptyScene)
-	{
-		DrawScene();
-	}
+	//if (currentScene == nullptr)
+	//{
+	//	emptyScene = true;
+	//	//LOG("Error: Empty Scene");
+	//}
+	//if(!emptyScene)
+	//{
+	DrawScene();
+	//}
 
 	//glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -217,7 +220,7 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 void ModuleRenderer3D::PrepareDrawScene(SceneData* scene)
 {
-	if (scene == nullptr)
+	/*if (scene == nullptr)
 	{
 		LOG("ERROR: Scene is null");
 		return;
@@ -225,11 +228,11 @@ void ModuleRenderer3D::PrepareDrawScene(SceneData* scene)
 
 	for (int i = 0; i < scene->myMeshes.size(); i++)
 	{
-		PrepareDrawMesh(scene->myMeshes[i]);
-	}
+		PrepareMesh(scene->myMeshes[i]);
+	}*/
 }
 
-void ModuleRenderer3D::PrepareDrawMesh(c_Mesh* mesh)
+void ModuleRenderer3D::PrepareMesh(MeshData* mesh)
 {
 	glGenBuffers(1, &mesh->vPosID);
 	glGenBuffers(1, &mesh->vTexCoordsID);
@@ -253,14 +256,10 @@ void ModuleRenderer3D::PrepareDrawMesh(c_Mesh* mesh)
 
 void ModuleRenderer3D::DrawScene()
 {
-
-	for (int i = 0; i < currentScene->myMeshes.size(); i++)
-	{
-		DrawMesh(currentScene->myMeshes[i]);
-	}
+	App->scene->Draw();
 }
 
-void ModuleRenderer3D::DrawMesh(c_Mesh* mesh)
+void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 {
 	//vertices
 	if (mesh->vPosID != 0)

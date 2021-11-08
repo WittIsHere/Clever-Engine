@@ -5,14 +5,6 @@
 
 class GameObject;
 
-enum ComponentType
-{
-	NONE,
-	MESH,
-	TRANSFORM,
-	MATERIAL
-};
-
 class Component
 {
 public:
@@ -26,7 +18,7 @@ public:
 	//addcomponent()
 
 public:
-	ComponentType type;
+	COMPONENT_TYPE type;
 	ComponentData data;
 
 	bool isActive = true;

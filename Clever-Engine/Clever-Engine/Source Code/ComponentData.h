@@ -3,7 +3,7 @@
 
 #include "Globals.h"
 
-enum DATA_TYPE
+enum COMPONENT_TYPE
 {
 	NONE,
 	TRANSFORM,	//necessary?
@@ -14,6 +14,6 @@ enum DATA_TYPE
 class ComponentData
 {
 public:
-	DATA_TYPE type = DATA_TYPE::NONE;
+	COMPONENT_TYPE type = COMPONENT_TYPE::NONE;
 	//UID?
 };

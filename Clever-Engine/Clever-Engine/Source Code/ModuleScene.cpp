@@ -34,6 +34,15 @@ update_status ModuleScene::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
+bool ModuleScene::Draw()
+{
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		if(gameObjects[i]->isActive == true)
+			gameObjects[i]->Draw();
+	}
+	return true;
+}
 
 bool ModuleScene::CleanUp()
 {
@@ -45,8 +54,7 @@ bool ModuleScene::CleanUp()
 void ModuleScene::CreateRootNode()
 {
 	//root node creation
-	const char* rootName = "RootNode";
-	GameObject* RN = new GameObject(rootName);
+	GameObject* RN = new GameObject(ROOT_NAME);
 
 	rootNode = RN;	//assign a root node
 }
@@ -54,5 +62,7 @@ void ModuleScene::CreateRootNode()
 GameObject* ModuleScene::CreateGameObject(const char* name, GameObject* parent)
 {
 	GameObject* ret = new GameObject(name, parent);
+	gameObjects.push_back(ret);
+
 	return ret;
 }

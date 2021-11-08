@@ -4,13 +4,13 @@
 
 c_Material::c_Material()
 {
-	type = ComponentType::MATERIAL;
+	type = COMPONENT_TYPE::MATERIAL;
 	resourceTexture = nullptr;
 }
 
 c_Material::c_Material(textureData* data)
 {
-	type = ComponentType::MATERIAL;
+	type = COMPONENT_TYPE::MATERIAL;
 	resourceTexture = data;
 }
 

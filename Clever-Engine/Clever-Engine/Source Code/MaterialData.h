@@ -3,7 +3,6 @@
 
 class TextureData : public ComponentData
 {
-	//create constructors
 public:
 	const char* path = nullptr;
 	uint textureID;

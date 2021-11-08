@@ -96,7 +96,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 				ImportMesh(currentAiMesh, tempMesh); 
 
 				//create a new GO with a component mesh using meshData
-				std::string GOName = "GO" + i;
+				std::string GOName = "GO" + i;	//TODO: filename
 				//should add parent depending on the hierarchy but there is no hierarchy yet so parent is root.
 				GameObject* GO = App->scene->CreateGameObject(GOName.c_str(), App->scene->rootNode);
 				GO->CreateComponent((ComponentData*)tempMesh);
@@ -111,7 +111,19 @@ void ModuleImporter::ImportScene(const char* file_path)
 					{
 						std::string fullPath = ASSETS_PATH;
 						fullPath += texPath.C_Str();
-						LoadTextureFromPathAndFill(fullPath.c_str(), App->scene->meshPool[i]);
+
+						uint tempTextureID = LoadTextureFromPath(fullPath.c_str());
+	
+						if (tempTextureID > 0)
+						{
+							TextureData* texData = new TextureData();
+							App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
+
+							texData->path = texPath.C_Str();	//assign the new texture its path
+							texData->textureID = tempTextureID;	//assign the new texture its ID
+
+							tempMesh->texture = texData;	//assign the texture to the current mesh
+						}
 					}
 				}
 			}
@@ -125,7 +137,7 @@ void ModuleImporter::ImportScene(const char* file_path)
 	}
 }
 
-void ModuleImporter::ImportMesh(aiMesh* mesh, meshData* myMesh)
+void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 {
 	// Copying number of vertices
 	myMesh->vertexCount = mesh->mNumVertices;
@@ -170,7 +182,7 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, meshData* myMesh)
 	{
 		LOG("Warning, No texture coordinates found");
 	}
-	App->renderer3D->PrepareDrawMesh(myMesh);
+	App->renderer3D->PrepareMesh(myMesh);
 
 	// Copying Normals
 	//if (mesh->HasNormals())
@@ -211,13 +223,15 @@ void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMe
 			if (error)
 				LOG("ERROR: Failed binding the DevIL Texture with OpenGl: %s", iluErrorString(error));
 
+			//TODO: check for duplicates?
+
 			TextureData* texData = new TextureData();
 			App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
 
 			texData->path = path;	//assign the new texture its path
 			texData->textureID = tempTextureID;	//assign the new texture its ID
 
-			myMesh->texture = texData;	
+			myMesh->texture = texData;	//assign the texture to the current mesh
 		}
 		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
 
@@ -268,7 +282,7 @@ uint ModuleImporter::LoadTextureFromPath(const char* path)
 		if (error)
 			LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
 
-		if (ilLoad(IL_TYPE_UNKNOWN, path)) 
+		if (ilLoad(IL_TYPE_UNKNOWN, path))
 		{
 			textureBuffer = ilutGLBindTexImage();
 

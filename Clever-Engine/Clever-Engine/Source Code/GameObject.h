@@ -26,12 +26,11 @@ public:
 
 	void AddComponent(Component* copyCmp); //copy an existing "component"
 
-	void PrepareDraw();
-	void Draw();  // ??
+	void Draw(); 
 
 public:
 
-	std::string name = nullptr;
+	std::string name;
 	bool isRoot = false;
 	bool isActive = true;
 	bool toDestroy = false;

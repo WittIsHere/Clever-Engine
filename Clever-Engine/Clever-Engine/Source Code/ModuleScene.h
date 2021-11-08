@@ -16,6 +16,7 @@ public:
 	bool Init();
 	bool Start();
 	update_status Update(float ft);
+	bool Draw();
 	bool CleanUp();
 
 	GameObject* CreateGameObject(const char* name, GameObject* parent);
