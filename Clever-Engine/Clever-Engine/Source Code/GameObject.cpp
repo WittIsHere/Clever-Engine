@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "Application.h"
 #include "Globals.h"
+#include "Random.h"
 #include "ComponentData.h"
 #include "MeshData.h"
 #include "MaterialData.h"
@@ -14,6 +15,7 @@ GameObject::GameObject(const char* name)
 	parent = nullptr;
 	isRoot = true;
 	toDestroy = false;
+	UUID = Random::GetRandomUint();
 }
 
 GameObject::GameObject(const char* name, GameObject* parent)
@@ -21,6 +23,7 @@ GameObject::GameObject(const char* name, GameObject* parent)
 	this->name = name;
 	this->parent = parent;
 	toDestroy = false;
+	UUID = Random::GetRandomUint();
 }
 
 GameObject::~GameObject()
@@ -62,13 +65,13 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	Component* ret = nullptr;
 	switch (CD->type)
 	{
-	/*case(COMPONENT_TYPE::TRANSFORM):
+	case(COMPONENT_TYPE::TRANSFORM):
 	{
-		c_Transform* cmp = new c_Transform(CD);
-		myComponents.push_back(this, (Component*)cmp);
+		c_Transform* cmp = new c_Transform(this, CD);
+		myComponents.push_back((Component*)cmp);
 		ret = cmp;
 		break;
-	}*/
+	}
 	case(COMPONENT_TYPE::MATERIAL):
 	{
 		c_Material* cmp = new c_Material(this, CD);
@@ -87,9 +90,34 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	return ret;
 }
 
+uint GameObject::GetComponentCount()
+{
+	return myComponents.size();
+}
+
+const Component* GameObject::GetComponent(uint componentIndex)
+{
+	return myComponents[componentIndex];
+}
+
 void GameObject::AddChild(GameObject* child)
 {
 	myChildren.push_back(child);
+}
+
+uint GameObject::GetChildCount()
+{
+	return myChildren.size();
+}
+
+uint32 GameObject::GetChildUID(uint childIndex)
+{
+	return myChildren[childIndex]->UUID;
+}
+
+GameObject* GameObject::GetChildData(uint childIndex)
+{
+	return myChildren[childIndex];
 }
 
 void GameObject::Draw()

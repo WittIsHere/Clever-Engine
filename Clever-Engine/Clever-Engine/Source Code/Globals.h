@@ -20,6 +20,7 @@ void log(const char file[], int line, const char* format, ...);
 #define YELLOW ImVec4(1.f,1.f,0.f,1.f)
 
 typedef unsigned int uint;
+typedef unsigned __int32 uint32;
 
 enum update_status
 {

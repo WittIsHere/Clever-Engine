@@ -23,8 +23,13 @@ public:
 	bool Update();
 
 	Component* CreateComponent(ComponentData* CD);
+	uint GetComponentCount();
+	const Component* GetComponent(uint componentIndex);
 
 	void AddChild(GameObject* child); //copy an existing "component"
+	uint GetChildCount();
+	uint32 GetChildUID(uint childIndex);
+	GameObject* GetChildData(uint childIndex);
 
 	void Draw(); 
 
@@ -34,9 +39,10 @@ public:
 	bool isRoot = false;
 	bool isActive = true;
 	bool toDestroy = false;
+	int UUID = 0;
 
-	std::vector<GameObject*> myChildren;
 private:
+	std::vector<GameObject*> myChildren;
 
 	GameObject* parent;
 	std::vector<Component*> myComponents;

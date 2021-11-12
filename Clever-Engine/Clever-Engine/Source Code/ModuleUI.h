@@ -24,6 +24,7 @@ private:
 	void DrawConfigurationSpace(bool* active);
 	void DrawHierarchySpace(bool* active);
 	void ShowChildData(GameObject* GO);
+	void DrawInspectorSpace(bool* active);
 
 	void ShowDockingDisabledMessage();
 
@@ -46,6 +47,8 @@ private:
 	bool activeConfiguration = false;
 	bool activeDockingSpace = false;
 	bool activeHierarchy = true;
+	bool activeInspector = false;
+	int nodeClicked = -1;
 
 	//Configuration window variables
 	bool need_scroll = false;

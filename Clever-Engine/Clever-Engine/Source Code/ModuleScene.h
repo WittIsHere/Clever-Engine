@@ -20,6 +20,7 @@ public:
 	bool CleanUp();
 
 	GameObject* CreateGameObject(const char* name, GameObject* parent);
+	GameObject* GetGO(uint32 uuid);
 
 public:
 	GameObject* rootNode;

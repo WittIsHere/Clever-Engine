@@ -246,10 +246,6 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 			//import the data into the struct
 			ImportMesh(currentAiMesh, tempMesh);
 
-			//create a new GO with a component mesh using meshData
-			std::string GOName = "GO" + i;	//TODO: filename
-			//should add parent depending on the hierarchy but there is no hierarchy yet so parent is root.
-			GameObject* GO = App->scene->CreateGameObject(GOName.c_str(), App->scene->rootNode);
 			GO->CreateComponent((ComponentData*)tempMesh);
 
 			uint tempIndex = currentAiMesh->mMaterialIndex;

@@ -66,3 +66,17 @@ GameObject* ModuleScene::CreateGameObject(const char* name, GameObject* parent)
 
 	return ret;
 }
+
+GameObject* ModuleScene::GetGO(uint32 uuid)
+{
+	GameObject* ret = nullptr;
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		if (gameObjects[i]->UUID == uuid)
+		{
+			ret = gameObjects[i];
+			break;
+		}
+	}
+	return ret;
+}

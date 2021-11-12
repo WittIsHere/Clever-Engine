@@ -240,7 +240,7 @@ update_status ModuleUI::Update(float dt)
     DrawConsoleSpace(&activeConsole);
     DrawConfigurationSpace(&activeConfiguration);
     DrawHierarchySpace(&activeHierarchy);
-
+    DrawInspectorSpace(&activeInspector);
     return UPDATE_CONTINUE;
 }
 update_status ModuleUI::PostUpdate(float dt)
@@ -291,7 +291,7 @@ void ModuleUI::DrawConsoleSpace(bool* active)
         ImGui::End();
         return;
     }
-    {//console space
+    {   //console space
         for (uint i = 0; i < buffer.size(); i++)
         {
             const char* item = buffer[i];
@@ -322,7 +322,7 @@ void ModuleUI::DrawConfigurationSpace(bool* active)
         ImGui::End();
         return;
     }
-    {//configuration space
+    {   //configuration space
         if (ImGui::CollapsingHeader("Application"))
         {
             char appName[100];
@@ -414,11 +414,6 @@ void ModuleUI::DrawConfigurationSpace(bool* active)
             bool borderless = App->window->IsBorderless();
             bool full_desktop = App->window->IsFullscreenDesktop();
 
-            if (ImGui::Checkbox("Fullscreen", &fullscreen))
-            {
-                //App->window->SetFullscreen(fullscreen);			//Doesn't work properly
-            }
-
             ImGui::SameLine();
             if (ImGui::Checkbox("Fullscreen Desktop", &full_desktop))
             {
@@ -473,23 +468,137 @@ void ModuleUI::DrawHierarchySpace(bool* active)
     ImGui::Begin("Hierarchy", active, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     GameObject* root = App->scene->rootNode;
     ShowChildData(root);
-    
+    //how to right click menu
     ImGui::End();   
 }
+
  void ModuleUI::ShowChildData(GameObject* GO)
  {
      ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 
      if (GO == App->scene->rootNode) flags |= ImGuiTreeNodeFlags_DefaultOpen;
+     if (GO->UUID == nodeClicked) flags |= ImGuiTreeNodeFlags_Selected;
 
      if (ImGui::TreeNodeEx(GO->name.c_str(), flags))
      {
-         for (int i = 0; i < GO->myChildren.size(); i++)
+         if (ImGui::IsItemClicked())
          {
-             ShowChildData(GO->myChildren[i]);
+             nodeClicked = GO->UUID;
+             if (activeInspector == false)
+                activeInspector = true;
+ 
+         }
+         
+         for (int i = 0; i < GO->GetChildCount(); i++)
+         {
+             ShowChildData(GO->GetChildData(i));
          }
          ImGui::TreePop();
      }
+ }
+
+ void ModuleUI::DrawInspectorSpace(bool* active)
+ {
+     if (*active == false)
+         return;
+
+     if (!ImGui::Begin("Inspector", active))
+     {
+         ImGui::End();
+         return;
+     }
+     {   //configuration space
+         if (nodeClicked != -1 && nodeClicked != App->scene->rootNode->UUID)
+         {
+             GameObject* GO = App->scene->GetGO(nodeClicked);
+             if (ImGui::CollapsingHeader(GO->name.c_str()))
+             {
+                 for (int i = 0; i < GO->GetComponentCount(); i++)
+                 {
+                     const Component* cmp = GO->GetComponent(i);
+                     switch (cmp->type)
+                     {
+                        case (COMPONENT_TYPE::TRANSFORM):
+                        {
+                            // TransformData* transform = (TransformData*)cmp;
+                            break;
+                        }
+                        case (COMPONENT_TYPE::MESH):
+                        {
+                            MeshData* meshData = (MeshData*)cmp->data;
+                            if (ImGui::CollapsingHeader("Mesh"))
+                            {
+                                //active or not and a ceckbox
+                            }
+                            break;
+                        }
+                        case (COMPONENT_TYPE::MATERIAL):
+                        {
+                            TextureData* texData = (TextureData*)cmp->data;
+                            if (ImGui::CollapsingHeader("Mesh"))
+                            {
+
+                            }
+                            break;
+                        }
+                     }
+                 }
+                    
+             }
+         }
+         else
+         {
+             ImGui::Text("Select a valid node from hierarchy window to display properties");
+         }  
+     }
+     ImGui::End();
+
+     ////
+     //////name of the selected GO with the option to change it
+     //////static or not and a checkbox
+     //////add/remove component
+     ////if (nodeClicked != -1)
+     ////{
+     ////    GameObject* GO = App->scene->GetGO(nodeClicked);
+     ////    
+     ////    if (ImGui::CollapsingHeader(GO->name.c_str()))
+     ////    {
+
+     ////        for (int i = 0; i < GO->GetComponentCount(); i++)
+     ////        {
+     ////            const Component* cmp = GO->GetComponent(i);
+     ////            switch (cmp->type)
+     ////            {
+     ////            case (COMPONENT_TYPE::TRANSFORM):
+     ////            {
+     ////                // TransformData* transform = (TransformData*)cmp;
+     ////            }
+     ////            case (COMPONENT_TYPE::MESH):
+     ////            {
+     ////                MeshData* meshData = (MeshData*)cmp->data;
+     ////                if (ImGui::CollapsingHeader("Mesh"))
+     ////                {
+     ////                    //active or not and a ceckbox
+     ////                }
+     ////            }
+     ////            case (COMPONENT_TYPE::MATERIAL):
+     ////            {
+     ////                TextureData* texData = (TextureData*)cmp->data;
+     ////                if (ImGui::CollapsingHeader("Mesh"))
+     ////                {
+
+     ////                }
+     ////            }
+     ////            }
+
+     ////        }
+     ////    }
+     ////}
+     ////else
+     ////{
+     ////    ImGui::Text("Select a node from hierarchy window to display properties");
+     ////}
+     //ImGui::End;
  }
 
 void ModuleUI::AddLogFPS(float fps, float ms)

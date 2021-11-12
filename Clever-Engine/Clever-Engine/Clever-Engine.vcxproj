@@ -299,6 +299,7 @@
     <ClInclude Include="Source Code\OpenGl.h" />
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\c_Material.h" />
+    <ClInclude Include="Source Code\Random.h" />
     <ClInclude Include="Source Code\Timer.h" />
     <ClInclude Include="Source Code\c_Transform.h" />
   </ItemGroup>

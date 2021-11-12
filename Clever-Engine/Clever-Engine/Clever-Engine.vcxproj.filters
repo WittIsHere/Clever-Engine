@@ -459,6 +459,9 @@
     <ClInclude Include="Source Code\MaterialData.h">
       <Filter>Source Code\GameObjects\ComponentData</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\Random.h">
+      <Filter>Source Code\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">
