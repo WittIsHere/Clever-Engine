@@ -25,7 +25,7 @@ bool ModuleScene::Start()
 	bool ret = true;
 
 	
-	return ret;
+	return ret;                        
 }
 
 update_status ModuleScene::Update(float dt)
@@ -39,7 +39,7 @@ bool ModuleScene::Draw()
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
 		if(gameObjects[i]->isActive == true)
-			gameObjects[i]->Draw();
+			gameObjects[i]->Draw();          
 	}
 	return true;
 }

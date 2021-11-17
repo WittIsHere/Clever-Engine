@@ -1,9 +1,10 @@
 #pragma once
 #include "ComponentData.h"
+#include <string>
 
 class TextureData : public ComponentData
 {
 public:
-	const char* path = nullptr;
+	std::string path;
 	uint textureID;
 };

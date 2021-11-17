@@ -441,7 +441,9 @@ void ModuleUI::DrawConfigurationSpace(bool* active)
             ImGui::Text("ImGui Version:");
             ImGui::SameLine();
             ImGui::TextColored(YELLOW, "%s", IMGUI_VERSION);
-
+            if (ImGui::Checkbox("ImGui Demo Window", &showDemoWindow));
+            ImGui::ShowDemoWindow(&showDemoWindow);    
+            
             SDL_version sdl_version;
             SDL_GetVersion(&sdl_version);
             ImGui::Text("SDL Version:");
@@ -528,16 +530,19 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                             MeshData* meshData = (MeshData*)cmp->data;
                             if (ImGui::CollapsingHeader("Mesh"))
                             {
-                                //active or not and a ceckbox
+                                ImGui::Text("Vertex Count:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, "%d", (meshData->vertexCount));
+                                ImGui::Text("Indices Count:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, "%d", (meshData->indicesCount));
                             }
                             break;
                         }
                         case (COMPONENT_TYPE::MATERIAL):
                         {
                             TextureData* texData = (TextureData*)cmp->data;
-                            if (ImGui::CollapsingHeader("Mesh"))
+                            if (ImGui::CollapsingHeader("Material"))
                             {
-
+                                ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, texData->path.c_str());
+                                ImGui::Text("Texture Sample:");
+                                ImGui::Image((void*)(intptr_t)texData->textureID, ImVec2(256, 256));//try this without the cast to intptr_t. The only use i found for that is either doing bitwise operations with adresses (which wyou cannot do with a normal pointer) and to use it as a coparison
                             }
                             break;
                         }
@@ -552,53 +557,6 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          }  
      }
      ImGui::End();
-
-     ////
-     //////name of the selected GO with the option to change it
-     //////static or not and a checkbox
-     //////add/remove component
-     ////if (nodeClicked != -1)
-     ////{
-     ////    GameObject* GO = App->scene->GetGO(nodeClicked);
-     ////    
-     ////    if (ImGui::CollapsingHeader(GO->name.c_str()))
-     ////    {
-
-     ////        for (int i = 0; i < GO->GetComponentCount(); i++)
-     ////        {
-     ////            const Component* cmp = GO->GetComponent(i);
-     ////            switch (cmp->type)
-     ////            {
-     ////            case (COMPONENT_TYPE::TRANSFORM):
-     ////            {
-     ////                // TransformData* transform = (TransformData*)cmp;
-     ////            }
-     ////            case (COMPONENT_TYPE::MESH):
-     ////            {
-     ////                MeshData* meshData = (MeshData*)cmp->data;
-     ////                if (ImGui::CollapsingHeader("Mesh"))
-     ////                {
-     ////                    //active or not and a ceckbox
-     ////                }
-     ////            }
-     ////            case (COMPONENT_TYPE::MATERIAL):
-     ////            {
-     ////                TextureData* texData = (TextureData*)cmp->data;
-     ////                if (ImGui::CollapsingHeader("Mesh"))
-     ////                {
-
-     ////                }
-     ////            }
-     ////            }
-
-     ////        }
-     ////    }
-     ////}
-     ////else
-     ////{
-     ////    ImGui::Text("Select a node from hierarchy window to display properties");
-     ////}
-     //ImGui::End;
  }
 
 void ModuleUI::AddLogFPS(float fps, float ms)

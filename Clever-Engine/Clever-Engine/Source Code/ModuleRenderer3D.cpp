@@ -166,29 +166,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	//static bool emptyScene = false; //TODO: FIX THIS
-
-	//if (currentScene == nullptr)
-	//{
-	//	emptyScene = true;
-	//	//LOG("Error: Empty Scene");
-	//}
-	//if(!emptyScene)
-	//{
 	DrawScene();
-	//}
-
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
-	//glBindTexture(GL_TEXTURE_2D, houseTexture_Buffer);
-	////BindCheckerTex();
-
-	//PollErrors();
-
-	//DMPlane();
-
-	//glBindTexture(GL_TEXTURE_2D, 0);
-	//ImGui Render
 	App->ui->Render();
 
 	SDL_GL_SwapWindow(App->window->window);
@@ -441,7 +419,7 @@ uint ModuleRenderer3D::FillTexture(const void* text, uint width, uint height, in
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format2, GL_UNSIGNED_BYTE, text);
-	//glGenerateMipmap(GL_TEXTURE_2D);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 

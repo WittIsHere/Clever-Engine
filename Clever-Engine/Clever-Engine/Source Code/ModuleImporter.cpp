@@ -87,66 +87,6 @@ void ModuleImporter::ImportScene(const char* file_path)
 			LoadRoot(aiScene->mRootNode, aiScene);
 		}
 	}
-	/*
-	const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
-	if (aiScene != nullptr)
-	{
-		if (aiScene->HasMeshes())
-		{
-			// Use scene->mNumMeshes to iterate on scene->mMeshes array
-			for (int i = 0; i < aiScene->mNumMeshes; i++)
-			{
-				//create empty meshData and add it to the array
-				MeshData* tempMesh = new MeshData();
-				tempMesh->type = COMPONENT_TYPE::MESH;
-				App->scene->meshPool.push_back(tempMesh);
-
-				aiMesh* currentAiMesh = aiScene->mMeshes[i];
-
-				//import the data into the struct
-				ImportMesh(currentAiMesh, tempMesh); 
-
-				//create a new GO with a component mesh using meshData
-				std::string GOName = "GO" + i;	//TODO: filename
-				//should add parent depending on the hierarchy but there is no hierarchy yet so parent is root.
-				GameObject* GO = App->scene->CreateGameObject(GOName.c_str(), App->scene->rootNode);
-				GO->CreateComponent((ComponentData*)tempMesh);
-
-				uint tempIndex = currentAiMesh->mMaterialIndex;
-				if (tempIndex >= 0)
-				{
-					//in case there is a texture add the component texture to the previous GO
-					aiMaterial* currentMaterial = aiScene->mMaterials[currentAiMesh->mMaterialIndex]; //access the mesh material using the mMaterialIndex
-					aiString texPath;
-					if (currentMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
-					{
-						std::string fullPath = ASSETS_PATH;
-						fullPath += texPath.C_Str();
-
-						uint tempTextureID = LoadTextureFromPath(fullPath.c_str());
-	
-						if (tempTextureID > 0)
-						{
-							TextureData* texData = new TextureData();
-							texData->type = COMPONENT_TYPE::MATERIAL;
-							App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
-
-							texData->path = texPath.C_Str();	//assign the new texture its path
-							texData->textureID = tempTextureID;	//assign the new texture its ID
-
-							tempMesh->texture = texData;	//assign the texture to the current mesh
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			LOG("Error loading meshes, scene % s", file_path);
-		}
-
-		aiReleaseImport(aiScene);
-	}*/
 }
 
 void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
@@ -197,19 +137,21 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 	App->renderer3D->PrepareMesh(myMesh);
 
 	// Copying Normals
-	//if (mesh->HasNormals())
-	//{
-	//	myMesh->vNormData = new float[myMesh->vertexCount * 3];
+	if (mesh->HasNormals())
+	{
+		myMesh->vNormData = new float[myMesh->vertexCount * 3];
 
-	//	for (uint i = 0; i < myMesh->vertexCount; i++)
-	//	{
-	//		memcpy(&myMesh->vNormData[i * 3], mesh->mNormals[i], 3 * sizeof(float));
-	//	}
-	//}
-	//else
-	//{
-	//	LOG("Warning, No texture coordinates found");
-	//}
+		for (uint i = 0; i < myMesh->vertexCount; i++)
+		{
+			memcpy(&myMesh->vNormData[(i * 3)], &mesh->mNormals[i].x, sizeof(float));
+			memcpy(&myMesh->vNormData[(i * 3) + 1], &mesh->mNormals[i].y, sizeof(float));
+			memcpy(&myMesh->vNormData[(i * 3) + 2], &mesh->mNormals[i].z, sizeof(float));
+		}
+	}
+	else
+	{
+		LOG("Warning, No texture coordinates found");
+	}
 }
 
 void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene)
@@ -270,6 +212,8 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 						texData->path = texPath.C_Str();	//assign the new texture its path
 						texData->textureID = tempTextureID;	//assign the new texture its ID
 
+						GO->CreateComponent((ComponentData*)texData);
+
 						tempMesh->texture = texData;	//assign the texture to the current mesh
 					}
 				}
@@ -324,32 +268,6 @@ void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMe
 	}
 	else LOG("ERROR: Failed loading image from path: %s", path);
 }
-
-//PREVIOUS TEXTURE LOADING METHOD ---------------
-// 
-//void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMesh)
-//{
-//	uint textureBuffer = 0;
-//	ILuint id_img = 0;
-//	ILenum error;
-//
-//	if (path != nullptr)
-//	{
-//		ilGenImages(1, (ILuint*)&id_img);
-//		ilBindImage(id_img);
-//
-//		if (ilLoadImage(path))
-//		{
-//			if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE))
-//			{
-//				myMesh->textureID = App->renderer3D->FillTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_FORMAT), path);
-//			}
-//			else LOG("ERROR: Failed converting image: %s", iluErrorString(ilGetError()));
-//		}
-//		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
-//	}
-//	else LOG("ERROR: Failed loading image from path: %s", path); 
-//}
 
 uint ModuleImporter::LoadTextureFromPath(const char* path)
 {
