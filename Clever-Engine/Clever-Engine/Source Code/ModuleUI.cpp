@@ -542,7 +542,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                             {
                                 ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, texData->path.c_str());
                                 ImGui::Text("Texture Sample:");
-                                ImGui::Image((void*)(intptr_t)texData->textureID, ImVec2(256, 256));//try this without the cast to intptr_t. The only use i found for that is either doing bitwise operations with adresses (which wyou cannot do with a normal pointer) and to use it as a coparison
+                                ImGui::Image((void*)texData->textureID, ImVec2(256, 256));
                             }
                             break;
                         }

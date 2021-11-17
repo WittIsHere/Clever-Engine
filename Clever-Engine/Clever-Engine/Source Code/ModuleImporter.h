@@ -27,7 +27,7 @@ public:
 	void ImportScene(const char* file_path);
 	void ImportMesh(aiMesh* mesh, MeshData* myMesh);
 
-	void LoadRoot(aiNode* sceneRoot, const aiScene* currentScene);
+	void LoadRoot(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName);
 	void LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene);
 
 	void LoadTextureFromPathAndFill(const char* path, MeshData* myMesh);

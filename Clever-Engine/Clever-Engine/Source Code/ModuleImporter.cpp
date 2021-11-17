@@ -84,7 +84,8 @@ void ModuleImporter::ImportScene(const char* file_path)
 	{
 		if (aiScene->mRootNode != nullptr)
 		{
-			LoadRoot(aiScene->mRootNode, aiScene);
+			//TODO: separate filename from path and extension
+			LoadRoot(aiScene->mRootNode, aiScene, file_path);
 		}
 	}
 }
@@ -150,15 +151,15 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 	}
 	else
 	{
-		LOG("Warning, No texture coordinates found");
+		LOG("Warning, no normals found");
 	}
 }
 
-void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene)
+void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
 {
 	if (sceneRoot->mNumChildren > 0)
 	{
-		GameObject* GO = App->scene->CreateGameObject("GameObject", App->scene->rootNode);
+		GameObject* GO = App->scene->CreateGameObject(fileName, App->scene->rootNode);
 		App->scene->rootNode->AddChild(GO);
 		for (int i = 0; i < sceneRoot->mNumChildren; i++)
 		{
