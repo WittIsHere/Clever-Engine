@@ -178,6 +178,9 @@
     <ClCompile Include="Source Code\c_Mesh.cpp">
       <Filter>Source Code\GameObjects\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\ModuleFileSystem.cpp">
+      <Filter>Source Code\Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h">
@@ -462,6 +465,15 @@
     <ClInclude Include="Source Code\Random.h">
       <Filter>Source Code\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\PhysFS\include\physfs.h">
+      <Filter>External Libraries\PhysFS</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\PathNode.h">
+      <Filter>Source Code\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ModuleFileSystem.h">
+      <Filter>Source Code\Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">
@@ -520,6 +532,9 @@
     </Filter>
     <Filter Include="Source Code\GameObjects\ComponentData">
       <UniqueIdentifier>{df1b5fe8-6a3a-4367-8eb0-3aaea3afdaf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Libraries\PhysFS">
+      <UniqueIdentifier>{9d598196-06e8-4c26-8e40-298a1cf55dfe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

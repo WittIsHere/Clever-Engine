@@ -10,6 +10,7 @@
 #include "ModuleUI.h"
 #include "ModuleImporter.h"
 #include "ModuleScene.h"
+#include "ModuleFileSystem.h"
 
 #include <vector>
 #include <string>
@@ -17,6 +18,7 @@
 class Application
 {
 public:
+	ModuleFileSystem* fileSystem;
 	ModuleWindow* window;
 	ModuleInput* input;
 	ModuleRenderer3D* renderer3D;

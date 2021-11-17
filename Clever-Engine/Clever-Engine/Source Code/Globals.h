@@ -21,6 +21,7 @@ void log(const char file[], int line, const char* format, ...);
 
 typedef unsigned int uint;
 typedef unsigned __int32 uint32;
+typedef unsigned __int64 uint64;
 
 enum update_status
 {
@@ -47,3 +48,30 @@ enum update_status
 
 //Dirty assets folder path ----------
 #define ASSETS_PATH "Assets/Textures/"
+
+// Not that dirty Library directories
+#define LIBRARY_PATH "Library/"
+#define FOLDERS_PATH "Library/Folders/"
+#define MESHES_PATH "Library/Meshes/"
+#define MATERIALS_PATH "Library/Materials/"
+#define TEXTURES_PATH "Library/Textures/"
+
+// Deletes a buffer
+#define RELEASE( x )\
+    {\
+       if( x != nullptr )\
+       {\
+         delete x;\
+	     x = nullptr;\
+       }\
+    }
+
+// Deletes an array of buffers
+#define RELEASE_ARRAY( x )\
+	{\
+       if( x != nullptr )\
+       {\
+           delete[] x;\
+	       x = nullptr;\
+		 }\
+	 }
