@@ -189,6 +189,7 @@
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Math\TransformOps.cpp" />
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Time\Clock.cpp" />
     <ClCompile Include="Source Code\Dependencies\parson\parson.c" />
+    <ClCompile Include="Source Code\ModuleFileSystem.cpp" />
     <ClCompile Include="Source Code\GameObject.cpp" />
     <ClCompile Include="Source Code\glmath.cpp" />
     <ClCompile Include="Source Code\Light.cpp" />
@@ -281,6 +282,8 @@
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\TransformOps.h" />
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Time\Clock.h" />
     <ClInclude Include="Source Code\Dependencies\parson\parson.h" />
+    <ClInclude Include="Source Code\Dependencies\PhysFS\include\physfs.h" />
+    <ClInclude Include="Source Code\ModuleFileSystem.h" />
     <ClInclude Include="Source Code\GameObject.h" />
     <ClInclude Include="Source Code\glmath.h" />
     <ClInclude Include="Source Code\Globals.h" />
@@ -297,6 +300,7 @@
     <ClInclude Include="Source Code\ModuleUI.h" />
     <ClInclude Include="Source Code\ModuleWindow.h" />
     <ClInclude Include="Source Code\OpenGl.h" />
+    <ClInclude Include="Source Code\PathNode.h" />
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\c_Material.h" />
     <ClInclude Include="Source Code\Random.h" />
