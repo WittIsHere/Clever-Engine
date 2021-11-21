@@ -16,13 +16,13 @@ public:
 	virtual bool Update();
 	virtual bool Disable();
 
-	//addcomponent()
+	const char* getNameFromType();
 
 public:
 	COMPONENT_TYPE type;
-	ComponentData* data;
 	bool isActive = true;
 
 private:
+	ComponentData* data;
 	GameObject* parent = nullptr;
 };

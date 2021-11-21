@@ -306,6 +306,7 @@
     <ClInclude Include="Source Code\Random.h" />
     <ClInclude Include="Source Code\Timer.h" />
     <ClInclude Include="Source Code\c_Transform.h" />
+    <ClInclude Include="Source Code\TransformData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source Code\Dependencies\MathGeoLib\include\Geometry\KDTree.inl" />

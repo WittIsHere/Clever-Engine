@@ -24,7 +24,6 @@ bool ModuleScene::Start()
 	LOG("ModuleScene Starting");
 	bool ret = true;
 
-	
 	return ret;                        
 }
 
@@ -79,4 +78,17 @@ GameObject* ModuleScene::GetGO(uint32 uuid)
 		}
 	}
 	return ret;
+}
+
+bool ModuleScene::DeleteFromMeshPool(MeshData* mesh)
+{
+	for (int i = 0; i < meshPool.size(); i++)
+	{
+		if (meshPool[i] == mesh) 
+		{
+			meshPool.erase(meshPool.begin() + i);  //begin returns an iterator so just add it the number of steps to get to the desired mesh
+		}
+	}
+
+	return true;
 }

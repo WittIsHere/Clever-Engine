@@ -16,6 +16,16 @@ GameObject::GameObject(const char* name)
 	isRoot = true;
 	toDestroy = false;
 	UUID = Random::GetRandomUint();
+
+	//Every game object has to have a transform, so we create the compnent at the constructor
+	//First initialize the data
+	TransformData* data = new TransformData;
+	data->position = float3::zero;
+	data->rotation = Quat::identity;
+	data->scale = float3::zero;
+
+	//Then create the component
+	this->transform = (c_Transform*)this->CreateComponent(data);
 }
 
 GameObject::GameObject(const char* name, GameObject* parent)
@@ -24,6 +34,16 @@ GameObject::GameObject(const char* name, GameObject* parent)
 	this->parent = parent;
 	toDestroy = false;
 	UUID = Random::GetRandomUint();
+
+	//Every game object has to have a transform, so we create the compnent at the constructor
+	//First initialize the data
+	TransformData* data = new TransformData;
+	data->position = float3::zero;
+	data->rotation = Quat::identity;
+	data->scale = float3::zero;
+
+	//Then create the component
+	this->transform = (c_Transform*)this->CreateComponent(data);
 }
 
 GameObject::~GameObject()
@@ -67,9 +87,9 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	{
 	case(COMPONENT_TYPE::TRANSFORM):
 	{
-		c_Transform* cmp = new c_Transform(this, CD);
-		myComponents.push_back((Component*)cmp);
-		ret = cmp;
+		c_Transform* cmp = new c_Transform(this, CD);	//create component of the corresponding type
+		myComponents.push_back((Component*)cmp);		//add it to the components array
+		ret = cmp;										//return it in case it needs to be modfied right away
 		break;
 	}
 	case(COMPONENT_TYPE::MATERIAL):
@@ -90,14 +110,46 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	return ret;
 }
 
+bool GameObject::DeleteComponent(Component* componentToDelete)
+{
+
+	std::string componentName = componentToDelete->getNameFromType();
+
+	if (componentToDelete != nullptr)
+	{
+		for (uint i = 0; i < myComponents.size(); ++i)
+		{
+			if (myComponents[i] == componentToDelete)
+			{
+				myComponents[i]->Disable();
+
+				RELEASE(myComponents[i]);
+
+				myComponents.erase(myComponents.begin() + i);
+
+				return true;
+			}
+		}
+	}
+
+	LOG(" Deleted Component %s of Game Object %s", componentName.c_str(), name.c_str());
+
+	return false;
+}
+
 uint GameObject::GetComponentCount()
 {
 	return myComponents.size();
 }
 
-const Component* GameObject::GetComponent(uint componentIndex)
+Component* GameObject::GetComponent(uint componentIndex)
 {
 	return myComponents[componentIndex];
+}
+
+c_Transform* GameObject::GetComponentTransform()
+{
+	return transform;
 }
 
 void GameObject::AddChild(GameObject* child)
@@ -124,7 +176,10 @@ void GameObject::Draw()
 {
 	for (int i = 0; i < myComponents.size(); i++)
 	{
-		if(myComponents[i]->type == COMPONENT_TYPE::MESH)
-			App->renderer3D->DrawMesh((MeshData*)myComponents[i]->data);
+		if (myComponents[i]->type == COMPONENT_TYPE::MESH)
+		{
+			c_Mesh* cmp = (c_Mesh*)myComponents[i];
+			App->renderer3D->DrawMesh(cmp->GetMeshData());
+		}
 	}
 }

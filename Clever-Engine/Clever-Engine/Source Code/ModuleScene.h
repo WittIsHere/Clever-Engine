@@ -22,6 +22,8 @@ public:
 	GameObject* CreateGameObject(const char* name, GameObject* parent);
 	GameObject* GetGO(uint32 uuid);
 
+	bool DeleteFromMeshPool(MeshData* mesh);
+
 public:
 	GameObject* rootNode;
 	std::vector<GameObject*> gameObjects;

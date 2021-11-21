@@ -8,6 +8,15 @@
 #include "MeshData.h"
 #include "c_Material.h"
 #include "MaterialData.h"
+#include "c_Transform.h"
+#include "TransformData.h"
+
+#include "Assimp/include/mesh.h"
+#include "Assimp/include/material.h"
+#include "Assimp/include/texture.h"
+#include "Assimp/include/matrix4x4.h"
+#include "Assimp/include/vector3.h"
+#include "Assimp/include/quaternion.h"
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
@@ -174,13 +183,23 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 	GameObject* GO = App->scene->CreateGameObject(currentNode->mName.C_Str(), parent);
 	parent->AddChild(GO); //add child to parent->myChildren to complete hierarchy
 
+	aiVector3D aiScale;
+	aiQuaternion aiRotation;
+	aiVector3D aiTranslation;
+	currentNode->mTransformation.Decompose(aiScale, aiRotation, aiTranslation);							// --- Getting the Transform stored in the node.
+
+	c_Transform* transform = GO->GetComponentTransform();
+
+	transform->SetLocalPosition({ aiScale.x, aiScale.y, aiScale.z });
+	transform->SetLocalRotation({ aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w });					 
+	transform->SetLocalScale({ aiScale.x, aiScale.y, aiScale.z });
+
 	if (currentNode->mNumMeshes > 0) 
 	{
 		for (int i = 0; i < currentNode->mNumMeshes; i++)
 		{
 			//create empty meshData and add it to the array
 			MeshData* tempMesh = new MeshData();
-			tempMesh->type = COMPONENT_TYPE::MESH;
 			App->scene->meshPool.push_back(tempMesh);
 
 			uint currentAiMeshIndex = currentNode->mMeshes[i];

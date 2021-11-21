@@ -6,6 +6,7 @@ class TextureData;
 class MeshData : public ComponentData
 {
 public:
+	MeshData() : ComponentData(COMPONENT_TYPE::MESH) {}
 
 	uint vertexCount = 0;				// Number of Vertex
 
@@ -22,5 +23,6 @@ public:
 	uint indicesCount = 0;				// Number of Indices
 	uint* indicesData = nullptr;		// Indices Array
 
+	const char* name = nullptr;
 	TextureData* texture = 0;			// Pointer to acess the texture inside myTexures() vector
 };

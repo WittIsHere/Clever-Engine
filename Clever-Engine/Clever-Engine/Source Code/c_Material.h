@@ -3,7 +3,7 @@
 #include "Globals.h"
 #include "Component.h"
 
-struct textureData;
+class TextureData;
 
 class c_Material : public Component
 {
@@ -14,4 +14,16 @@ public:
 	bool Enable();
 	bool Update();
 	bool Disable();
+
+	const char* getPath();
+	const uint getTextureID();
+
+	void setPath(const char* path);
+	void setTextureID(uint id);
+
+	void changeTextureData(TextureData* data);
+
+private:
+	TextureData* textureData = nullptr;
+	
 };

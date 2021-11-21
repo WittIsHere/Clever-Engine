@@ -6,6 +6,10 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleInput.h"
 
+#include "c_Transform.h"
+#include "c_Material.h"
+#include "c_Mesh.h"
+
 #include "Dependencies/ImGui/imgui.h"
 #include "Dependencies/ImGui/imgui_internal.h"
 #include "Dependencies/ImGui/imgui_impl_sdl.h"
@@ -522,27 +526,61 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                      {
                         case (COMPONENT_TYPE::TRANSFORM):
                         {
-                            // TransformData* transform = (TransformData*)cmp;
+                            c_Transform* transform = (c_Transform*)cmp;
+                            if (ImGui::CollapsingHeader("Transform"))
+                            {
+                                // --- POSITION ---
+                                ImGui::Text("Position");
+
+                                ImGui::SameLine(100.0f);
+
+                                float3 translation = transform->GetLocalPosition();
+                                if (ImGui::DragFloat3("T", (float*)&translation, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+                                {
+                                    transform->SetLocalPosition(translation);
+                                }
+
+                                // --- ROTATION ---
+                                ImGui::Text("Rotation");
+
+                                ImGui::SameLine(100.0f);
+
+                                float3 rotation = transform->GetLocalEulerRotation() * RADTODEG;
+                                if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+                                {
+                                    transform->SetLocalRotation(rotation * DEGTORAD);
+                                }
+
+                                // --- SCALE ---
+                                ImGui::Text("Scale");
+
+                                ImGui::SameLine(100.0f);
+
+                                float3 scale = transform->GetLocalScale();
+                                if (ImGui::DragFloat3("S", (float*)&scale, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+                                {
+                                    transform->SetLocalScale(scale);
+                                }
+                            }
                             break;
                         }
                         case (COMPONENT_TYPE::MESH):
                         {
-                            MeshData* meshData = (MeshData*)cmp->data;
+                            c_Mesh* mesh = (c_Mesh*)cmp;
                             if (ImGui::CollapsingHeader("Mesh"))
                             {
-                                ImGui::Text("Vertex Count:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, "%d", (meshData->vertexCount));
-                                ImGui::Text("Indices Count:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, "%d", (meshData->indicesCount));
+                                ImGui::Text("Vertex Count:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, "%d", mesh->GetVertexCount());
                             }
                             break;
                         }
                         case (COMPONENT_TYPE::MATERIAL):
                         {
-                            TextureData* texData = (TextureData*)cmp->data;
+                            c_Material* material = (c_Material*)cmp;
                             if (ImGui::CollapsingHeader("Material"))
                             {
-                                ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, texData->path.c_str());
+                                ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, material->getPath());
                                 ImGui::Text("Texture Sample:");
-                                ImGui::Image((void*)texData->textureID, ImVec2(256, 256));
+                                ImGui::Image((void*)material->getTextureID(), ImVec2(256, 256));
                             }
                             break;
                         }
@@ -553,7 +591,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          }
          else
          {
-             ImGui::Text("Select a valid node from hierarchy window to display properties");
+             ImGui::Text("Select a valid node from the hierarchy window to display its properties");
          }  
      }
      ImGui::End();

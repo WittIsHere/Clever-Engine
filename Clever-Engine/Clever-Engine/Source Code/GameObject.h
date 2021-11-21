@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "Component.h"
 #include "c_Mesh.h"
+#include "c_Transform.h"
 
 #include <vector>
 #include <string>
@@ -13,8 +14,9 @@ class ComponentData;
 class GameObject
 {
 public:
-	GameObject(const char* name);	//If no parent specified, then GO is set to be the root 
-	GameObject(const char* name, GameObject* parent);
+	GameObject(const char* name);	//If no parent is specified, then GO is set to be the root 
+	GameObject(const char* name, GameObject* parent); 
+
 	~GameObject();
 
 	// Methods
@@ -23,8 +25,12 @@ public:
 	bool Update();
 
 	Component* CreateComponent(ComponentData* CD);
+	bool DeleteComponent(Component* componentToDelete);
+	//bool DeleteAllComponents();
+
 	uint GetComponentCount();
-	const Component* GetComponent(uint componentIndex);
+	Component* GetComponent(uint componentIndex);
+	c_Transform* GetComponentTransform();
 
 	void AddChild(GameObject* child); //copy an existing "component"
 	uint GetChildCount();
@@ -46,4 +52,5 @@ private:
 
 	GameObject* parent;
 	std::vector<Component*> myComponents;
+	c_Transform* transform; //direct access to the component transform.
 };

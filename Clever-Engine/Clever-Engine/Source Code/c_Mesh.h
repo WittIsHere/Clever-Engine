@@ -3,7 +3,7 @@
 #include "Globals.h"
 #include "Component.h"
 
-struct meshData;
+struct MeshData;
 
 class c_Mesh : public Component
 {
@@ -15,5 +15,10 @@ public:
 	bool Update();
 	bool Disable();
 
+	const uint GetVertexCount();
+	MeshData* GetMeshData();
+
+private:
+	MeshData* meshData = nullptr;
 
 };
