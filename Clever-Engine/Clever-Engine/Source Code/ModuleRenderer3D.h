@@ -10,6 +10,7 @@
 
 struct SceneData;
 struct MeshData;
+class GameObject;
 
 class ModuleRenderer3D : public Module
 {
@@ -27,7 +28,7 @@ public:
 
 	void PrepareMesh(MeshData* mesh);
 	void PrepareDrawScene(SceneData* scene);
-	void DrawMesh(MeshData* mesh);
+	void DrawMesh(GameObject* GO, MeshData* mesh);
 
 	bool GetVSync() const;
 	void SetVSync(bool vsync);

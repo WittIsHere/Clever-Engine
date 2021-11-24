@@ -7,6 +7,7 @@
 #include "MaterialData.h"
 #include "c_Mesh.h"
 #include "c_Material.h"
+#include "GameObject.h"
 #include "Primitive.h"
 
 #include "OpenGl.h"
@@ -237,7 +238,7 @@ void ModuleRenderer3D::DrawScene()
 	App->scene->Draw();
 }
 
-void ModuleRenderer3D::DrawMesh(MeshData* mesh)
+void ModuleRenderer3D::DrawMesh(GameObject* GO, MeshData* mesh)
 {
 	//vertices
 	if (mesh->vPosID != 0)
@@ -264,7 +265,6 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 		LOG("INFO: indices buffer ID not found");
 	}	
 	
-
 	if (mesh->texture != nullptr)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -273,7 +273,11 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 	else
 		BindCheckerTex();
 
-	PollErrors();
+	PollErrors();	
+
+	glMatrixMode(GL_MODELVIEW);
+	mat4x4 ModelMatrix = mat4x4()
+	glLoadMatrixf(App->camera->GetViewMatrix());
 	
 	glDrawElements(GL_TRIANGLES, mesh->indicesCount, GL_UNSIGNED_INT, 0);
 	

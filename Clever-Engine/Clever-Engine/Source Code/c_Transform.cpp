@@ -73,6 +73,11 @@ float3 c_Transform::GetLocalScale() const
 	return transformData->scale;
 }
 
+float4x4 c_Transform::GetLocalTransform() const
+{
+	return localTransform;
+}
+
 void c_Transform::UpdateLocalTransform()
 {
 	localTransform = float4x4::FromTRS(transformData->position, transformData->rotation, transformData->scale);
