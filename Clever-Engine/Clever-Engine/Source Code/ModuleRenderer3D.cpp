@@ -237,7 +237,7 @@ void ModuleRenderer3D::DrawScene()
 	App->scene->Draw();
 }
 
-void ModuleRenderer3D::DrawMesh(MeshData* mesh)
+void ModuleRenderer3D::DrawMesh(MeshData* mesh) //c_mesh minimo
 {
 	//vertices
 	if (mesh->vPosID != 0)
@@ -264,7 +264,6 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 		LOG("INFO: indices buffer ID not found");
 	}	
 	
-
 	if (mesh->texture != nullptr)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -272,6 +271,12 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh)
 	}
 	else
 		BindCheckerTex();
+
+	////modify modelview matrix to fit the current mesh to be drawn
+	//glMatrixMode(GL_MODELVIEW);
+	//mat4x4 viewMatrix = App->camera->GetViewMatrix()*;
+	//mat4x4 modelMatrix = 
+	//glLoadMatrixf();
 
 	PollErrors();
 	

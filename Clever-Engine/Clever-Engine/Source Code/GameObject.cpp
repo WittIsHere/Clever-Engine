@@ -87,6 +87,7 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	{
 	case(COMPONENT_TYPE::TRANSFORM):
 	{
+
 		c_Transform* cmp = new c_Transform(this, CD);	//create component of the corresponding type
 		myComponents.push_back((Component*)cmp);		//add it to the components array
 		ret = cmp;										//return it in case it needs to be modfied right away
