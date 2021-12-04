@@ -28,7 +28,7 @@ public:
 
 	void PrepareMesh(MeshData* mesh);
 	void PrepareDrawScene(SceneData* scene);
-	void DrawMesh(GameObject* GO, MeshData* mesh);
+	void DrawMesh(MeshData* mesh);
 
 	bool GetVSync() const;
 	void SetVSync(bool vsync);

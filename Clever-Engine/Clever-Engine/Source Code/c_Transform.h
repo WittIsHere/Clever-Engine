@@ -2,8 +2,7 @@
 
 #include "Globals.h"
 #include "Component.h"
-
-class TransformData;
+#include "TransformData.h";
 
 class c_Transform : public Component
 {

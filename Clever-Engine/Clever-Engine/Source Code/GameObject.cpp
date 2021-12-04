@@ -5,6 +5,7 @@
 #include "ComponentData.h"
 #include "MeshData.h"
 #include "MaterialData.h"
+#include "TransformData.h"
 #include "c_Transform.h"
 #include "c_Mesh.h"
 #include "c_Material.h"
@@ -180,7 +181,7 @@ void GameObject::Draw()
 		if (myComponents[i]->type == COMPONENT_TYPE::MESH)
 		{
 			c_Mesh* cmp = (c_Mesh*)myComponents[i];
-			App->renderer3D->DrawMesh(this, cmp->GetMeshData());
+			App->renderer3D->DrawMesh(cmp->GetMeshData());
 		}
 	}
 }

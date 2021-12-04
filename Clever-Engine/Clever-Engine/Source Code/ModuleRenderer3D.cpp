@@ -157,7 +157,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	for(uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
-	Plane p(0, 1, 0, 0);
+	PlanePrimitive p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
 
@@ -239,7 +239,7 @@ void ModuleRenderer3D::DrawScene()
 }
 
 void ModuleRenderer3D::DrawMesh(MeshData* mesh) //c_mesh minimo
-
+{
 	//vertices
 	if (mesh->vPosID != 0)
 	{
