@@ -180,7 +180,7 @@ void GameObject::Draw()
 		if (myComponents[i]->type == COMPONENT_TYPE::MESH)
 		{
 			c_Mesh* cmp = (c_Mesh*)myComponents[i];
-			App->renderer3D->DrawMesh(cmp->GetMeshData());
+			App->renderer3D->DrawMesh(this, cmp->GetMeshData());
 		}
 	}
 }

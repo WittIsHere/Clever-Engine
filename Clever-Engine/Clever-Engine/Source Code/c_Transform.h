@@ -2,7 +2,8 @@
 
 #include "Globals.h"
 #include "Component.h"
-#include "TransformData.h"
+
+class TransformData;
 
 class c_Transform : public Component
 {
@@ -24,6 +25,7 @@ public:
 	float3 GetLocalEulerRotation() const;					// Returns the rotation quaternion of the local transform in Euler Angles.
 	float3 GetLocalScale() const;							// Returns the scale vector of the local transform.
 
+	float4x4 GetLocalTransform() const;
 	void UpdateLocalTransform();
 
 private:

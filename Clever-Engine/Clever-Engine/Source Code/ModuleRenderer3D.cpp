@@ -7,6 +7,7 @@
 #include "MaterialData.h"
 #include "c_Mesh.h"
 #include "c_Material.h"
+#include "GameObject.h"
 #include "Primitive.h"
 
 #include "OpenGl.h"
@@ -238,7 +239,7 @@ void ModuleRenderer3D::DrawScene()
 }
 
 void ModuleRenderer3D::DrawMesh(MeshData* mesh) //c_mesh minimo
-{
+
 	//vertices
 	if (mesh->vPosID != 0)
 	{
