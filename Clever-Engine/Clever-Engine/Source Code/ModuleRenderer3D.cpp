@@ -7,6 +7,7 @@
 #include "MaterialData.h"
 #include "c_Mesh.h"
 #include "c_Material.h"
+#include "c_Transform.h"
 #include "GameObject.h"
 #include "Primitive.h"
 
@@ -238,7 +239,7 @@ void ModuleRenderer3D::DrawScene()
 	App->scene->Draw();
 }
 
-void ModuleRenderer3D::DrawMesh(MeshData* mesh) //c_mesh minimo
+void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform) //c_mesh minimo
 {
 	//vertices
 	if (mesh->vPosID != 0)
@@ -273,12 +274,17 @@ void ModuleRenderer3D::DrawMesh(MeshData* mesh) //c_mesh minimo
 	else
 		BindCheckerTex();
 
-	////modify modelview matrix to fit the current mesh to be drawn
-	//glMatrixMode(GL_MODELVIEW);
-	//mat4x4 viewMatrix = App->camera->GetViewMatrix()*;
-	//mat4x4 modelMatrix = 
-	//glLoadMatrixf();
+	//-------------------- Modify modelview matrix to fit the current mesh to be drawn
+	float* viewMatrix = App->camera->GetViewMatrix();
 
+	mat4x4* 4X4MATRIX4REAL = (mat4x4*)viewMatrix;
+
+	//to access the MODEL MATRIX we need access to the TRANSFORM of the GO that contains the mesh to be drawn
+	float* modelMatrix = transform->GetGlobalTransform();
+	
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadMatrixf();
+	
 	PollErrors();
 	
 	glDrawElements(GL_TRIANGLES, mesh->indicesCount, GL_UNSIGNED_INT, 0);

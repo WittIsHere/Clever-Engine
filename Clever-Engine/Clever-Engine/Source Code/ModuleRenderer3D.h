@@ -9,8 +9,10 @@
 #define CHECKERS_WIDTH 128
 
 struct SceneData;
-struct MeshData;
+class c_Transform;
+class c_Mesh;
 class GameObject;
+
 
 class ModuleRenderer3D : public Module
 {
@@ -28,7 +30,7 @@ public:
 
 	void PrepareMesh(MeshData* mesh);
 	void PrepareDrawScene(SceneData* scene);
-	void DrawMesh(MeshData* mesh);
+	void DrawMesh(c_Mesh* mesh, c_Transform* transform);
 
 	bool GetVSync() const;
 	void SetVSync(bool vsync);

@@ -65,7 +65,7 @@ Quat c_Transform::GetLocalRotation() const
 
 float3 c_Transform::GetLocalEulerRotation() const
 {
-	return transformData->rotation.ToEulerXYZ();;
+	return transformData->rotation.ToEulerXYZ();
 }
 
 float3 c_Transform::GetLocalScale() const

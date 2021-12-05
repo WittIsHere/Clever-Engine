@@ -158,7 +158,7 @@ void ModuleCamera3D::Move(const vec3 &Movement)
 }
 
 // -----------------------------------------------------------------
-float* ModuleCamera3D::GetViewMatrix()
+float* ModuleCamera3D::GetViewMatrix() //i guess the type is float* to avoid including mat4x4 everywhere
 {
 	return &ViewMatrix;
 }
