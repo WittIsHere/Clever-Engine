@@ -194,8 +194,9 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 
 	c_Transform* transform = GO->GetComponentTransform();
 
-	transform->SetLocalPosition({ aiScale.x, aiScale.y, aiScale.z });
-	transform->SetLocalRotation({ aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w });
+	transform->SetLocalPosition({ aiTranslation.x, aiTranslation.y, aiTranslation.z });
+	transform->SetLocalRotation({ aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w });					 
+
 	transform->SetLocalScale({ aiScale.x, aiScale.y, aiScale.z });
 
 	if (currentNode->mNumMeshes > 0)

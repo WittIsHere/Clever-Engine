@@ -37,6 +37,7 @@ public:
 	uint32 GetChildUID(uint childIndex);
 	GameObject* GetChildData(uint childIndex);
 
+	GameObject* GetParent();
 	void Draw(); 
 
 public:

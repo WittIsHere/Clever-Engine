@@ -17,6 +17,7 @@ public:
 	virtual bool Disable();
 
 	const char* getNameFromType();
+	GameObject* GetOwner();
 
 public:
 	COMPONENT_TYPE type;
@@ -24,5 +25,5 @@ public:
 
 private:
 	ComponentData* data;
-	GameObject* parent = nullptr;
+	GameObject* owner = nullptr;
 };

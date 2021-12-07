@@ -23,7 +23,7 @@ GameObject::GameObject(const char* name)
 	TransformData* data = new TransformData;
 	data->position = float3::zero;
 	data->rotation = Quat::identity;
-	data->scale = float3::zero;
+	data->scale = float3(1.0f, 1.0f, 1.0f);
 
 	//Then create the component
 	this->transform = (c_Transform*)this->CreateComponent(data);
@@ -41,7 +41,7 @@ GameObject::GameObject(const char* name, GameObject* parent)
 	TransformData* data = new TransformData;
 	data->position = float3::zero;
 	data->rotation = Quat::identity;
-	data->scale = float3::zero;
+	data->scale = float3(1.0f, 1.0f, 1.0f);
 
 	//Then create the component
 	this->transform = (c_Transform*)this->CreateComponent(data);
@@ -174,6 +174,11 @@ GameObject* GameObject::GetChildData(uint childIndex)
 	return myChildren[childIndex];
 }
 
+GameObject* GameObject::GetParent()
+{
+	return this->parent;
+}
+
 void GameObject::Draw()
 {
 	for (int i = 0; i < myComponents.size(); i++)
@@ -181,7 +186,7 @@ void GameObject::Draw()
 		if (myComponents[i]->type == COMPONENT_TYPE::MESH)
 		{
 			c_Mesh* cmp = (c_Mesh*)myComponents[i];
-			App->renderer3D->DrawMesh(cmp->GetMeshData());
+			App->renderer3D->DrawMesh(cmp, this->transform);
 		}
 	}
 }

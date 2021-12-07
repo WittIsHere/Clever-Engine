@@ -24,10 +24,17 @@ public:
 	float3 GetLocalEulerRotation() const;					// Returns the rotation quaternion of the local transform in Euler Angles.
 	float3 GetLocalScale() const;							// Returns the scale vector of the local transform.
 
-	float4x4 GetLocalTransform() const;
+	float* GetLocalTransform() const;
 	void UpdateLocalTransform();
+
+	float4x4 GetWorldTransform();
+	float* GetWorldTransformPtr();
+	void UpdateWorldTransform();
 
 private:
 	TransformData* transformData;
 	float4x4 localTransform;
+
+	bool updateWorld; //we use this bool to inform of a change in the localTransform so the world transform can be updated accordingly. Prevents GetWorldTransform of returning an old state.
+	float4x4 worldTransform;
 };
