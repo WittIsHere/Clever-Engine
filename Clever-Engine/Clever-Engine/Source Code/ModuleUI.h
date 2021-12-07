@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#define FILE_MAX 250
+
 class GameObject;
 
 class ModuleUI : public Module
@@ -21,6 +23,7 @@ public:
 
 private:
 	void DrawConsoleSpace(bool* active);
+	void DrawFolderBrowser(bool* active);
 	void DrawConfigurationSpace(bool* active);
 	void DrawHierarchySpace(bool* active);
 	void ShowChildData(GameObject* GO);
@@ -31,6 +34,7 @@ private:
 public:
 	void ConsoleLog(const char* text);
 	void AddLogFPS(float fps, float ms);
+	void DrawDirectoryRecursive(const char* directory/*, const char* filter_extension*/);
 
 public:
 	bool showDemoWindow;
@@ -44,6 +48,7 @@ public:
 private:
 	//Bool variables to activate the different windows
 	bool activeConsole = true;
+	bool folderBrowser = true;
 	bool activeConfiguration = false;
 	bool activeDockingSpace = false;
 	bool activeHierarchy = true;
@@ -58,4 +63,7 @@ private:
 	//Console window variables
 	std::vector<char*>	buffer;
 	bool scrollToBottom;
+
+	char selected_file[FILE_MAX];
+
 };

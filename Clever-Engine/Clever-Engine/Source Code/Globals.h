@@ -55,6 +55,7 @@ enum update_status
 #define MESHES_PATH "Library/Meshes/"
 #define MATERIALS_PATH "Library/Materials/"
 #define TEXTURES_PATH "Library/Textures/"
+#define BROWSER_PATH "Assets/"
 
 // Deletes a buffer
 #define RELEASE( x )\
