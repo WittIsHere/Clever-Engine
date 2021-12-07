@@ -321,6 +321,11 @@ uint ModuleImporter::LoadTextureFromPath(const char* path)
 
 		if (ilLoad(IL_TYPE_UNKNOWN, path))
 		{
+			ILinfo ImageInfo; 
+			iluGetImageInfo(&ImageInfo);
+			if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT) 
+			{ iluFlipImage(); }
+
 			textureBuffer = ilutGLBindTexImage();
 
 		}

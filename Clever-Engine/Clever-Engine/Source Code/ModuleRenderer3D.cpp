@@ -332,8 +332,6 @@ void ModuleRenderer3D::DrawCube()
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_Buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glScalef(1.0f, -1.0f, 1.0f);
-
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 

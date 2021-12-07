@@ -157,9 +157,6 @@
     <ClCompile Include="Source Code\ModuleImporter.cpp">
       <Filter>Source Code\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\GameObject.cpp">
-      <Filter>Source Code\GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="Source Code\Component.cpp">
       <Filter>Source Code\GameObjects</Filter>
     </ClCompile>
@@ -180,6 +177,9 @@
     </ClCompile>
     <ClCompile Include="Source Code\ModuleFileSystem.cpp">
       <Filter>Source Code\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\GameObject.cpp">
+      <Filter>Source Code\Importers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
