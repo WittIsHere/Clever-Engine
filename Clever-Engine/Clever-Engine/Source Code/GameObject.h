@@ -46,7 +46,7 @@ public:
 	bool isRoot = false;
 	bool isActive = true;
 	bool toDestroy = false;
-	int UUID = 0;
+	uint32 UUID = 0;
 
 private:
 	std::vector<GameObject*> myChildren;

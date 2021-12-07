@@ -189,6 +189,7 @@
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Math\TransformOps.cpp" />
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Time\Clock.cpp" />
     <ClCompile Include="Source Code\Dependencies\parson\parson.c" />
+    <ClCompile Include="Source Code\JSONParser.cpp" />
     <ClCompile Include="Source Code\ModuleFileSystem.cpp" />
     <ClCompile Include="Source Code\GameObject.cpp" />
     <ClCompile Include="Source Code\glmath.cpp" />
@@ -283,6 +284,7 @@
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Time\Clock.h" />
     <ClInclude Include="Source Code\Dependencies\parson\parson.h" />
     <ClInclude Include="Source Code\Dependencies\PhysFS\include\physfs.h" />
+    <ClInclude Include="Source Code\JSONParser.h" />
     <ClInclude Include="Source Code\model.h" />
     <ClInclude Include="Source Code\ModuleFileSystem.h" />
     <ClInclude Include="Source Code\GameObject.h" />
