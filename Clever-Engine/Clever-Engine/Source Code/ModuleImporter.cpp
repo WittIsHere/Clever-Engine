@@ -10,6 +10,9 @@
 #include "MaterialData.h"
 #include "c_Transform.h"
 #include "TransformData.h"
+#include "model.h"
+
+#include <fstream> // Added this
 
 #include "Assimp/include/mesh.h"
 #include "Assimp/include/material.h"
@@ -21,6 +24,7 @@
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
+
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 
 //#include "Devil/include/il.h"			// not necessary, ilut.h includes it
@@ -192,21 +196,31 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 
 	transform->SetLocalPosition({ aiTranslation.x, aiTranslation.y, aiTranslation.z });
 	transform->SetLocalRotation({ aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w });					 
+
 	transform->SetLocalScale({ aiScale.x, aiScale.y, aiScale.z });
 
-	if (currentNode->mNumMeshes > 0) 
+	if (currentNode->mNumMeshes > 0)
 	{
 		for (int i = 0; i < currentNode->mNumMeshes; i++)
 		{
-			//create empty meshData and add it to the array
-			MeshData* tempMesh = new MeshData();
-			App->scene->meshPool.push_back(tempMesh);
 
 			uint currentAiMeshIndex = currentNode->mMeshes[i];
 			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
 
 			//import the data into the struct
-			ImportMesh(currentAiMesh, tempMesh);
+			//ImportMesh(currentAiMesh, tempMesh); //---------------------------------------------- Adding func here
+
+
+			std::string finalName = MESHES_PATH;
+			finalName = finalName + currentNode->mName.C_Str();
+
+			TMYMODEL* myModel = new TMYMODEL();
+			myModel = callCreateAndSave(currentAiMesh, finalName.c_str(), myModel);
+
+			MeshData* tempMesh = new MeshData();
+			tempMesh = LoadModel(finalName.c_str());
+
+			App->scene->meshPool.push_back(tempMesh);
 
 			GO->CreateComponent((ComponentData*)tempMesh);
 
@@ -316,4 +330,182 @@ uint ModuleImporter::LoadTextureFromPath(const char* path)
 	}
 
 	return textureBuffer;
+}
+
+
+// CREATING NEW FUNCTIONS HERE
+
+
+TMYMODEL* ModuleImporter::callCreateAndSave(const aiMesh* mesh, const char* path, TMYMODEL* myModel)
+{
+	myModel = createMyModel(mesh);
+
+	if (SaveModel(myModel, path) == true)
+	{
+		LOG("%s Saved correctly", path);
+	}
+	else
+	{
+		LOG("%s Saved INCORRECTLY", path);
+	}
+	
+	return myModel;
+}
+
+TMYMODEL* ModuleImporter::createMyModel(const aiMesh* m)
+{
+	TMYMODEL* mymodel = (TMYMODEL*)malloc(sizeof(TMYMODEL));
+
+	mymodel->verticesSizeBytes = m->mNumVertices * sizeof(float) * 3;//3==x,y,z
+	mymodel->vertices = (float*)malloc(mymodel->verticesSizeBytes);
+	memcpy(mymodel->vertices, m->mVertices, mymodel->verticesSizeBytes);
+
+	mymodel->normalsSizeBytes = m->mNumVertices * sizeof(float) * 3;//3==x,y,z equal vertex
+	mymodel->normals = (float*)malloc(mymodel->normalsSizeBytes);
+	memcpy(mymodel->normals, m->mNormals, mymodel->normalsSizeBytes);
+
+	mymodel->textCoordSizeBytes = m->mNumVertices * sizeof(float) * 2;//3==u,v
+	mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
+	for (int i = 0; i < m->mNumVertices; i++)
+	{
+		*(mymodel->textCoords + i * 2) = m->mTextureCoords[0][i].x;
+		*(mymodel->textCoords + i * 2 + 1) = 1.0 - m->mTextureCoords[0][i].y; //this coord image is inverted
+	}
+
+	mymodel->indiceSizeBytes = m->mNumFaces * sizeof(unsigned) * 3; //3==indices/face
+	mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
+	for (int i = 0; i < m->mNumFaces; i++)
+	{
+		aiFace* f = m->mFaces + i;
+		*(mymodel->indices + 0 + i * 3) = f->mIndices[0];
+		*(mymodel->indices + 1 + i * 3) = f->mIndices[1];
+		*(mymodel->indices + 2 + i * 3) = f->mIndices[2];
+	}
+
+	const char* someinfo = "This is a great model for my engine. Author: Juan"; // '\0' OjO
+	mymodel->infoSizeBytes = 128; //or str length
+	mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
+	memcpy(mymodel->info, someinfo, mymodel->infoSizeBytes);
+	mymodel->info[mymodel->infoSizeBytes - 1] = '\0';
+
+	return mymodel;
+
+}
+
+bool ModuleImporter::SaveModel(const TMYMODEL* m, const char* path)
+{
+	//My format
+	//Header
+	//a)unsigned for  verticesSizeBytes
+	//b)unsigned for   normalsSizeBytes
+	//c)unsigned for textCoordSizeBytes
+	//d)unsigned for    indiceSizeBytes
+	//e)unsigned for      infoSizeBytes
+	//so the header size is 5 * sizeof(unsigned) -> 20 bytes
+
+	std::ofstream myfile;
+	myfile.open(path, std::ios::in | std::ios::app | std::ios::binary);
+	if (myfile.is_open())
+	{
+		myfile.write((char*)m, 5 * sizeof(unsigned)); //write header
+
+		myfile.write((char*)m->vertices, m->verticesSizeBytes);
+		myfile.write((char*)m->normals, m->normalsSizeBytes);
+		myfile.write((char*)m->textCoords, m->textCoordSizeBytes);
+		myfile.write((char*)m->indices, m->indiceSizeBytes);
+		myfile.write((char*)m->info, m->infoSizeBytes); // xx
+
+		myfile.close();
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
+//TMYMODEL* LoadModel(const char* path)
+//{
+//	std::ifstream myfile;
+//	myfile.open(path, std::ios::binary);
+//	if (myfile.is_open())
+//	{
+//
+//		TMYMODEL* mymodel = (TMYMODEL*)malloc(sizeof(TMYMODEL));
+//		myfile.read((char*)mymodel, 5 * sizeof(unsigned)); //READ HEADER
+//
+//		mymodel->vertices = (float*)malloc(mymodel->verticesSizeBytes);
+//		myfile.read((char*)mymodel->vertices, mymodel->verticesSizeBytes);
+//
+//		mymodel->normals = (float*)malloc(mymodel->normalsSizeBytes);
+//		myfile.read((char*)mymodel->normals, mymodel->normalsSizeBytes);
+//
+//		mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
+//		myfile.read((char*)mymodel->textCoords, mymodel->textCoordSizeBytes);
+//
+//		mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
+//		myfile.read((char*)mymodel->indices, mymodel->indiceSizeBytes);
+//
+//		mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
+//		myfile.read(mymodel->info, mymodel->infoSizeBytes);
+//
+//		myfile.close();
+//		return mymodel;
+//	}
+//	else
+//	{
+//		return NULL;
+//	}
+//}
+
+MeshData* ModuleImporter::LoadModel(const char* path)
+{
+	MeshData* loadedMesh = new MeshData();
+
+	std::ifstream myfile;
+	myfile.open(path, std::ios::binary);
+
+	if (myfile.is_open())
+	{
+		TMYMODEL* mymodel = (TMYMODEL*)malloc(sizeof(TMYMODEL));
+		myfile.read((char*)mymodel, 5 * sizeof(unsigned)); //READ HEADER
+
+		mymodel->vertices = (float*)malloc(mymodel->verticesSizeBytes);
+		myfile.read((char*)mymodel->vertices, mymodel->verticesSizeBytes);
+
+		mymodel->normals = (float*)malloc(mymodel->normalsSizeBytes);
+		myfile.read((char*)mymodel->normals, mymodel->normalsSizeBytes);
+
+		mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
+		myfile.read((char*)mymodel->textCoords, mymodel->textCoordSizeBytes);
+
+		mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
+		myfile.read((char*)mymodel->indices, mymodel->indiceSizeBytes);
+
+		mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
+		myfile.read(mymodel->info, mymodel->infoSizeBytes);
+
+		myfile.close();
+
+
+		loadedMesh->indicesData = mymodel->indices;
+		loadedMesh->vNormData = mymodel->normals;
+		loadedMesh->vTexCoordsData = mymodel->textCoords;
+		loadedMesh->vPosData = mymodel->vertices;
+
+		loadedMesh->vertexCount = (mymodel->verticesSizeBytes / (sizeof(float) * 3));
+		loadedMesh->indicesCount = (mymodel->indiceSizeBytes / sizeof(int));
+
+		App->renderer3D->PrepareMesh(loadedMesh);
+
+		LOG("SUCCESS loading %s", path);
+		return loadedMesh;
+	}
+	else
+	{
+		LOG("FAILED loading %s", path);
+		return NULL;
+	}
 }

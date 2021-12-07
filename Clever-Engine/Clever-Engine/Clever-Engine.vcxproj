@@ -283,6 +283,7 @@
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Time\Clock.h" />
     <ClInclude Include="Source Code\Dependencies\parson\parson.h" />
     <ClInclude Include="Source Code\Dependencies\PhysFS\include\physfs.h" />
+    <ClInclude Include="Source Code\model.h" />
     <ClInclude Include="Source Code\ModuleFileSystem.h" />
     <ClInclude Include="Source Code\GameObject.h" />
     <ClInclude Include="Source Code\glmath.h" />
