@@ -477,6 +477,9 @@
     <ClInclude Include="Source Code\TransformData.h">
       <Filter>Source Code\GameObjects\ComponentData</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\model.h">
+      <Filter>Source Code\Importers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">

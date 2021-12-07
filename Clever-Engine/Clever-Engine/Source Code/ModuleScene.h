@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "MeshData.h"
 #include "MaterialData.h"
+#include "ModuleImporter.h"
 #include <vector>
 
 class GameObject;
@@ -28,6 +29,7 @@ public:
 	GameObject* rootNode;
 	std::vector<GameObject*> gameObjects;
 
+	//std::vector<MeshData*> meshPool;
 	std::vector<MeshData*> meshPool;
 	std::vector<TextureData*> texturePool;
 
