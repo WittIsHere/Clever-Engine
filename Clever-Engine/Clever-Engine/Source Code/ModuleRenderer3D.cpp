@@ -239,13 +239,13 @@ void ModuleRenderer3D::DrawScene()
 	App->scene->Draw();
 }
 
-void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform) //c_mesh minimo
+void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform)
 {
 	//vertices
-	if (mesh->vPosID != 0)
+	if (mesh->GetMeshData()->vPosID != 0)
 	{
 		glEnableClientState(GL_VERTEX_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->vPosID);
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->GetMeshData()->vPosID);
 		glVertexPointer(3, GL_FLOAT, 0, NULL);
 	}
 	else
@@ -253,41 +253,48 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform) //c_mesh m
 
 	//textures
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->vTexCoordsID);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->GetMeshData()->vTexCoordsID);
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
 	//indices
-	if (mesh->indicesID != 0)
+	if (mesh->GetMeshData()->indicesID != 0)
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indicesID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetMeshData()->indicesID);
 	}
 	else
 	{
 		LOG("INFO: indices buffer ID not found");
 	}	
 	
-	if (mesh->texture != nullptr)
+	if (mesh->GetMeshData()->texture != nullptr)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glBindTexture(GL_TEXTURE_2D, (GLuint)mesh->texture->textureID);
+		glBindTexture(GL_TEXTURE_2D, (GLuint)mesh->GetMeshData()->texture->textureID);
 	}
 	else
 		BindCheckerTex();
-
 	//-------------------- Modify modelview matrix to fit the current mesh to be drawn
 	float* viewMatrix = App->camera->GetViewMatrix();
 
-	mat4x4* 4X4MATRIX4REAL = (mat4x4*)viewMatrix;
-
 	//to access the MODEL MATRIX we need access to the TRANSFORM of the GO that contains the mesh to be drawn
-	float* modelMatrix = transform->GetGlobalTransform();
+	float* modelMatrix = transform->GetWorldTransformPtr();
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(viewMatrix);
 	
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadMatrixf();
+	/*float4x4 scaleMatrix = float4x4::identity.Scale(float3(2.0f, 2.0f, 2.0f));
+	scaleMatrix.Transpose();
+	glMultMatrixf((float*)&scaleMatrix);
+	float4x4 translationMatrix = float4x4::identity.Translate(float3(10, 0, 0));
+	translationMatrix.Transpose();
+	glMultMatrixf((float*)&translationMatrix);*/
+
+	//--------------Multiply here the model matrix
+	glMultMatrixf(modelMatrix);
 	
 	PollErrors();
 	
-	glDrawElements(GL_TRIANGLES, mesh->indicesCount, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, mesh->GetMeshData()->indicesCount, GL_UNSIGNED_INT, 0);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);

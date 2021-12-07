@@ -23,7 +23,7 @@ GameObject::GameObject(const char* name)
 	TransformData* data = new TransformData;
 	data->position = float3::zero;
 	data->rotation = Quat::identity;
-	data->scale = float3::zero;
+	data->scale = float3(1.0f, 1.0f, 1.0f);
 
 	//Then create the component
 	this->transform = (c_Transform*)this->CreateComponent(data);
@@ -41,7 +41,7 @@ GameObject::GameObject(const char* name, GameObject* parent)
 	TransformData* data = new TransformData;
 	data->position = float3::zero;
 	data->rotation = Quat::identity;
-	data->scale = float3::zero;
+	data->scale = float3(1.0f, 1.0f, 1.0f);
 
 	//Then create the component
 	this->transform = (c_Transform*)this->CreateComponent(data);
@@ -172,6 +172,11 @@ uint32 GameObject::GetChildUID(uint childIndex)
 GameObject* GameObject::GetChildData(uint childIndex)
 {
 	return myChildren[childIndex];
+}
+
+GameObject* GameObject::GetParent()
+{
+	return this->parent;
 }
 
 void GameObject::Draw()

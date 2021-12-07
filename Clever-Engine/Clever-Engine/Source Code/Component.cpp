@@ -2,7 +2,7 @@
 
 Component::Component(GameObject* parent, ComponentData* data)
 {
-	this->parent = parent;
+	this->owner = parent;
 	this->data = data;
 }
 
@@ -48,4 +48,9 @@ const char* Component::getNameFromType()
 	}
 	}
 	return ret;
+}
+
+GameObject* Component::GetOwner()
+{
+	return owner;
 }

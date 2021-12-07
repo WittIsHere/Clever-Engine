@@ -9,6 +9,7 @@
 #define CHECKERS_WIDTH 128
 
 struct SceneData;
+struct MeshData;
 class c_Transform;
 class c_Mesh;
 class GameObject;
