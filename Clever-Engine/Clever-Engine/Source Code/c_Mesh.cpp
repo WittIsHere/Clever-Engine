@@ -1,5 +1,6 @@
 #include "c_Mesh.h"
 #include "ModuleScene.h"
+#include "JSONParser.h"
 
 
 c_Mesh::c_Mesh(GameObject* parent, ComponentData* data) : Component(parent, data)
@@ -25,6 +26,18 @@ bool c_Mesh::Update()
 bool c_Mesh::Disable()
 {
 	return false;
+}
+
+bool c_Mesh::SaveState(ParsonNode& root) const
+{
+	root.SetNumber("Type", (uint)type);
+
+	return true;
+}
+
+bool c_Mesh::LoadState(ParsonNode& root)
+{
+	return true;
 }
 
 const uint c_Mesh::GetVertexCount()

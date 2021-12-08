@@ -1,5 +1,6 @@
 #include "c_Transform.h"
 #include "GameObject.h"
+#include "JSONParser.h"
 
 c_Transform::c_Transform(GameObject* parent, ComponentData* data) : Component(parent, data)
 {
@@ -25,6 +26,18 @@ bool c_Transform::Update()
 bool c_Transform::Disable()
 {
 	return false;
+}
+
+bool c_Transform::SaveState(ParsonNode& root) const
+{
+	root.SetNumber("Type", (uint)type);
+
+	return true;
+}
+
+bool c_Transform::LoadState(ParsonNode& root)
+{
+	return true;
 }
 
 void c_Transform::SetLocalPosition(const float3& newPosition)

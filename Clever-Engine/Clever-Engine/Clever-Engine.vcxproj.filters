@@ -178,11 +178,11 @@
     <ClCompile Include="Source Code\ModuleFileSystem.cpp">
       <Filter>Source Code\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\GameObject.cpp">
-      <Filter>Source Code\Importers</Filter>
-    </ClCompile>
     <ClCompile Include="Source Code\JSONParser.cpp">
       <Filter>Source Code\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\GameObject.cpp">
+      <Filter>Source Code\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

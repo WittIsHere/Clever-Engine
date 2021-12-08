@@ -25,6 +25,16 @@ bool Component::Disable()
 	return false;
 }
 
+bool Component::SaveState(ParsonNode& root) const
+{
+	return true;
+}
+
+bool Component::LoadState(ParsonNode& root)
+{
+	return true;
+}
+
 const char* Component::getNameFromType()
 {
 	const char* ret = nullptr;

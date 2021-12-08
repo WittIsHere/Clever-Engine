@@ -1,6 +1,6 @@
 #include "c_Material.h"
 #include "ModuleScene.h"
-
+#include "JSONParser.h"
 
 c_Material::c_Material(GameObject* parent, ComponentData* data) : Component(parent, data)
 {
@@ -25,6 +25,18 @@ bool c_Material::Update()
 bool c_Material::Disable()
 {
 	return false;
+}
+
+bool c_Material::SaveState(ParsonNode& root) const
+{
+	root.SetNumber("Type", (uint)type);
+
+	return true;
+}
+
+bool c_Material::LoadState(ParsonNode& root)
+{
+	return true;
 }
 
 const char* c_Material::getPath()

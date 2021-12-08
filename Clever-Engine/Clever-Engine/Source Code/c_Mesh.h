@@ -15,6 +15,9 @@ public:
 	bool Update();
 	bool Disable();
 
+	bool SaveState(ParsonNode& root) const override;
+	bool LoadState(ParsonNode& root) override;
+
 	const uint GetVertexCount();
 	MeshData* GetMeshData();
 

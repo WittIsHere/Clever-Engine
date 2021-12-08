@@ -81,6 +81,31 @@ bool GameObject::Update()
 	return ret;
 }
 
+bool GameObject::SaveState(ParsonNode& root) const
+{
+	//save own parameters
+	root.SetNumber("UID", UUID);
+	uint parentUID = (parent != nullptr) ? parent->UUID : 0;
+	root.SetNumber("ParentUID", parentUID);
+
+	root.SetString("Name", name.c_str());
+
+	//iterate components and save their properties
+	ParsonArray componentArray = root.SetArray("Components");
+
+	for (uint i = 0; i < myComponents.size(); ++i)
+	{
+		ParsonNode componentNode = componentArray.SetNode(myComponents[i]->getNameFromType());
+		myComponents[i]->SaveState(componentNode);
+	}
+	return false;
+}
+
+bool GameObject::LoadState(ParsonNode& root)
+{
+	return false;
+}
+
 Component* GameObject::CreateComponent(ComponentData* CD)
 {
 	Component* ret = nullptr;

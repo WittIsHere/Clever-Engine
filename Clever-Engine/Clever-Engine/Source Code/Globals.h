@@ -48,6 +48,7 @@ enum update_status
 
 //Dirty assets folder path ----------
 #define ASSETS_PATH "Assets/Textures/"
+#define ASSETS_SCENES_PATH "Assets/Scenes/"
 
 // Not that dirty Library directories
 #define LIBRARY_PATH "Library/"
@@ -56,6 +57,8 @@ enum update_status
 #define MATERIALS_PATH "Library/Materials/"
 #define TEXTURES_PATH "Library/Textures/"
 #define BROWSER_PATH "Assets/"
+
+#define JSON_EXTENSION ".json"
 
 // Deletes a buffer
 #define RELEASE( x )\

@@ -128,7 +128,7 @@ update_status ModuleUI::Update(float dt)
                 }
                 if (ImGui::MenuItem("Save Scene"))
                 {
-                    // Save Scene code
+                    App->scene->SaveScene("scene saving test");
                 }
                 if (ImGui::MenuItem("Save Scene as"))
                 {

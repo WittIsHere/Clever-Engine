@@ -4,6 +4,8 @@
 #include "Component.h"
 #include "TransformData.h";
 
+class ParsonNode;
+
 class c_Transform : public Component
 {
 public:
@@ -14,6 +16,10 @@ public:
 	bool Update();
 	bool Disable();
 
+	bool SaveState(ParsonNode& root) const override;
+	bool LoadState(ParsonNode& root) override;
+
+public:
 	void SetLocalPosition(const float3& newPosition);			// Sets localPosition to the given vector.	  
 	void SetLocalRotation(const Quat& newRotation);				// Sets localRotation to the given quaternion.
 	void SetLocalRotation(const float3& newRotation);			// Sets localRotation to the given vector.		

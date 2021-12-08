@@ -4,6 +4,7 @@
 #include "Component.h"
 
 class TextureData;
+class ParsonNode;
 
 class c_Material : public Component
 {
@@ -14,6 +15,9 @@ public:
 	bool Enable();
 	bool Update();
 	bool Disable();
+
+	bool SaveState(ParsonNode& root) const override;
+	bool LoadState(ParsonNode& root) override;
 
 	const char* getPath();
 	const uint getTextureID();

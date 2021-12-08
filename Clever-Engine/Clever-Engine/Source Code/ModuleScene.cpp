@@ -50,6 +50,39 @@ bool ModuleScene::CleanUp()
 	return true;
 }
 
+bool ModuleScene::SaveScene(const char* sceneName) const
+{
+	LOG("Saving scene");
+
+	ParsonNode rootNode = ParsonNode();
+	ParsonArray objectsArray = rootNode.SetArray("Game Objects");
+	for (auto object = gameObjects.begin(); object != gameObjects.end(); ++object)
+	{
+		ParsonNode arrayNode = objectsArray.SetNode((*object)->name.c_str());
+		(*object)->SaveState(arrayNode);
+	}
+
+	char* buffer = nullptr;
+	std::string name = (sceneName != nullptr) ? sceneName : this->rootNode->name.c_str();
+	std::string path = ASSETS_SCENES_PATH + name + JSON_EXTENSION;
+	uint written = rootNode.SerializeToFile(path.c_str(), &buffer);
+	if (written > 0)
+	{
+		LOG("[SCENE] Scene: Successfully saved the current scene! Path: %s", path.c_str());
+	}
+	else
+	{
+		LOG("[ERROR] Scene: Could not save the current scene! Error: FileSystem could not write any data!");
+	}
+
+	return true;
+}
+
+bool ModuleScene::LoadScene(const char* path)
+{
+	return true;
+}
+
 void ModuleScene::CreateRootNode()
 {
 	//root node creation

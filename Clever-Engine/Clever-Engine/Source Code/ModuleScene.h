@@ -20,6 +20,9 @@ public:
 	bool Draw();
 	bool CleanUp();
 
+	bool SaveScene(const char* sceneName = nullptr) const;	// If no name is given the scene_root node's name will be used.
+	bool LoadScene(const char* path);						// For now asks for full path 
+
 	GameObject* CreateGameObject(const char* name, GameObject* parent);
 	GameObject* GetGO(uint32 uuid);
 

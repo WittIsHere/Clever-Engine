@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "c_Mesh.h"
 #include "c_Transform.h"
+#include "JSONParser.h"
 
 #include <vector>
 #include <string>
@@ -23,6 +24,9 @@ public:
 
 	bool Init();
 	bool Update();
+
+	bool SaveState(ParsonNode& root) const;
+	bool LoadState(ParsonNode& root);
 
 	Component* CreateComponent(ComponentData* CD);
 	bool DeleteComponent(Component* componentToDelete);
