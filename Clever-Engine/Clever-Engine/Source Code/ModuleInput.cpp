@@ -136,6 +136,11 @@ update_status ModuleInput::PreUpdate(float dt)
 						// LOG("LOADED fbx: %s", impPath);
 
 					}
+					if ((dropped_filedir.find(".json") != std::string::npos) || (dropped_filedir.find(".fbx") != std::string::npos))
+					{
+						LOG("LOADING json: %s", impPath);
+						App->scene->LoadScene(impPath);
+					}
 				}
 				
 				//SDL_free(dropped_filedir);    // Free dropped_filedir memory

@@ -80,6 +80,21 @@ bool ModuleScene::SaveScene(const char* sceneName) const
 
 bool ModuleScene::LoadScene(const char* path)
 {
+	char* buffer = nullptr;
+	uint read = App->fileSystem->Load(path, &buffer);
+	if (read == 0)
+	{
+		LOG("[ERROR] Scene Loading: Could not load %s from Assets! Error: File system could not read the file!", path);
+		return false;
+	}
+
+	CleanUp();
+
+	ParsonNode newRoot = ParsonNode(buffer);
+	ParsonArray objectsArray = newRoot.GetArray("Game Objects");
+	RELEASE_ARRAY(buffer);
+
+
 	return true;
 }
 
