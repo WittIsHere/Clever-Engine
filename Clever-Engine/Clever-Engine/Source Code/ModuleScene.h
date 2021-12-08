@@ -24,6 +24,7 @@ public:
 	bool LoadScene(const char* path);						// For now asks for full path 
 
 	GameObject* CreateGameObject(const char* name, GameObject* parent);
+	void DeleteGameObject(GameObject* GO, int index);
 	GameObject* GetGO(uint32 uuid);
 
 	bool DeleteFromMeshPool(MeshData* mesh);

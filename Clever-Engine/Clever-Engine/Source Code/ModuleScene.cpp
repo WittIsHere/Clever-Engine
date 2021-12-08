@@ -29,7 +29,19 @@ bool ModuleScene::Start()
 
 update_status ModuleScene::Update(float dt)
 {
+	for (uint i = 0; i < gameObjects.size(); ++i)														// First Pass to Delete or Update the GOs' state.
+	{
+		if (gameObjects[i]->toDestroy)
+		{
+			DeleteGameObject(gameObjects[i], i);
+			continue;
+		}
 
+		if (gameObjects[i]->isActive)
+		{
+			gameObjects[i]->Update();
+		}
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -112,6 +124,44 @@ GameObject* ModuleScene::CreateGameObject(const char* name, GameObject* parent)
 	gameObjects.push_back(ret);
 
 	return ret;
+}
+
+void ModuleScene::DeleteGameObject(GameObject* GO, int index)
+{
+	if (GO == nullptr)
+	{
+		LOG("[ERROR] Scene: Object to delete was nullptr!");
+		return;
+	}
+
+	if (App->ui->nodeClicked == GO->UUID)
+	{
+		App->ui->nodeClicked = -1;
+	}
+
+	if (!gameObjects.empty())													// Extra check just to make sure that at least one GameObject remains in the Scene.
+	{
+		GO->CleanUp();													// As it has not been Cleaned Up by its parent, the GameObject needs to call its CleanUp();
+		uint32 goUID = GO->UUID;
+
+		if (index != -1)														// If an index was given.
+		{
+			gameObjects.erase(gameObjects.begin() + index);						// Delete game object at index.
+		}
+		else
+		{
+			for (uint i = 0; i < gameObjects.size(); ++i)						// If no index was given.
+			{
+				if (gameObjects[i] == GO)								// Iterate game_objects until a match is found.
+				{
+					gameObjects.erase(gameObjects.begin() + i);					// Delete the game_object at the current loop index.
+					break;
+				}
+			}
+		}
+
+		RELEASE(GO);
+	}
 }
 
 GameObject* ModuleScene::GetGO(uint32 uuid)

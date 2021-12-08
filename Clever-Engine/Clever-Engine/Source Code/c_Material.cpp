@@ -14,17 +14,17 @@ c_Material::~c_Material()
 
 bool c_Material::Enable()
 {
-	return false;
+	return true;
 }
 
 bool c_Material::Update()
 {
-	return false;
+	return true;
 }
 
 bool c_Material::Disable()
 {
-	return false;
+	return true;
 }
 
 bool c_Material::SaveState(ParsonNode& root) const

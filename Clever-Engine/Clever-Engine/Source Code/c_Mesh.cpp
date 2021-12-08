@@ -15,17 +15,17 @@ c_Mesh::~c_Mesh()
 
 bool c_Mesh::Enable()
 {
-	return false;
+	return true;
 }
 
 bool c_Mesh::Update()
 {
-	return false;
+	return true;
 }
 
 bool c_Mesh::Disable()
 {
-	return false;
+	return true;
 }
 
 bool c_Mesh::SaveState(ParsonNode& root) const

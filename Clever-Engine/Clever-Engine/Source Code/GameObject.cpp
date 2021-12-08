@@ -81,6 +81,17 @@ bool GameObject::Update()
 	return ret;
 }
 
+bool GameObject::CleanUp()
+{
+	bool ret = true;
+
+	DeleteAllComponents();
+
+	DeleteAllChilds();
+
+	return ret;
+}
+
 bool GameObject::SaveState(ParsonNode& root) const
 {
 	//save own parameters
@@ -137,6 +148,21 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	return ret;
 }
 
+uint GameObject::GetComponentCount()
+{
+	return myComponents.size();
+}
+
+Component* GameObject::GetComponent(uint componentIndex)
+{
+	return myComponents[componentIndex];
+}
+
+c_Transform* GameObject::GetComponentTransform()
+{
+	return transform;
+}
+
 bool GameObject::DeleteComponent(Component* componentToDelete)
 {
 
@@ -164,19 +190,17 @@ bool GameObject::DeleteComponent(Component* componentToDelete)
 	return false;
 }
 
-uint GameObject::GetComponentCount()
+void GameObject::DeleteAllComponents()
 {
-	return myComponents.size();
-}
+	for (uint i = 0; i < myComponents.size(); ++i)
+	{
+		myComponents[i]->Disable();
 
-Component* GameObject::GetComponent(uint componentIndex)
-{
-	return myComponents[componentIndex];
-}
+		RELEASE(myComponents[i]);
+	}
 
-c_Transform* GameObject::GetComponentTransform()
-{
-	return transform;
+	if (!myComponents.empty()) 
+		myComponents.clear();
 }
 
 void GameObject::AddChild(GameObject* child)
@@ -197,6 +221,20 @@ uint32 GameObject::GetChildUID(uint childIndex)
 GameObject* GameObject::GetChildData(uint childIndex)
 {
 	return myChildren[childIndex];
+}
+
+void GameObject::DeleteAllChilds()
+{
+	for (uint i = 0; i < myChildren.size(); ++i)
+	{
+		if (myChildren[i] != nullptr)
+		{
+			myChildren[i]->parent = nullptr;
+			myChildren[i]->toDestroy = true;											
+		}
+	}
+
+	myChildren.clear();
 }
 
 GameObject* GameObject::GetParent()

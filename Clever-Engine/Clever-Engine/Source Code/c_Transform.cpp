@@ -15,17 +15,17 @@ c_Transform::~c_Transform()
 
 bool c_Transform::Enable()
 {
-	return false;
+	return true;
 }
 
 bool c_Transform::Update()
 {
-	return false;
+	return true;
 }
 
 bool c_Transform::Disable()
 {
-	return false;
+	return true;
 }
 
 bool c_Transform::SaveState(ParsonNode& root) const

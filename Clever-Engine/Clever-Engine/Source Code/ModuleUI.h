@@ -45,6 +45,8 @@ public:
 	bool changeTitleName = false;
 	int max_fps = 60;
 
+	int nodeClicked = -1;
+
 private:
 	//Bool variables to activate the different windows
 	bool activeConsole = true;
@@ -53,7 +55,6 @@ private:
 	bool activeDockingSpace = false;
 	bool activeHierarchy = true;
 	bool activeInspector = false;
-	int nodeClicked = -1;
 
 	//Configuration window variables
 	bool need_scroll = false;

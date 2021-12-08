@@ -24,22 +24,23 @@ public:
 
 	bool Init();
 	bool Update();
+	bool CleanUp();
 
 	bool SaveState(ParsonNode& root) const;
 	bool LoadState(ParsonNode& root);
 
 	Component* CreateComponent(ComponentData* CD);
-	bool DeleteComponent(Component* componentToDelete);
-	//bool DeleteAllComponents();
-
 	uint GetComponentCount();
 	Component* GetComponent(uint componentIndex);
 	c_Transform* GetComponentTransform();
+	bool DeleteComponent(Component* componentToDelete);
+	void DeleteAllComponents();
 
-	void AddChild(GameObject* child); //copy an existing "component"
+	void AddChild(GameObject* child); 
 	uint GetChildCount();
 	uint32 GetChildUID(uint childIndex);
 	GameObject* GetChildData(uint childIndex);
+	void DeleteAllChilds();
 
 	GameObject* GetParent();
 	void Draw(); 
