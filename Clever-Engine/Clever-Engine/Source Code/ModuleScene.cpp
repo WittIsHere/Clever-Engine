@@ -33,6 +33,10 @@ update_status ModuleScene::Update(float dt)
 	{
 		if (gameObjects[i]->toDestroy)
 		{
+			if (gameObjects[i]->GetParent() != nullptr)
+			{
+				gameObjects[i]->GetParent()->DeleteChildFromArray(gameObjects[i]);
+			}
 			DeleteGameObject(gameObjects[i], i);
 			continue;
 		}
@@ -121,6 +125,7 @@ void ModuleScene::CreateRootNode()
 GameObject* ModuleScene::CreateGameObject(const char* name, GameObject* parent)
 {
 	GameObject* ret = new GameObject(name, parent);
+	//parent->AddChild()
 	gameObjects.push_back(ret);
 
 	return ret;
@@ -141,12 +146,13 @@ void ModuleScene::DeleteGameObject(GameObject* GO, int index)
 
 	if (!gameObjects.empty())													// Extra check just to make sure that at least one GameObject remains in the Scene.
 	{
-		GO->CleanUp();													// As it has not been Cleaned Up by its parent, the GameObject needs to call its CleanUp();
+		GO->CleanUp();												
+		
 		uint32 goUID = GO->UUID;
-
 		if (index != -1)														// If an index was given.
 		{
 			gameObjects.erase(gameObjects.begin() + index);						// Delete game object at index.
+			
 		}
 		else
 		{

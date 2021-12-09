@@ -493,7 +493,13 @@ void ModuleUI::DrawHierarchySpace(bool* active)
      if (GO == App->scene->rootNode) flags |= ImGuiTreeNodeFlags_DefaultOpen;
      if (GO->UUID == nodeClicked) flags |= ImGuiTreeNodeFlags_Selected;
 
-     if (ImGui::TreeNodeEx(GO->name.c_str(), flags))
+     const char* GOName = GO->name.c_str();
+     if (GOName == nullptr)
+     {
+        //LOG("[Warning] UI: Unnamed GO");
+         GOName = "no name";
+     }
+     if (ImGui::TreeNodeEx(GOName, flags))
      {
          if (ImGui::IsItemClicked())
          {
@@ -525,10 +531,22 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          if (nodeClicked != -1 && nodeClicked != App->scene->rootNode->UUID)
          {
              GameObject* GO = App->scene->GetGO(nodeClicked);
+            
+
              if (ImGui::CollapsingHeader(GO->name.c_str()))
-             {
-                 for (int i = 0; i < GO->GetComponentCount(); i++)
-                 {
+             {  
+                //-----------NODE PROPERTIES-------
+                bool gameObjectIsActive = GO->isActive;
+                if (ImGui::Button("Delete Game Object"))
+                     GO->toDestroy = true;
+
+                if (ImGui::Checkbox("Is Active", &gameObjectIsActive))
+                {
+                    GO->isActive = gameObjectIsActive;
+                }
+                //-----------Components--------------
+                for (int i = 0; i < GO->GetComponentCount(); i++)
+                {
                      const Component* cmp = GO->GetComponent(i);
                      switch (cmp->type)
                      {
@@ -577,6 +595,17 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                             c_Mesh* mesh = (c_Mesh*)cmp;
                             if (ImGui::CollapsingHeader("Mesh"))
                             {
+                                if (ImGui::Button("Delete Mesh"))
+                                {
+                                    GO->DeleteComponent((Component*)mesh);
+                                    break;
+                                }
+
+                                bool meshActive = mesh->isActive;
+                                if (ImGui::Checkbox("Is Active", &meshActive))
+                                {
+                                    mesh->isActive = meshActive;
+                                }
                                 ImGui::Text("Vertex Count:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, "%d", mesh->GetVertexCount());
                             }
                             break;
@@ -586,6 +615,17 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                             c_Material* material = (c_Material*)cmp;
                             if (ImGui::CollapsingHeader("Material"))
                             {
+                                if (ImGui::Button("Delete Material"))
+                                {
+                                    GO->DeleteComponent((Component*)material);
+                                    break;
+                                }
+
+                            bool materialActive = material->isActive;
+                            if (ImGui::Checkbox("Is Active", &materialActive))
+                            {
+                                material->isActive = materialActive;
+                            }
                                 ImGui::Text("Path:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, material->getPath());
                                 ImGui::Text("Texture Sample:");
                                 ImGui::Image((void*)material->getTextureID(), ImVec2(256, 256));

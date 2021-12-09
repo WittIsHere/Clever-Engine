@@ -165,7 +165,6 @@ c_Transform* GameObject::GetComponentTransform()
 
 bool GameObject::DeleteComponent(Component* componentToDelete)
 {
-
 	std::string componentName = componentToDelete->getNameFromType();
 
 	if (componentToDelete != nullptr)
@@ -223,17 +222,35 @@ GameObject* GameObject::GetChildData(uint childIndex)
 	return myChildren[childIndex];
 }
 
+void GameObject::DeleteChild(uint childIndex)
+{
+	if (myChildren[childIndex] != nullptr)
+	{
+		App->scene->DeleteGameObject(myChildren[childIndex]);
+	}
+	myChildren.erase(myChildren.begin() + childIndex);
+}
+
+void GameObject::DeleteChildFromArray(GameObject* GO)
+{
+	for (uint i = 0; i < myChildren.size(); ++i)
+	{
+		if (myChildren[i] == GO)
+		{
+			myChildren.erase(myChildren.begin() + i);
+		}
+	}
+}
+
 void GameObject::DeleteAllChilds()
 {
 	for (uint i = 0; i < myChildren.size(); ++i)
 	{
 		if (myChildren[i] != nullptr)
 		{
-			myChildren[i]->parent = nullptr;
-			myChildren[i]->toDestroy = true;											
+			App->scene->DeleteGameObject(myChildren[i]);
 		}
 	}
-
 	myChildren.clear();
 }
 

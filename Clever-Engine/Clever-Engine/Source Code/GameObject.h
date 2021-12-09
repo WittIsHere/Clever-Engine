@@ -40,6 +40,8 @@ public:
 	uint GetChildCount();
 	uint32 GetChildUID(uint childIndex);
 	GameObject* GetChildData(uint childIndex);
+	void DeleteChild(uint childIndex);
+	void DeleteChildFromArray(GameObject* GO);
 	void DeleteAllChilds();
 
 	GameObject* GetParent();
