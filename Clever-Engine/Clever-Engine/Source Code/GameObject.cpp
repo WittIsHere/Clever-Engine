@@ -15,8 +15,8 @@
 GameObject::GameObject(const char* name)
 {
 	this->name = name;
-	parent = nullptr;
-	isRoot = true;
+	this->parentID = 0;
+	isRoot = false;
 	toDestroy = false;
 	UUID = Random::GetRandomUint();
 
@@ -34,6 +34,7 @@ GameObject::GameObject(const char* name)
 GameObject::GameObject(const char* name, GameObject* parent)
 {
 	this->name = name;
+	this->parentID = parent->UUID;
 	this->parent = parent;
 	toDestroy = false;
 	UUID = Random::GetRandomUint();
@@ -98,8 +99,7 @@ bool GameObject::SaveState(ParsonNode& root) const //set all variables inside th
 {
 	//save own parameters
 	root.SetNumber("UID", UUID);
-	uint parentUID = (parent != nullptr) ? parent->UUID : 0;
-	root.SetNumber("ParentUID", parentUID);
+	root.SetNumber("ParentUID", parentID);
 
 	root.SetString("Name", name.c_str());
 	root.SetBool("IsActive", isActive);
@@ -111,7 +111,8 @@ bool GameObject::SaveState(ParsonNode& root) const //set all variables inside th
 
 	for (uint i = 0; i < myComponents.size(); ++i)
 	{
-		ParsonNode componentNode = componentArray.SetNode(myComponents[i]->getNameFromType());
+		const char* cName = myComponents[i]->getNameFromType();
+		ParsonNode componentNode = componentArray.SetNode(cName);
 		myComponents[i]->SaveState(componentNode);
 	}
 	return true;
@@ -120,7 +121,8 @@ bool GameObject::SaveState(ParsonNode& root) const //set all variables inside th
 bool GameObject::LoadState(ParsonNode& root) //load from the node all the variables and assign tbem to the 
 {
 	ForceUID((uint)root.GetNumber("UID"));
-	//parent_uid = (uint)root.GetNumber("ParentUID");
+	parentID = (uint)root.GetNumber("ParentUID"); 
+	UpdateParent();
 
 	name = root.GetString("Name");
 	isActive = root.GetBool("IsActive");
@@ -137,7 +139,13 @@ bool GameObject::LoadState(ParsonNode& root) //load from the node all the variab
 		}
 
 		COMPONENT_TYPE type = (COMPONENT_TYPE)((int)componentNode.GetNumber("Type"));
-		Component* component = CreateComponent(type);
+		Component* component = nullptr;
+
+		if (type == COMPONENT_TYPE::TRANSFORM)			//a transform component is always created at the constructor of a GO
+			component = transform;
+		else
+			component = CreateComponent(type);
+
 		if (component != nullptr)
 		{
 			if (component->LoadState(componentNode))
@@ -172,6 +180,7 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 
 		c_Transform* cmp = new c_Transform(this, CD);	//create component of the corresponding type
 		myComponents.push_back((Component*)cmp);		//add it to the components array
+		cmp->Enable();
 		ret = cmp;										//return it in case it needs to be modfied right away
 		break;
 	}
@@ -179,6 +188,7 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	{
 		c_Material* cmp = new c_Material(this, CD);
 		myComponents.push_back((Component*)cmp);
+		cmp->Enable();
 		ret = cmp;
 		break;
 	}
@@ -186,6 +196,7 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	{
 		c_Mesh* cmp = new c_Mesh(this, CD);
 		myComponents.push_back((Component*)cmp);
+		cmp->Enable();
 		ret = cmp;
 		break;
 	}
@@ -193,6 +204,7 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	{
 		c_Camera* cmp = new c_Camera(this, CD);
 		myComponents.push_back((Component*)cmp);
+		cmp->Enable();
 		ret = cmp;
 		break;
 	}
@@ -339,6 +351,19 @@ void GameObject::DeleteAllChilds()
 GameObject* GameObject::GetParent()
 {
 	return this->parent;
+}
+
+uint GameObject::GetParentUID()
+{
+	return this->parent->UUID;
+}
+
+void GameObject::UpdateParent()
+{
+	if (parentID != 0)
+	{
+		parent = App->scene->GetGO(parentID);
+	}
 }
 
 void GameObject::ForceUID(uint32 id)

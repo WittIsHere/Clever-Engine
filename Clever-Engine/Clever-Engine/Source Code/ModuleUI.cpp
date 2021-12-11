@@ -124,7 +124,7 @@ update_status ModuleUI::Update(float dt)
                 }
                 if (ImGui::MenuItem("Open Scene"))
                 {
-                    // Open Scene code
+                    App->scene->LoadScene("Assets/Scenes/scene saving test.json");
                 }
                 if (ImGui::MenuItem("Save Scene"))
                 {
@@ -488,6 +488,12 @@ void ModuleUI::DrawHierarchySpace(bool* active)
 
  void ModuleUI::ShowChildData(GameObject* GO)
  {
+     if (GO == nullptr)
+     {
+         LOG("[error]: trying to show data of an emty GO");
+         return;
+     }
+
      ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 
      if (GO == App->scene->rootNode) flags |= ImGuiTreeNodeFlags_DefaultOpen;
@@ -536,7 +542,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
              if (ImGui::CollapsingHeader(GO->name.c_str()))
              {  
                 //-----------NODE PROPERTIES-------
-                bool gameObjectIsActive = GO->isActive;
+                    bool gameObjectIsActive = GO->isActive;
                 if (ImGui::Button("Delete Game Object"))
                      GO->toDestroy = true;
 

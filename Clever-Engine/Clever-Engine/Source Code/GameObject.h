@@ -15,7 +15,7 @@ class ComponentData;
 class GameObject
 {
 public:
-	GameObject(const char* name);	//If no parent is specified, then GO is set to be the root 
+	GameObject(const char* name = "GameObject");	//If no parent is specified, then GO is set to be the root 
 	GameObject(const char* name, GameObject* parent); 
 
 	~GameObject();
@@ -49,6 +49,8 @@ public:
 	void DeleteChildFromArray(GameObject* GO);
 	void DeleteAllChilds();
 	GameObject* GetParent();
+	uint GetParentUID();
+	void UpdateParent();
 	void ForceUID(uint32 id);
 	void Draw(); 
 
@@ -58,6 +60,7 @@ public:
 	bool isRoot = false;
 	bool isActive = true;
 	bool toDestroy = false;
+	uint32 parentID = 0;
 	uint32 UUID = 0;
 
 private:

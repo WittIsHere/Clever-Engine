@@ -242,6 +242,18 @@ void ModuleRenderer3D::DrawScene()
 void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform)
 {
 	//vertices
+	if (mesh == nullptr)
+	{
+		LOG("[error]: mesh equals nullptr");
+		return;
+	}
+
+	if (mesh->GetMeshData() == nullptr)
+	{
+		LOG("[error]: trying to draw a copmponent mesh without data");
+		return;
+	}
+
 	if (mesh->GetMeshData()->vPosID != 0)
 	{
 		glEnableClientState(GL_VERTEX_ARRAY);

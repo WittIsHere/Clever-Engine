@@ -6,14 +6,12 @@ c_Transform::c_Transform(GameObject* parent, COMPONENT_TYPE type) : Component(pa
 {
 	//comes as empty by default
 	transformData = nullptr;
-	UpdateLocalTransform();
 }
 
 c_Transform::c_Transform(GameObject* parent, ComponentData* data) : Component(parent, data->type)
 {
 	this->isEmpty = false;
 	transformData = (TransformData*)data;
-	UpdateLocalTransform();
 }
 
 c_Transform::~c_Transform()
@@ -22,6 +20,7 @@ c_Transform::~c_Transform()
 
 bool c_Transform::Enable()
 {
+	UpdateLocalTransform();
 	return true;
 }
 
@@ -48,6 +47,11 @@ bool c_Transform::SaveState(ParsonNode& root) const
 
 bool c_Transform::LoadState(ParsonNode& root)
 {
+	if (transformData == nullptr)
+	{
+		transformData = new TransformData();
+	}
+
 	transformData->position = root.GetFloat3("LocalTranslation");
 	transformData->rotation = root.GetQuat("LocalRotation");
 	transformData->scale = root.GetFloat3("LocalScale");

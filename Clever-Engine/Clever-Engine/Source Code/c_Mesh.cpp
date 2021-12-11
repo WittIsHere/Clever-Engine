@@ -48,8 +48,14 @@ bool c_Mesh::Disable()
 bool c_Mesh::SaveState(ParsonNode& root) const
 {
 	root.SetNumber("Type", (uint)type);
-	//to save the name first make sure it is assigned propperly dividing the path with the filesystem
-	
+	root.SetBool("ShowBoundingBox", drawBBox);
+	/*	
+	if (meshData != nullptr)
+	{
+		root.SetInteger("VertexCount", meshData->vertexCount);
+		root.SetInteger("vPosID", meshData->vPosData);
+		root.Setf
+	}*/
 	return true;
 }
 

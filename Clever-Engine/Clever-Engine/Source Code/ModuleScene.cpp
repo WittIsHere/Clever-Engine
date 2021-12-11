@@ -63,6 +63,15 @@ bool ModuleScene::CleanUp()
 {
 	LOG("Cleaning up ModuleScene");
 
+	for (auto object = gameObjects.begin(); object != gameObjects.end(); ++object)
+	{
+		(*object)->CleanUp();
+		RELEASE((*object));
+	}
+
+	gameObjects.clear();
+
+	rootNode = nullptr;
 	return true;
 }
 
@@ -104,11 +113,47 @@ bool ModuleScene::LoadScene(const char* path)
 		return false;
 	}
 
-	CleanUp();
+	if (buffer != nullptr)
+	{
+		CleanUp();
+
+	}
 
 	ParsonNode newRoot = ParsonNode(buffer);
 	ParsonArray objectsArray = newRoot.GetArray("Game Objects");
 	RELEASE_ARRAY(buffer);
+
+	for (uint i = 0; i < objectsArray.size; ++i)					// Getting all the GameObjects in the ParsonArray
+	{
+		ParsonNode objectNode = objectsArray.GetNode(i);
+		if (!objectNode.NodeIsValid())
+		{
+			continue;
+		}
+
+		GameObject* gameObject = new GameObject();
+
+		gameObject->LoadState(objectNode); 
+
+		if (gameObject->isRoot)
+		{
+			rootNode = gameObject;
+		}
+
+		gameObjects.push_back(gameObject);
+	}
+	
+	//once all game objects are created, perform the parenting
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		GameObject* parent = GetGO(gameObjects[i]->parentID);
+		if (parent != nullptr)
+		{
+			gameObjects[i]->UpdateParent();
+			parent->AddChild(gameObjects[i]);
+		}
+
+	}
 
 
 	return true;
@@ -118,8 +163,9 @@ void ModuleScene::CreateRootNode()
 {
 	//root node creation
 	GameObject* RN = new GameObject(ROOT_NAME);
-
+	RN->isRoot = true;
 	rootNode = RN;	//assign a root node
+	gameObjects.push_back(rootNode);
 }
 
 GameObject* ModuleScene::CreateGameObject(const char* name, GameObject* parent)
