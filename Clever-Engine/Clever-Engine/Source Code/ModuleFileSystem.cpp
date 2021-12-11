@@ -145,6 +145,28 @@ void ModuleFileSystem::GetAllFilesWithExtension(const char* directory, const cha
 	}
 }
 
+void ModuleFileSystem::GetAllFilesWithExtensionMod(const char* directory, const char* extension, std::vector<std::string>& file_list) const
+{
+	std::vector<std::string> files;
+	std::vector<std::string> dirs;
+	DiscoverFiles(directory, files, dirs);
+
+	for (uint i = 0; i < files.size(); i++)
+	{
+		std::string ext;
+		SplitFilePath(files[i].c_str(), nullptr, nullptr, &ext);
+
+		if (ext == extension)
+		{
+			std::string newpath;
+			newpath += directory;
+			newpath += "/";
+			newpath += files[i];
+			file_list.push_back(newpath);
+		}
+	}
+}
+
 PathNode ModuleFileSystem::GetAllFiles(const char* directory, std::vector<std::string>* filter_ext, std::vector<std::string>* ignore_ext) const
 {
 	PathNode root;
@@ -280,6 +302,27 @@ void ModuleFileSystem::SplitFilePath(const char* full_path, std::string* path, s
 				*extension = full.substr(pos_dot + 1);
 			else
 				extension->clear();
+		}
+	}
+}
+
+void ModuleFileSystem::SplitFilePathInverse(const char* full_path, std::string* path) const
+{
+	if (full_path != nullptr)
+	{
+		std::string full(full_path);
+		size_t pos_separator = full.find_last_of("\\/");
+
+		if (path != nullptr)
+		{
+			if (pos_separator < full.length())
+			{
+				*path = full.substr(pos_separator + 1, full.length());
+				size_t pos_dot2 = path->find_last_of(".");
+				*path = path->substr(0, pos_dot2);
+			}
+			else
+				path->clear();
 		}
 	}
 }

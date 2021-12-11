@@ -3,6 +3,8 @@
 #include "ModuleImporter.h"
 #include "ModuleScene.h"
 #include "GameObject.h"
+#include "ModuleFileSystem.h"
+#include "PathNode.h"
 
 #include "c_Mesh.h"
 #include "MeshData.h"
@@ -66,8 +68,10 @@ bool ModuleImporter::Start()
 {
 	LOG("Importing scene test");
 
-	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
-	ImportScene(fbxPath);
+	/*const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
+	ImportScene(fbxPath);*/
+
+	ImportAssetsFolder();
 
 	return true;
 }
@@ -172,7 +176,9 @@ void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene, co
 {
 	if (sceneRoot->mNumChildren > 0)
 	{
-		GameObject* GO = App->scene->CreateGameObject(fileName, App->scene->rootNode);
+		std::string GOname;
+		App->fileSystem->SplitFilePathInverse(fileName, &GOname);
+		GameObject* GO = App->scene->CreateGameObject(GOname.c_str(), App->scene->rootNode);
 		App->scene->rootNode->AddChild(GO);
 		for (int i = 0; i < sceneRoot->mNumChildren; i++)
 		{
@@ -337,8 +343,27 @@ uint ModuleImporter::LoadTextureFromPath(const char* path)
 	return textureBuffer;
 }
 
+void ModuleImporter::ImportAssetsFolder()
+{
+	PathNode ourAssets = App->fileSystem->GetAllFiles("Assets", nullptr, nullptr);
+	ImportOurAssets(ourAssets);
+}
 
-// CREATING NEW FUNCTIONS HERE
+void ModuleImporter::ImportOurAssets(PathNode node)
+{
+	std::vector<std::string> myAssets;
+
+	for (int i = 0; i < node.children.size(); i++)
+	{
+		App->fileSystem->GetAllFilesWithExtensionMod(node.children[i].path.c_str(), "FBX", myAssets);
+
+	}
+	
+	for (int i = 0; i < myAssets.size(); i++)
+	{
+		ImportScene(myAssets[i].c_str());
+	}
+}
 
 
 TMYMODEL* ModuleImporter::callCreateAndSave(const aiMesh* mesh, const char* path, TMYMODEL* myModel)
