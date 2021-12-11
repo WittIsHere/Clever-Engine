@@ -158,7 +158,7 @@ void ModuleScene::DeleteGameObject(GameObject* GO, int index)
 		{
 			for (uint i = 0; i < gameObjects.size(); ++i)						// If no index was given.
 			{
-				if (gameObjects[i] == GO)								// Iterate game_objects until a match is found.
+				if (gameObjects[i] == GO)										// Iterate game_objects until a match is found.
 				{
 					gameObjects.erase(gameObjects.begin() + i);					// Delete the game_object at the current loop index.
 					break;

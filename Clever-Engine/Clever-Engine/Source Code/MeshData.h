@@ -18,7 +18,7 @@ public:
 	float* vTexCoordsData = nullptr;	// Vertex Texture Coords Array
 
 	uint vNormID = 0;					// Vertex Normals Buffer ID
-	float* vNormData = nullptr;		// Vertex Normals Array
+	float* vNormData = nullptr;			// Vertex Normals Array
 
 	uint indicesID = 0;					// Indices Buffer ID
 	uint indicesCount = 0;				// Number of Indices

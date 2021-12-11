@@ -35,11 +35,32 @@ bool c_Material::SaveState(ParsonNode& root) const
 {
 	root.SetNumber("Type", (uint)type);
 
+	if (isEmpty == false && textureData != nullptr)
+	{
+		ParsonNode material = root.SetNode("TextureData");
+
+		material.SetString("Path", textureData->path.c_str());
+		material.SetInteger("TextureID", textureData->textureID); 
+	}
 	return true;
 }
 
 bool c_Material::LoadState(ParsonNode& root)
 {
+	textureData = nullptr;
+
+	ParsonNode textureNode = root.GetNode("TextureData", false);
+
+	if (textureNode.NodeIsValid()) //load data
+	{
+		TextureData* data = new TextureData;
+		data->path = textureNode.GetString("Path");
+		data->textureID = textureNode.GetInteger("TextureID");
+
+		//assign data
+		this->AssignNewData(data);
+	}
+
 	return true;
 }
 
