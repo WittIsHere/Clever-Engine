@@ -2,8 +2,11 @@
 
 #include "Globals.h"
 #include "Component.h"
+#include "MathGeoLib/include/Geometry/AABB.h"
+#include "MathGeoLib/include/Geometry/OBB.h"
 
 struct MeshData;
+class ModuleImporter;
 
 class c_Mesh : public Component
 {
@@ -20,6 +23,15 @@ public:
 
 	const uint GetVertexCount();
 	MeshData* GetMeshData();
+	void CreateBox();
+	void DrawBox() const;
+	void UpdateBox();
+
+public:
+	bool drawBBox;
+	AABB aabbox, drawingBox;
+	OBB obb;
+	MeshData* mesh;
 
 private:
 	MeshData* meshData = nullptr;

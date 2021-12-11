@@ -9,6 +9,8 @@
 #include "c_Transform.h"
 #include "c_Mesh.h"
 #include "c_Material.h"
+#include "c_Camera.h"
+#include "SDL/include/SDL_opengl.h"
 
 GameObject::GameObject(const char* name)
 {
@@ -140,6 +142,13 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	case(COMPONENT_TYPE::MESH):
 	{
 		c_Mesh* cmp = new c_Mesh(this, CD);
+		myComponents.push_back((Component*)cmp);
+		ret = cmp;
+		break;
+	}
+	case(COMPONENT_TYPE::CAMERA):
+	{
+		c_Camera* cmp = new c_Camera(this, CD);
 		myComponents.push_back((Component*)cmp);
 		ret = cmp;
 		break;

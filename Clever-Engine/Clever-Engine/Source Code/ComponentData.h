@@ -9,6 +9,7 @@ enum COMPONENT_TYPE
 	TRANSFORM,	//necessary?
 	MESH,
 	MATERIAL,
+	CAMERA,
 };
 
 class ComponentData

@@ -150,6 +150,7 @@
     <ClCompile Include="Source Code\Application.cpp" />
     <ClCompile Include="Source Code\Color.cpp" />
     <ClCompile Include="Source Code\Component.cpp" />
+    <ClCompile Include="Source Code\c_Camera.cpp" />
     <ClCompile Include="Source Code\Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Source Code\Dependencies\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Source Code\Dependencies\ImGui\imgui_draw.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="Source Code\Color.h" />
     <ClInclude Include="Source Code\Component.h" />
     <ClInclude Include="Source Code\ComponentData.h" />
+    <ClInclude Include="Source Code\c_Camera.h" />
     <ClInclude Include="Source Code\Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Source Code\Dependencies\ImGui\imgui.h" />
     <ClInclude Include="Source Code\Dependencies\ImGui\imgui_impl_opengl3.h" />

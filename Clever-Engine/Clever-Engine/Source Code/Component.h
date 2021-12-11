@@ -27,7 +27,7 @@ public:
 	COMPONENT_TYPE type;
 	bool isActive = true;
 
-private:
+public:
 	ComponentData* data;
 	GameObject* owner = nullptr;
 };

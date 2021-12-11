@@ -184,6 +184,9 @@
     <ClCompile Include="Source Code\GameObject.cpp">
       <Filter>Source Code\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\c_Camera.cpp">
+      <Filter>Source Code\GameObjects\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h">
@@ -485,6 +488,9 @@
     </ClInclude>
     <ClInclude Include="Source Code\JSONParser.h">
       <Filter>Source Code\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\c_Camera.h">
+      <Filter>Source Code\GameObjects\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
