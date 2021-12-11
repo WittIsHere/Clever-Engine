@@ -33,7 +33,6 @@ public:
 	bool drawBBox;
 	AABB aabbox, drawingBox;
 	OBB obb;
-	MeshData* mesh;
 
 	bool AssignNewData(MeshData* meshData);
 

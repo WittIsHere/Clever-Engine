@@ -20,8 +20,6 @@ public:
 	bool SaveState(ParsonNode& root) const override;
 	bool LoadState(ParsonNode& root) override;
 
-	bool AssignNewData(MaterialData* data);
-
 public:
 	const char* getPath();
 	const uint getTextureID();
@@ -29,7 +27,7 @@ public:
 	void setPath(const char* path);
 	void setTextureID(uint id);
 
-	void changeTextureData(TextureData* data);
+	bool AssignNewData(TextureData* data);
 
 private:
 	TextureData* textureData = nullptr;

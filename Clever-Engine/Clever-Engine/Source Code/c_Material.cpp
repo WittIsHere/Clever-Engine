@@ -63,23 +63,18 @@ void c_Material::setTextureID(uint id) //does this method make any sense? should
 	textureData->textureID = id;
 }
 
-void c_Material::changeTextureData(TextureData* data)
-{
-	textureData = data;
-}
-
-bool c_Material::AssignNewData(MaterialData* data)
+bool c_Material::AssignNewData(TextureData* data)
 {
 	bool ret = true;
 
-	if (this->isEmpty == true && this->data == nullptr)
+	if (this->isEmpty == true && this->textureData == nullptr)
 	{
-		data = data;
+		textureData = data;
 	}
 	else
 	{
 		RELEASE(data);
-		data = data;
+		textureData = data;
 	}
 	return ret;
 }

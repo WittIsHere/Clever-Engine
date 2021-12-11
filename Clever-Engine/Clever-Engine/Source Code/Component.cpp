@@ -5,7 +5,7 @@ Component::Component(GameObject* parent, COMPONENT_TYPE type)
 	this->owner = parent;
 	this->type = type;
 	this->isEmpty = true;
-	this->data = nullptr;
+
 }
 
 Component::~Component()

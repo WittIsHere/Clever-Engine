@@ -3,7 +3,7 @@
 #include "GameObject.h"
 #include "SDL/include/SDL_opengl.h"
 
-c_Camera::c_Camera(GameObject* parent, ComponentData* data):Component(parent, data)
+c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, data->type)
 {
 	type = COMPONENT_TYPE::CAMERA;
 

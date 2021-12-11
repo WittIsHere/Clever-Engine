@@ -164,14 +164,14 @@ bool c_Transform::AssignNewData(TransformData* data)
 {
 	bool ret = true;
 
-	if (this->isEmpty == true && this->data == nullptr)
+	if (this->isEmpty == true && this->transformData == nullptr)
 	{
-		data = data;
+		transformData = data;
 	}
 	else
 	{
-		RELEASE(data);
-		data = data;
+		RELEASE(transformData);
+		transformData = data;
 	}
 	return ret;
 }
