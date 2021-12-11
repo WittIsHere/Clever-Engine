@@ -13,6 +13,7 @@ struct c_Material;
 struct MeshData;
 struct MaterialData;
 struct TMYMODEL;
+struct PathNode;
 
 class ModuleImporter : public Module
 {
@@ -35,22 +36,16 @@ public:
 	void LoadTextureFromPathAndFill(const char* path, MeshData* myMesh);
 	uint LoadTextureFromPath(const char* path);
 
+	void ImportAssetsFolder();
+	void ImportOurAssets(PathNode node);
 
-	// --------------------------------> TODO
-	// Creating new functions here:
-
-	// void ImportToCustomFile(const char* path);
 	TMYMODEL* callCreateAndSave(const aiMesh* mesh, const char* path, TMYMODEL* myModel);
 
-	// Teacher's
-
-	TMYMODEL* createMyModel(const aiMesh* m); //#include <fstream>
+	TMYMODEL* createMyModel(const aiMesh* m);
 	bool SaveModel(const TMYMODEL* m, const char* path);
-	//TMYMODEL* LoadModel(const char* path);
 	MeshData* LoadModel(const char* path);
 
 private:
 	const char* textPath;
-	//const void* bakerHouseTexData = nullptr;
 
 };

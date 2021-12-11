@@ -31,6 +31,7 @@ public:
 	const char* GetWriteDir() const;
 	void DiscoverFiles(const char* directory, std::vector<std::string>& file_list, std::vector<std::string>& dir_list) const;
 	void GetAllFilesWithExtension(const char* directory, const char* extension, std::vector<std::string>& file_list) const;
+	void GetAllFilesWithExtensionMod(const char* directory, const char* extension, std::vector<std::string>& file_list) const;
 	PathNode GetAllFiles(const char* directory, std::vector<std::string>* filter_ext = nullptr, std::vector<std::string>* ignore_ext = nullptr) const;
 	void GetRealDir(const char* path, std::string& output) const;
 	std::string GetPathRelativeToAssets(const char* originalPath) const;
@@ -41,6 +42,7 @@ public:
 
 	std::string NormalizePath(const char* path) const;
 	void SplitFilePath(const char* full_path, std::string* path, std::string* file = nullptr, std::string* extension = nullptr) const;
+	void SplitFilePathInverse(const char* full_path, std::string* path) const;
 
 	// Open for Read/Write
 	unsigned int Load(const char* path, const char* file, char** buffer) const;
