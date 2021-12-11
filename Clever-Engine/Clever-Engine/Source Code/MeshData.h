@@ -10,7 +10,6 @@ public:
 	MeshData() : ComponentData(COMPONENT_TYPE::MESH) {}
 
 	uint vertexCount = 0;				// Number of Vertex
-	std::vector<float3> vertices;
 
 	uint vPosID = 0;					// Vertex Positions Buffer ID
 	float* vPosData = nullptr;			// Vertex Positions Array
