@@ -47,10 +47,10 @@
       <Filter>Source Code\Modules</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\Primitive.cpp">
-      <Filter>Source Code\Resources</Filter>
+      <Filter>Source Code\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\Timer.cpp">
-      <Filter>Source Code\Resources</Filter>
+      <Filter>Source Code\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\ModuleUI.cpp">
       <Filter>Source Code\Modules</Filter>
@@ -187,6 +187,12 @@
     <ClCompile Include="Source Code\c_Camera.cpp">
       <Filter>Source Code\GameObjects\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\ModuleResources.cpp">
+      <Filter>Source Code\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ResourceBase.cpp">
+      <Filter>Source Code\GameObjects\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h">
@@ -244,10 +250,10 @@
       <Filter>Source Code\Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\Primitive.h">
-      <Filter>Source Code\Resources</Filter>
+      <Filter>Source Code\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\Timer.h">
-      <Filter>Source Code\Resources</Filter>
+      <Filter>Source Code\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\ModuleUI.h">
       <Filter>Source Code\Modules</Filter>
@@ -492,6 +498,12 @@
     <ClInclude Include="Source Code\c_Camera.h">
       <Filter>Source Code\GameObjects\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\ModuleResources.h">
+      <Filter>Source Code\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ResourceBase.h">
+      <Filter>Source Code\GameObjects\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">
@@ -514,9 +526,6 @@
     </Filter>
     <Filter Include="Source Code\Modules">
       <UniqueIdentifier>{4a634fb7-fa21-4ebd-a79f-62006022e1b6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Code\Resources">
-      <UniqueIdentifier>{4c7dc9e8-0811-4262-9b9e-198095f82bf4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Code\Tools">
       <UniqueIdentifier>{0ccf0dba-e225-44fa-84d2-2ebc31986d0b}</UniqueIdentifier>
@@ -553,6 +562,12 @@
     </Filter>
     <Filter Include="External Libraries\PhysFS">
       <UniqueIdentifier>{9d598196-06e8-4c26-8e40-298a1cf55dfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\GameObjects\Resources">
+      <UniqueIdentifier>{699b9b57-45a3-43e5-a1e2-a17e1d3926d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\Utils">
+      <UniqueIdentifier>{4c7dc9e8-0811-4262-9b9e-198095f82bf4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

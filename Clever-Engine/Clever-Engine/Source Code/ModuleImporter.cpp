@@ -362,6 +362,7 @@ void ModuleImporter::ImportOurAssets(PathNode node)
 	for (int i = 0; i < myAssets.size(); i++)
 	{
 		ImportScene(myAssets[i].c_str());
+		// ImportAssetToLibWithoutGO
 	}
 }
 

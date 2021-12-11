@@ -11,6 +11,7 @@
 #include "ModuleImporter.h"
 #include "ModuleScene.h"
 #include "ModuleFileSystem.h"
+#include "ModuleResources.h"
 
 #include <vector>
 #include <string>
@@ -26,6 +27,7 @@ public:
 	ModuleUI* ui;
 	ModuleImporter* importer;
 	ModuleScene* scene;
+	ModuleResources* resources;
 
 private:
 	Timer ms_timer;

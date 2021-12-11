@@ -202,11 +202,13 @@
     <ClCompile Include="Source Code\ModuleImporter.cpp" />
     <ClCompile Include="Source Code\ModuleInput.cpp" />
     <ClCompile Include="Source Code\ModuleRenderer3D.cpp" />
+    <ClCompile Include="Source Code\ModuleResources.cpp" />
     <ClCompile Include="Source Code\ModuleScene.cpp" />
     <ClCompile Include="Source Code\ModuleUI.cpp" />
     <ClCompile Include="Source Code\ModuleWindow.cpp" />
     <ClCompile Include="Source Code\Primitive.cpp" />
     <ClCompile Include="Source Code\c_Material.cpp" />
+    <ClCompile Include="Source Code\ResourceBase.cpp" />
     <ClCompile Include="Source Code\Timer.cpp" />
     <ClCompile Include="Source Code\c_Transform.cpp" />
   </ItemGroup>
@@ -301,6 +303,7 @@
     <ClInclude Include="Source Code\ModuleImporter.h" />
     <ClInclude Include="Source Code\ModuleInput.h" />
     <ClInclude Include="Source Code\ModuleRenderer3D.h" />
+    <ClInclude Include="Source Code\ModuleResources.h" />
     <ClInclude Include="Source Code\ModuleScene.h" />
     <ClInclude Include="Source Code\ModuleUI.h" />
     <ClInclude Include="Source Code\ModuleWindow.h" />
@@ -309,6 +312,7 @@
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\c_Material.h" />
     <ClInclude Include="Source Code\Random.h" />
+    <ClInclude Include="Source Code\ResourceBase.h" />
     <ClInclude Include="Source Code\Timer.h" />
     <ClInclude Include="Source Code\c_Transform.h" />
     <ClInclude Include="Source Code\TransformData.h" />

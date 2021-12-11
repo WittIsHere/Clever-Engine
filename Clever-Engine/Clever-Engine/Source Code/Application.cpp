@@ -10,6 +10,7 @@ Application::Application()
 	ui = new ModuleUI(this);
 	importer = new ModuleImporter(this);
 	scene = new ModuleScene(this);
+	resources = new ModuleResources(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -23,6 +24,7 @@ Application::Application()
 	AddModule(ui);
 	AddModule(importer);
 	AddModule(scene);
+	AddModule(resources);
 
 	// Renderer last!
 	AddModule(renderer3D);
