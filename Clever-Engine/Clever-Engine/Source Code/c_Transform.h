@@ -9,6 +9,7 @@ class ParsonNode;
 class c_Transform : public Component
 {
 public:
+	c_Transform(GameObject* parent, COMPONENT_TYPE type);
 	c_Transform(GameObject* parent, ComponentData* data);
 	~c_Transform();
 
@@ -18,6 +19,8 @@ public:
 
 	bool SaveState(ParsonNode& root) const override;
 	bool LoadState(ParsonNode& root) override;
+
+	bool AssignNewData(TransformData* data);
 
 public:
 	void SetLocalPosition(const float3& newPosition);			// Sets localPosition to the given vector.	  
@@ -36,6 +39,7 @@ public:
 	float4x4 GetWorldTransform();
 	float* GetWorldTransformPtr();
 	void UpdateWorldTransform();
+
 
 private:
 	TransformData* transformData;

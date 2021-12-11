@@ -220,7 +220,7 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 			MeshData* tempMesh = new MeshData();
 			tempMesh = LoadModel(finalName.c_str());
 
-			App->scene->meshPool.push_back(tempMesh);
+			//App->scene->meshPool.push_back(tempMesh);
 
 			GO->CreateComponent((ComponentData*)tempMesh);
 

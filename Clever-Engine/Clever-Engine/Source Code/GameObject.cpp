@@ -92,7 +92,7 @@ bool GameObject::CleanUp()
 	return ret;
 }
 
-bool GameObject::SaveState(ParsonNode& root) const
+bool GameObject::SaveState(ParsonNode& root) const //set all variables inside the node
 {
 	//save own parameters
 	root.SetNumber("UID", UUID);
@@ -100,6 +100,9 @@ bool GameObject::SaveState(ParsonNode& root) const
 	root.SetNumber("ParentUID", parentUID);
 
 	root.SetString("Name", name.c_str());
+	root.SetBool("IsActive", isActive);
+	//root.SetBool("IsStatic", isStatic);
+	root.SetBool("IsSceneRoot", isRoot);
 
 	//iterate components and save their properties
 	ParsonArray componentArray = root.SetArray("Components");
@@ -109,12 +112,52 @@ bool GameObject::SaveState(ParsonNode& root) const
 		ParsonNode componentNode = componentArray.SetNode(myComponents[i]->getNameFromType());
 		myComponents[i]->SaveState(componentNode);
 	}
-	return false;
+	return true;
 }
 
-bool GameObject::LoadState(ParsonNode& root)
+bool GameObject::LoadState(ParsonNode& root) //load from the node all the variables and assign tbem to the 
 {
-	return false;
+	ForceUID((uint)root.GetNumber("UID"));
+	//parent_uid = (uint)root.GetNumber("ParentUID");
+
+	name = root.GetString("Name");
+	isActive = root.GetBool("IsActive");
+	//isStatic = root.GetBool("IsStatic");
+	isRoot = root.GetBool("IsSceneRoot");
+
+	ParsonArray componentsArray = root.GetArray("Components");
+	for (uint i = 0; i < componentsArray.size; ++i)
+	{
+		ParsonNode componentNode = componentsArray.GetNode(i);
+		if (!componentNode.NodeIsValid())
+		{
+			continue;
+		}
+
+		COMPONENT_TYPE type = (COMPONENT_TYPE)((int)componentNode.GetNumber("Type"));
+		Component* component = CreateComponent(type);
+		if (component != nullptr)
+		{
+			if (component->LoadState(componentNode))
+			{
+				component->Enable();
+
+				/*if (component->GetType() == ComponentType::CAMERA && App->gameState == GameState::PLAY)
+				{
+					App->camera->SetCurrentCamera((C_Camera*)component);
+				}*/
+			}
+			else
+			{
+				LOG("[WARNING] Game Object: Could not Load State of Component { %s } of Game Object { %s }!", component->getNameFromType(), name.c_str());
+
+				component->Disable();
+				delete component;
+			}
+		}
+	}
+
+	return true;
 }
 
 Component* GameObject::CreateComponent(ComponentData* CD)
@@ -140,6 +183,36 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	case(COMPONENT_TYPE::MESH):
 	{
 		c_Mesh* cmp = new c_Mesh(this, CD);
+		myComponents.push_back((Component*)cmp);
+		ret = cmp;
+		break;
+	}
+	}
+	return ret;
+}
+Component* GameObject::CreateComponent(COMPONENT_TYPE type)
+{
+	Component* ret = nullptr;
+
+	switch (((int)type))
+	{
+	case(COMPONENT_TYPE::TRANSFORM):
+	{
+		c_Transform* cmp = new c_Transform(this, type);	//create component of the corresponding type
+		myComponents.push_back((Component*)cmp);		//add it to the components array
+		ret = cmp;										//return it in case it needs to be modfied right away
+		break;
+	}
+	case(COMPONENT_TYPE::MATERIAL):
+	{
+		c_Material* cmp = new c_Material(this, type);
+		myComponents.push_back((Component*)cmp);
+		ret = cmp;
+		break;
+	}
+	case(COMPONENT_TYPE::MESH):
+	{
+		c_Mesh* cmp = new c_Mesh(this, type);
 		myComponents.push_back((Component*)cmp);
 		ret = cmp;
 		break;
@@ -257,6 +330,11 @@ void GameObject::DeleteAllChilds()
 GameObject* GameObject::GetParent()
 {
 	return this->parent;
+}
+
+void GameObject::ForceUID(uint32 id)
+{
+	UUID = id;
 }
 
 void GameObject::Draw()

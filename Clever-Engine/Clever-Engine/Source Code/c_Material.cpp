@@ -2,9 +2,13 @@
 #include "ModuleScene.h"
 #include "JSONParser.h"
 
-c_Material::c_Material(GameObject* parent, ComponentData* data) : Component(parent, data)
+c_Material::c_Material(GameObject* parent, COMPONENT_TYPE type) : Component(parent, type)
 {
-	type = COMPONENT_TYPE::MATERIAL;
+	textureData = nullptr;
+}
+
+c_Material::c_Material(GameObject* parent, ComponentData* data) : Component(parent, data->type)
+{
 	textureData = (TextureData*)data;
 }
 
@@ -64,6 +68,21 @@ void c_Material::changeTextureData(TextureData* data)
 	textureData = data;
 }
 
+bool c_Material::AssignNewData(MaterialData* data)
+{
+	bool ret = true;
+
+	if (this->isEmpty == true && this->data == nullptr)
+	{
+		data = data;
+	}
+	else
+	{
+		RELEASE(data);
+		data = data;
+	}
+	return ret;
+}
 
 
 

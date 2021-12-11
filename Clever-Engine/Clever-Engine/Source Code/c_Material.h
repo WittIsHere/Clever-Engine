@@ -9,6 +9,7 @@ class ParsonNode;
 class c_Material : public Component
 {
 public:
+	c_Material(GameObject* parent, COMPONENT_TYPE type);
 	c_Material(GameObject* parent, ComponentData* data);
 	~c_Material();
 
@@ -19,6 +20,9 @@ public:
 	bool SaveState(ParsonNode& root) const override;
 	bool LoadState(ParsonNode& root) override;
 
+	bool AssignNewData(MaterialData* data);
+
+public:
 	const char* getPath();
 	const uint getTextureID();
 

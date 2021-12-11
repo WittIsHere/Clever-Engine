@@ -555,37 +555,40 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                             c_Transform* transform = (c_Transform*)cmp;
                             if (ImGui::CollapsingHeader("Transform"))
                             {
-                                // --- POSITION ---
-                                ImGui::Text("Position");
-
-                                ImGui::SameLine(100.0f);
-
-                                float3 translation = transform->GetLocalPosition();
-                                if (ImGui::DragFloat3("T", (float*)&translation, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+                                if (!transform->isEmpty)
                                 {
-                                    transform->SetLocalPosition(translation);
-                                }
+                                    // --- POSITION ---
+                                    ImGui::Text("Position");
 
-                                // --- ROTATION ---
-                                ImGui::Text("Rotation");
+                                    ImGui::SameLine(100.0f);
 
-                                ImGui::SameLine(100.0f);
+                                    float3 translation = transform->GetLocalPosition();
+                                    if (ImGui::DragFloat3("T", (float*)&translation, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+                                    {
+                                        transform->SetLocalPosition(translation);
+                                    }
 
-                                float3 rotation = transform->GetLocalEulerRotation() * RADTODEG;
-                                if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
-                                {
-                                    transform->SetLocalRotation(rotation * DEGTORAD);
-                                }
+                                    // --- ROTATION ---
+                                    ImGui::Text("Rotation");
 
-                                // --- SCALE ---
-                                ImGui::Text("Scale");
+                                    ImGui::SameLine(100.0f);
 
-                                ImGui::SameLine(100.0f);
+                                    float3 rotation = transform->GetLocalEulerRotation() * RADTODEG;
+                                    if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+                                    {
+                                        transform->SetLocalRotation(rotation * DEGTORAD);
+                                    }
 
-                                float3 scale = transform->GetLocalScale();
-                                if (ImGui::DragFloat3("S", (float*)&scale, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
-                                {
-                                    transform->SetLocalScale(scale);
+                                    // --- SCALE ---
+                                    ImGui::Text("Scale");
+
+                                    ImGui::SameLine(100.0f);
+
+                                    float3 scale = transform->GetLocalScale();
+                                    if (ImGui::DragFloat3("S", (float*)&scale, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+                                    {
+                                        transform->SetLocalScale(scale);
+                                    }
                                 }
                             }
                             break;
@@ -606,7 +609,11 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                                 {
                                     mesh->isActive = meshActive;
                                 }
-                                ImGui::Text("Vertex Count:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, "%d", mesh->GetVertexCount());
+
+                                if (!mesh->isEmpty)
+                                {
+                                    ImGui::Text("Vertex Count:"); ImGui::SameLine(); ImGui::TextColored(YELLOW, "%d", mesh->GetVertexCount());
+                                }
                             }
                             break;
                         }
@@ -634,7 +641,8 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                         }
                      }
                  }
-                    
+                
+
              }
          }
          else

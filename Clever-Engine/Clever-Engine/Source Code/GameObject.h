@@ -29,13 +29,18 @@ public:
 	bool SaveState(ParsonNode& root) const;
 	bool LoadState(ParsonNode& root);
 
+public:
+	//components
 	Component* CreateComponent(ComponentData* CD);
+	Component* CreateComponent(COMPONENT_TYPE type);
+
 	uint GetComponentCount();
 	Component* GetComponent(uint componentIndex);
 	c_Transform* GetComponentTransform();
 	bool DeleteComponent(Component* componentToDelete);
 	void DeleteAllComponents();
 
+	//childs
 	void AddChild(GameObject* child); 
 	uint GetChildCount();
 	uint32 GetChildUID(uint childIndex);
@@ -45,6 +50,7 @@ public:
 	void DeleteAllChilds();
 
 	GameObject* GetParent();
+	void ForceUID(uint32 id);
 	void Draw(); 
 
 public:

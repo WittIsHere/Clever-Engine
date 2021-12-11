@@ -2,9 +2,16 @@
 #include "GameObject.h"
 #include "JSONParser.h"
 
-c_Transform::c_Transform(GameObject* parent, ComponentData* data) : Component(parent, data)
+c_Transform::c_Transform(GameObject* parent, COMPONENT_TYPE type) : Component(parent, type)
 {
-	this->type = COMPONENT_TYPE::TRANSFORM;
+	//comes as empty by default
+	transformData = nullptr;
+	UpdateLocalTransform();
+}
+
+c_Transform::c_Transform(GameObject* parent, ComponentData* data) : Component(parent, data->type)
+{
+	this->isEmpty = false;
 	transformData = (TransformData*)data;
 	UpdateLocalTransform();
 }
@@ -32,11 +39,21 @@ bool c_Transform::SaveState(ParsonNode& root) const
 {
 	root.SetNumber("Type", (uint)type);
 
+	root.SetFloat3("LocalTranslation", transformData->position);
+	root.SetFloat4("LocalRotation", float4(transformData->rotation.x, transformData->rotation.y, transformData->rotation.z, transformData->rotation.w)); 
+	root.SetFloat3("LocalScale", transformData->scale);
+
 	return true;
 }
 
 bool c_Transform::LoadState(ParsonNode& root)
 {
+	transformData->position = root.GetFloat3("LocalTranslation");
+	transformData->rotation = root.GetQuat("LocalRotation");
+	transformData->scale = root.GetFloat3("LocalScale");
+
+	UpdateLocalTransform();
+
 	return true;
 }
 
@@ -141,5 +158,21 @@ void c_Transform::UpdateWorldTransform()
 		}
 	}
 	updateWorld = false; 
+}
+
+bool c_Transform::AssignNewData(TransformData* data)
+{
+	bool ret = true;
+
+	if (this->isEmpty == true && this->data == nullptr)
+	{
+		data = data;
+	}
+	else
+	{
+		RELEASE(data);
+		data = data;
+	}
+	return ret;
 }
 

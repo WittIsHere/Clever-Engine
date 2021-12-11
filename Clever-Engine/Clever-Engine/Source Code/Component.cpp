@@ -1,9 +1,11 @@
 #include "Component.h"
 
-Component::Component(GameObject* parent, ComponentData* data)
+Component::Component(GameObject* parent, COMPONENT_TYPE type)
 {
 	this->owner = parent;
-	this->data = data;
+	this->type = type;
+	this->isEmpty = true;
+	this->data = nullptr;
 }
 
 Component::~Component()

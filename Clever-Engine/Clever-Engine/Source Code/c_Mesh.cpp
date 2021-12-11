@@ -3,9 +3,15 @@
 #include "JSONParser.h"
 
 
-c_Mesh::c_Mesh(GameObject* parent, ComponentData* data) : Component(parent, data)
+c_Mesh::c_Mesh(GameObject* parent, COMPONENT_TYPE type) : Component(parent, type)
 {
-	type = COMPONENT_TYPE::MESH;
+	//is empty by default
+	meshData = nullptr;
+}
+
+c_Mesh::c_Mesh(GameObject* parent, ComponentData* data) : Component(parent, data->type)
+{
+	this->isEmpty = false;
 	meshData = (MeshData*)data;
 }
 
@@ -31,7 +37,9 @@ bool c_Mesh::Disable()
 bool c_Mesh::SaveState(ParsonNode& root) const
 {
 	root.SetNumber("Type", (uint)type);
+	//to save the name first make sure it is assigned propperly dividing the path with the filesystem
 
+	
 	return true;
 }
 
@@ -49,5 +57,22 @@ MeshData* c_Mesh::GetMeshData()
 {
 	return meshData;
 }
+
+bool c_Mesh::AssignNewData(MeshData* meshData)
+{
+	bool ret = true;
+	
+	if (this->isEmpty == true && this->data == nullptr)
+	{
+		data = meshData;
+	}
+	else
+	{
+		RELEASE(data);
+		data = meshData;
+	}
+	return ret;
+}
+
 
 

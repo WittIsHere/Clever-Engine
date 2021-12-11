@@ -10,7 +10,7 @@ class ParsonNode;
 class Component
 {
 public:
-	Component(GameObject* parent, ComponentData* data);
+	Component(GameObject* parent, COMPONENT_TYPE data);
 	~Component();
 
 	virtual bool Enable();
@@ -26,8 +26,9 @@ public:
 public:
 	COMPONENT_TYPE type;
 	bool isActive = true;
+	bool isEmpty = true;
 
-private:
+protected:
 	ComponentData* data;
 	GameObject* owner = nullptr;
 };

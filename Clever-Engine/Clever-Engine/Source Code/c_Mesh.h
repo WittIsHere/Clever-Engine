@@ -8,6 +8,8 @@ struct MeshData;
 class c_Mesh : public Component
 {
 public:
+	//default constructor
+	c_Mesh(GameObject* parent, COMPONENT_TYPE type);
 	c_Mesh(GameObject* parent, ComponentData* data);
 	~c_Mesh();
 
@@ -20,6 +22,8 @@ public:
 
 	const uint GetVertexCount();
 	MeshData* GetMeshData();
+
+	bool AssignNewData(MeshData* meshData);
 
 private:
 	MeshData* meshData = nullptr;
