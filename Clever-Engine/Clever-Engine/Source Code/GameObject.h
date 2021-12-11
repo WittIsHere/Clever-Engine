@@ -1,5 +1,5 @@
 #pragma once
-
+#define NOMINMAX 1
 #include "Globals.h"
 #include "Component.h"
 #include "c_Mesh.h"
@@ -48,13 +48,12 @@ public:
 	void DeleteChild(uint childIndex);
 	void DeleteChildFromArray(GameObject* GO);
 	void DeleteAllChilds();
-
 	GameObject* GetParent();
 	void ForceUID(uint32 id);
 	void Draw(); 
 
 public:
-
+	
 	std::string name;
 	bool isRoot = false;
 	bool isActive = true;

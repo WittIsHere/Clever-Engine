@@ -29,6 +29,5 @@ public:
 	bool isEmpty = true;
 
 protected:
-	ComponentData* data;
 	GameObject* owner = nullptr;
 };

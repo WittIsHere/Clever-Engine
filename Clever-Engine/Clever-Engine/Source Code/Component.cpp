@@ -43,23 +43,28 @@ const char* Component::getNameFromType()
 
 	switch (type)
 	{
-	case (COMPONENT_TYPE::MATERIAL) :
+	case (COMPONENT_TYPE::MATERIAL):
 	{
 		ret = "Material";
 		break;
 	}
-	case (COMPONENT_TYPE::MESH) :
+	case (COMPONENT_TYPE::MESH):
 	{
 		ret = "Mesh";
 		break;
 	}
-	case (COMPONENT_TYPE::TRANSFORM) :
+	case (COMPONENT_TYPE::TRANSFORM):
 	{
 		ret = "Transform";
 		break;
 	}
+	case (COMPONENT_TYPE::CAMERA):
+	{
+		ret = "Camera";
+		break;
 	}
 	return ret;
+	}
 }
 
 GameObject* Component::GetOwner()
