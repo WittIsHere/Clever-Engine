@@ -2,6 +2,8 @@
 #include "Module.h"
 #include "Globals.h"
 #include "ResourceBase.h"
+#include "ModuleFileSystem.h"
+#include "ModuleImporter.h"
 
 #include <map>
 
@@ -18,8 +20,10 @@ public:
 	bool Start();
 	update_status Update(float ft);
 
+	void ImportAssetsFolder();
+	void ImportOurAssets(PathNode node);
 
-private:
+public:
 
 	std::map<uint32, Resource*>		resources;
 	std::map<uint32, ResourceBase>	library;
