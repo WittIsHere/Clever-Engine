@@ -71,7 +71,7 @@ Menus of all the functionalities of the engine
 - LinkedIn: [Albert Espinosa](https://www.linkedin.com/in/albert-espinosa-castillo-29860a1a2/)
 	
 ### Carles López
- - Github: [carlesli](Github: https://github.com/carlesli)
+ - Github: [carlesli](https://github.com/carlesli)
 ### Aram Galarza
 
 - Github: [WittIsHere](https://github.com/WittIsHere)
