@@ -415,9 +415,9 @@ TMYMODEL* ModuleImporter::callCreateAndSave(const aiMesh* mesh, const char* path
 	
 	uint32 uuid = Random::GetRandomUint();
 
-	ResourceBase temp = *(new ResourceBase(uuid, assetsPath, path, ResourceTypes::R_MESH));
+	ResourceBase* temp = new ResourceBase(uuid, assetsPath, path, ResourceTypes::R_MESH);
 
-	App->resources->library.emplace(uuid, temp);
+	//App->resources->library.emplace(uuid, temp);
 
 	return myModel;
 }

@@ -25,7 +25,7 @@ bool ModuleResources::Start()
 	bool ret = true;
 	
 	ImportAssetsFolder();
-	int a = 0;
+
 	return ret;
 }
 
