@@ -196,6 +196,10 @@
     <ClCompile Include="Resource.cpp">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\ImCurveEdit.cpp" />
+    <ClCompile Include="Source Code\ImGradient.cpp" />
+    <ClCompile Include="Source Code\ImGuizmo.cpp" />
+    <ClCompile Include="Source Code\ImSequencer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h">
@@ -510,6 +514,11 @@
     <ClInclude Include="Resource.h">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\ImCurveEdit.h" />
+    <ClInclude Include="Source Code\ImGradient.h" />
+    <ClInclude Include="Source Code\ImGuizmo.h" />
+    <ClInclude Include="Source Code\ImSequencer.h" />
+    <ClInclude Include="Source Code\ImZoomSlider.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">

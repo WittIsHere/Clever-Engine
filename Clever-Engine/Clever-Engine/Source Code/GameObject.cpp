@@ -1,3 +1,4 @@
+#define NOMINMAX 1
 #include "GameObject.h"
 #include "Application.h"
 #include "Globals.h"

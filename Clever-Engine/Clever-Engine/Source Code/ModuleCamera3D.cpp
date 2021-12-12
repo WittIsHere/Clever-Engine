@@ -1,6 +1,8 @@
+#define NOMINMAX 1
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleCamera3D.h"
+#include "MathGeoLib/include/Geometry/LineSegment.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -110,6 +112,11 @@ update_status ModuleCamera3D::Update(float dt)
 		Position = Reference + Z * Distance;
 	}
 
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+	{
+		GameObject* picked = MousePicking();
+	}
+
 	// Recalculate matrix -------------
 	CalculateViewMatrix();
 
@@ -168,4 +175,14 @@ void ModuleCamera3D::CalculateViewMatrix()
 {
 	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
 	ViewMatrixInverse = inverse(ViewMatrix);
+}
+
+GameObject* ModuleCamera3D::MousePicking()
+{
+	float normX = -(1.0f - (float(App->input->GetMouseY()) * 2.0f) / (float)App->window->GetWidth());
+	float normY = -(1.0f - (float(App->input->GetMouseX()) * 2.0f) / (float)App->window->GetHeight());
+
+	LineSegment picking = frustum.UnProjectLineSegment(normX, normY);
+	float distance;
+	return nullptr;
 }
