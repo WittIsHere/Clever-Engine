@@ -147,7 +147,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Source Code\Application.cpp" />
     <ClCompile Include="Source Code\Color.cpp" />
     <ClCompile Include="Source Code\Component.cpp" />
@@ -209,12 +208,13 @@
     <ClCompile Include="Source Code\ModuleWindow.cpp" />
     <ClCompile Include="Source Code\Primitive.cpp" />
     <ClCompile Include="Source Code\c_Material.cpp" />
+    <ClCompile Include="Source Code\Resource.cpp" />
     <ClCompile Include="Source Code\ResourceBase.cpp" />
+    <ClCompile Include="Source Code\ResourceMesh.cpp" />
     <ClCompile Include="Source Code\Timer.cpp" />
     <ClCompile Include="Source Code\c_Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Resource.h" />
     <ClInclude Include="Source Code\Application.h" />
     <ClInclude Include="Source Code\Color.h" />
     <ClInclude Include="Source Code\Component.h" />
@@ -314,7 +314,9 @@
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\c_Material.h" />
     <ClInclude Include="Source Code\Random.h" />
+    <ClInclude Include="Source Code\Resource.h" />
     <ClInclude Include="Source Code\ResourceBase.h" />
+    <ClInclude Include="Source Code\ResourceMesh.h" />
     <ClInclude Include="Source Code\Timer.h" />
     <ClInclude Include="Source Code\c_Transform.h" />
     <ClInclude Include="Source Code\TransformData.h" />
