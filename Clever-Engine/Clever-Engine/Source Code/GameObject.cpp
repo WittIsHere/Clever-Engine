@@ -19,6 +19,7 @@ GameObject::GameObject(const char* name)
 	this->parentID = 0;
 	isRoot = false;
 	toDestroy = false;
+	hasMesh = false;
 	UUID = Random::GetRandomUint();
 
 	//Every game object has to have a transform, so we create the compnent at the constructor
@@ -38,6 +39,7 @@ GameObject::GameObject(const char* name, GameObject* parent)
 	this->parentID = parent->UUID;
 	this->parent = parent;
 	toDestroy = false;
+	hasMesh = false;
 	UUID = Random::GetRandomUint();
 
 	//Every game object has to have a transform, so we create the compnent at the constructor
@@ -206,6 +208,7 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 		myComponents.push_back((Component*)cmp);
 		cmp->Enable();
 		ret = cmp;
+		hasMesh = true;
 		break;
 	}
 	}
@@ -255,6 +258,14 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 		c_Mesh* cmp = new c_Mesh(this, type);
 		myComponents.push_back((Component*)cmp);
 		ret = cmp;
+		hasMesh = true;
+		break;
+	}
+	case(COMPONENT_TYPE::CAMERA):
+	{
+		c_Camera* cmp = new c_Camera(this, type);
+		myComponents.push_back((Component*)cmp);
+		ret = cmp;
 		break;
 	}
 	}
@@ -269,6 +280,17 @@ uint GameObject::GetComponentCount()
 Component* GameObject::GetComponent(uint componentIndex)
 {
 	return myComponents[componentIndex];
+}
+
+Component* GameObject::GetComponentByType(COMPONENT_TYPE type)
+{
+	for (int i = 0; i < myComponents.size(); i++)
+	{
+		if (myComponents[i]->type == type)
+		{
+			return myComponents[i];
+		}
+	}
 }
 
 c_Transform* GameObject::GetComponentTransform()
@@ -286,6 +308,9 @@ bool GameObject::DeleteComponent(Component* componentToDelete)
 		{
 			if (myComponents[i] == componentToDelete)
 			{
+				if (myComponents[i]->type == COMPONENT_TYPE::MESH)
+					hasMesh = false;
+
 				myComponents[i]->Disable();
 
 				RELEASE(myComponents[i]);

@@ -27,7 +27,7 @@ bool ModuleResources::Start()
 	LOG("ModuleResources Starting");
 	bool ret = true;
 	
-	ImportAssetsFolder();
+	//ImportAssetsFolder();
 
 	return ret;
 }

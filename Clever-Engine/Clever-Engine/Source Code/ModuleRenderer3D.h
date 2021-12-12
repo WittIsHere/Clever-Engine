@@ -6,6 +6,7 @@
 #include "Light.h"
 #include "ResourceMesh.h"
 #include "MathGeoLib/include/Geometry/LineSegment.h"
+#include "MathGeoLib/include/Geometry/OBB.h"
 
 #define MAX_LIGHTS 8
 #define CHECKERS_HEIGHT 128
@@ -52,6 +53,8 @@ public:
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
+	OBB obb;
+	bool render = true;
 	LineSegment ray;
 	// Draw Cube vars
 	void DrawCube();

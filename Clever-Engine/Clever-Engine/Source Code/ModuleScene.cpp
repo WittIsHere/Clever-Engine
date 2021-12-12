@@ -15,6 +15,7 @@ bool ModuleScene::Init()
 {
 	LOG("ModuleScene Init");
 	bool ret = true;
+	
 	CreateRootNode();
 	return ret;
 }
@@ -23,6 +24,9 @@ bool ModuleScene::Start()
 {
 	LOG("ModuleScene Starting");
 	bool ret = true;
+	mainCamera = CreateGameObject("Camera", rootNode);
+	rootNode->AddChild(mainCamera);
+	mainCamera->CreateComponent(COMPONENT_TYPE::CAMERA);
 
 	return ret;                        
 }

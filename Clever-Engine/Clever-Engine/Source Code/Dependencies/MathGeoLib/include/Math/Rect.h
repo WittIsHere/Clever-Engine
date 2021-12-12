@@ -16,11 +16,13 @@
 	@author Jukka Jylänki
 	@brief 2D integral axis-aligned rectangle, equivalent to RECT in Windows API. */
 #pragma once
+#include "../MathWarnings.h"
 
-#ifdef WIN32
-#define Polygon Polygon_unused
-#include <Windows.h> // For DebugBreak();
-#undef Polygon
+// Define this when building this project to make Rects be transformable to Win32 RECT() structs.
+// #define MATH_WIN32_INTEROP
+
+#if defined(WIN32) && defined(MATH_WIN32_INTEROP)
+#include "../Math/InclWindows.h"
 #endif
 
 MATH_BEGIN_NAMESPACE
@@ -42,7 +44,7 @@ public:
 	int right;
 	int bottom;
 
-#ifdef WIN32
+#if defined(WIN32) && defined(MATH_WIN32_INTEROP)
 	operator RECT()
 	{
 		RECT r;

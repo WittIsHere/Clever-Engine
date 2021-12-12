@@ -2,15 +2,16 @@
 #include "Application.h"
 #include "GameObject.h"
 #include "SDL/include/SDL_opengl.h"
+#include "MathGeoLib/include/Geometry/Frustum.h"
+
+c_Camera::c_Camera(GameObject* parent, COMPONENT_TYPE type) : Component(parent, type)
+{
+
+}
 
 c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, data->type)
 {
 	type = COMPONENT_TYPE::CAMERA;
-
-	frustum.type = FrustumType::PerspectiveFrustum;
-	frustum.pos = float3::zero;
-	frustum.front = float3::unitZ;
-	frustum.up = float3::unitY;
 }
 
 c_Camera::~c_Camera() {}
@@ -27,11 +28,11 @@ bool c_Camera::Disable()
 
 bool c_Camera::Update()
 {
-	c_Transform* trs = (c_Transform*)COMPONENT_TYPE::TRANSFORM;
 
-	frustum.pos = trs->GetLocalPosition();
-	frustum.up = trs->GetWorldTransform().WorldY();
-	frustum.front = trs->GetWorldTransform().WorldZ();
+	c_Transform* trs = (c_Transform*)COMPONENT_TYPE::TRANSFORM;
+	trs = App->scene->mainCamera->GetComponentTransform();
+
+	
 
 	DrawFrustum();
 	return true;
@@ -101,23 +102,31 @@ bool c_Camera::LoadState(ParsonNode& root)
 	return true;
 }
 
-//bool c_Camera::ContainBOX(const AABB& referenceBox) const
-//{
-//	float3 vertexCorner[8];
-//
-//	referenceBox.GetCornerPoints(vertexCorner);
-//
-//	for (int i = 0; i < 6; ++i)
-//	{
-//		int outsidecorner = 8;
-//
-//		for (int j = 0; j < 8; ++j)
-//		{
-//			if (frustum.GetPlane(i).IsOnPositiveSide(vertexCorner[j])) --outsidecorner;
-//		}
-//
-//		if (outsidecorner == 0) return false;
-//	}
-//
-//	return true;
-//}
+bool c_Camera::ContainBOX(const AABB& referenceBox) const
+{
+	float3 vertexCorner[8];
+	int totalIn = 0;
+
+	referenceBox.GetCornerPoints(vertexCorner);
+
+	for (int i = 0; i < 6; ++i)
+	{
+		int outsidecorner = 8;
+		int iPtn = 1;
+
+		for (int j = 0; j < 8; ++j)
+		{
+			if (frustum.GetPlane(i).IsOnPositiveSide(vertexCorner[j]))
+			{
+				iPtn = 0;
+				--outsidecorner;
+			}
+		}
+
+		if (outsidecorner == 0) return false;
+		totalIn += iPtn;
+	}
+	if (totalIn == 6) return true;
+
+	return true;
+}

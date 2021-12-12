@@ -10,12 +10,14 @@
 #include "TransformData.h"
 #include "Application.h"
 #include "SDL/include/SDL_opengl.h"
+#include "MathGeoLib/include/Geometry/Frustum.h"
 
 class GameObject;
 
 class c_Camera : public Component
 {
 public:
+	c_Camera(GameObject* parent, COMPONENT_TYPE type);
 	c_Camera(GameObject* parent, ComponentData* data);
 	~c_Camera();
 
@@ -29,7 +31,7 @@ public:
 	//void Inspector(Application* App);
 	
 
-	//bool ContainBOX(const AABB& referenceBox) const;
+	bool ContainBOX(const AABB& referenceBox) const;
 
 public:
 	Frustum frustum;

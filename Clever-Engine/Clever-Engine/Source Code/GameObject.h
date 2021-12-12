@@ -37,6 +37,7 @@ public:
 
 	uint GetComponentCount();
 	Component* GetComponent(uint componentIndex);
+	Component* GetComponentByType(COMPONENT_TYPE type);
 	c_Transform* GetComponentTransform();
 	bool DeleteComponent(Component* componentToDelete);
 	void DeleteAllComponents();
@@ -58,6 +59,7 @@ public:
 	void Draw(); 
 
 public:
+	bool hasMesh;
 	std::string name;
 	bool isRoot = false;
 	bool isActive = true;
