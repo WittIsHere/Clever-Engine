@@ -193,7 +193,7 @@
     <ClCompile Include="Source Code\ResourceBase.cpp">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceMesh.cpp">
+    <ClCompile Include="Resource.cpp">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -507,7 +507,7 @@
     <ClInclude Include="Source Code\ResourceBase.h">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceMesh.h">
+    <ClInclude Include="Resource.h">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Globals.h"
+#include <string>
 
 enum class ResourceType					
 {
@@ -21,7 +22,7 @@ public:
 	virtual bool CleanUp();
 
 public:
-	const char* GetTypeAsString() const
+	const char* GetTypeAsString() const; 
 
 public: //TODO: pasar a private pofavo
 	bool hasForcedUID;
