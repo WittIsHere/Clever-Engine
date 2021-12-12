@@ -181,43 +181,43 @@ void ModuleCamera3D::CalculateViewMatrix()
 
 GameObject* ModuleCamera3D::MousePicking()
 {
-	std::vector<GameObject*> possible;
-	float normX = -(1.0f - (float(App->input->GetMouseY()) * 2.0f) / (float)App->window->GetWidth());
-	float normY = -(1.0f - (float(App->input->GetMouseX()) * 2.0f) / (float)App->window->GetHeight());
+	//std::vector<GameObject*> possible;
+	//float normX = -(1.0f - (float(App->input->GetMouseY()) * 2.0f) / (float)App->window->GetWidth());
+	//float normY = -(1.0f - (float(App->input->GetMouseX()) * 2.0f) / (float)App->window->GetHeight());
 
-	LineSegment picking = frustum.UnProjectLineSegment(normX, normY);
-	float distance;
+	//LineSegment picking = frustum.UnProjectLineSegment(normX, normY);
+	//float distance;
 
-	for (int i = 0; i < App->scene->gameObjects.size(); i++)
-	{
-		if (App->scene->gameObjects[i]->hasMesh == true)
-		{
-			c_Mesh* mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
+	//for (int i = 0; i < App->scene->gameObjects.size(); i++)
+	//{
+	//	if (App->scene->gameObjects[i]->hasMesh == true)
+	//	{
+	//		c_Mesh* mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
 
-			if (picking.Intersects(mesh->aabbox))
-			{
-				float hitNear;
-				float hitFar;
+	//		if (picking.Intersects(mesh->aabbox))
+	//		{
+	//			float hitNear;
+	//			float hitFar;
 
-				if (picking.Intersects(mesh->obb, hitNear, hitFar))
-				{
-					possible.push_back(App->scene->gameObjects[i]);
-				}
-			}
-		}
-		else
-		{
-			i++;
-		}
-	}
+	//			if (picking.Intersects(mesh->obb, hitNear, hitFar))
+	//			{
+	//				possible.push_back(App->scene->gameObjects[i]);
+	//			}
+	//		}
+	//	}
+	//	else
+	//	{
+	//		i++;
+	//	}
+	//}
 
-	GameObject* pickedObject = nullptr;
-	float finalDistance = picking.Length();
-	
-	/*for (int i = 0; i < possible.size(); i++)
-	{
+	//GameObject* pickedObject = nullptr;
+	//float finalDistance = picking.Length();
+	//
+	///*for (int i = 0; i < possible.size(); i++)
+	//{
 
-	}*/
+	//}*/
 
 	return nullptr;
 }
