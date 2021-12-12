@@ -190,6 +190,10 @@
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Math\TransformOps.cpp" />
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Time\Clock.cpp" />
     <ClCompile Include="Source Code\Dependencies\parson\parson.c" />
+    <ClCompile Include="Source Code\ImCurveEdit.cpp" />
+    <ClCompile Include="Source Code\ImGradient.cpp" />
+    <ClCompile Include="Source Code\ImGuizmo.cpp" />
+    <ClCompile Include="Source Code\ImSequencer.cpp" />
     <ClCompile Include="Source Code\JSONParser.cpp" />
     <ClCompile Include="Source Code\ModuleFileSystem.cpp" />
     <ClCompile Include="Source Code\GameObject.cpp" />
@@ -290,6 +294,11 @@
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Time\Clock.h" />
     <ClInclude Include="Source Code\Dependencies\parson\parson.h" />
     <ClInclude Include="Source Code\Dependencies\PhysFS\include\physfs.h" />
+    <ClInclude Include="Source Code\ImCurveEdit.h" />
+    <ClInclude Include="Source Code\ImGradient.h" />
+    <ClInclude Include="Source Code\ImGuizmo.h" />
+    <ClInclude Include="Source Code\ImSequencer.h" />
+    <ClInclude Include="Source Code\ImZoomSlider.h" />
     <ClInclude Include="Source Code\JSONParser.h" />
     <ClInclude Include="Source Code\model.h" />
     <ClInclude Include="Source Code\ModuleFileSystem.h" />

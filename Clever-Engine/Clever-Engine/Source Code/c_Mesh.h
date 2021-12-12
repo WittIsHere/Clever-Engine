@@ -1,5 +1,5 @@
 #pragma once
-
+#define NOMINMAX 1
 #include "Globals.h"
 #include "Component.h"
 #include "MathGeoLib/include/Geometry/AABB.h"

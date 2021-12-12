@@ -193,12 +193,13 @@
     <ClCompile Include="Source Code\ResourceBase.cpp">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\Resource.cpp">
+    <ClCompile Include="Resource.cpp">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\ResourceMesh.cpp">
-      <Filter>Source Code\GameObjects\Resources\Resource Types</Filter>
-    </ClCompile>
+    <ClCompile Include="Source Code\ImCurveEdit.cpp" />
+    <ClCompile Include="Source Code\ImGradient.cpp" />
+    <ClCompile Include="Source Code\ImGuizmo.cpp" />
+    <ClCompile Include="Source Code\ImSequencer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h">
@@ -510,12 +511,14 @@
     <ClInclude Include="Source Code\ResourceBase.h">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\Resource.h">
+    <ClInclude Include="Resource.h">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\ResourceMesh.h">
-      <Filter>Source Code\GameObjects\Resources\Resource Types</Filter>
-    </ClInclude>
+    <ClInclude Include="Source Code\ImCurveEdit.h" />
+    <ClInclude Include="Source Code\ImGradient.h" />
+    <ClInclude Include="Source Code\ImGuizmo.h" />
+    <ClInclude Include="Source Code\ImSequencer.h" />
+    <ClInclude Include="Source Code\ImZoomSlider.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">
@@ -580,9 +583,6 @@
     </Filter>
     <Filter Include="Source Code\Utils">
       <UniqueIdentifier>{4c7dc9e8-0811-4262-9b9e-198095f82bf4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Code\GameObjects\Resources\Resource Types">
-      <UniqueIdentifier>{37b1c7ba-90e9-4b65-a452-42c92fce769d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

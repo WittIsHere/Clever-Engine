@@ -1,8 +1,10 @@
 #pragma once
+#define NOMINMAX 1
 #include "Module.h"
 #include "Globals.h"
 #include "glmath.h"
 #include "Light.h"
+#include "MathGeoLib/include/Geometry/LineSegment.h"
 
 #define MAX_LIGHTS 8
 #define CHECKERS_HEIGHT 128
@@ -37,6 +39,7 @@ public:
 	void SetVSync(bool vsync);
 	uint* GetOpenGLVersion() const;
 	void PollErrors();
+	void DrawRay();
 	//void PollErrors(const char* additionalString);
 	
 private:
@@ -47,7 +50,7 @@ public:
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
-
+	LineSegment ray;
 	// Draw Cube vars
 	void DrawCube();
 	void DMPlane();
