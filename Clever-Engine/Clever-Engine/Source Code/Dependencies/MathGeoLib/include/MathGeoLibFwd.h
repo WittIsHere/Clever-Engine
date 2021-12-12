@@ -4,7 +4,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-	   http://www.apache.org/licenses/LICENSE-2.0
+       http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,18 +12,22 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
-   /** @file MathFwd.h
-	   @author Jukka Jylänki
-	   @brief */
+/** @file MathFwd.h
+	@author Jukka Jylänki
+	@brief */
 #pragma once
 
 #include "MathBuildConfig.h"
 #include "Math/MathNamespace.h"
 
+#ifdef MATH_CONTAINERLIB_SUPPORT
+#include "Memory/TypeTraits.h"
+#endif
+
 #include <stddef.h>
 
-	   // Very annoying to have to do this, but <iosfwd> doesn't have a fwddecl for std::vector,
-	   // and forward-declaring it manually is not allowed, see http://stackoverflow.com/questions/307343/forward-declare-an-stl-container
+// Very annoying to have to do this, but <iosfwd> doesn't have a fwddecl for std::vector,
+// and forward-declaring it manually is not allowed, see http://stackoverflow.com/questions/307343/forward-declare-an-stl-container
 #include <vector>
 
 // The CONST_WIN32 is a #define which resolves to 'const' on Windows, and null on other
@@ -62,8 +66,6 @@ MATH_BEGIN_NAMESPACE
 class float2;
 class float3;
 class float4;
-class float2x2;
-class float2x3;
 class float3x3;
 class float3x4;
 class float4x4;
@@ -78,6 +80,7 @@ class PBVolume;
 class AABB;
 class Capsule;
 class Circle;
+class Circle2D;
 class Cone;
 class Cylinder;
 class Ellipsoid;
@@ -98,6 +101,10 @@ class Torus;
 class ScaleOp;
 class Triangle;
 class LCG;
+
+class AABB2D;
+class LineSegment2D;
+class Triangle2D;
 
 struct float4_storage;
 
@@ -143,10 +150,16 @@ struct float4_storage;
 #define MATH_VEC_IS_FLOAT4
 #endif
 
+typedef ALIGN16 float4 vec2d;
+typedef float4_storage vec2d_storage;
+
 typedef ALIGN16 float4 vec;
 typedef float4_storage vec_storage;
 
 #else
+
+typedef float2 vec2d;
+typedef float2 vec2d_storage;
 
 typedef float3 vec;
 typedef float3 vec_storage;
@@ -193,4 +206,40 @@ class VertexBuffer;
 #if defined(_M_X64) || defined(__x86_64__)
 // Are we targeting a 64-bit build?
 #define MATH_64BIT
+#endif
+
+#ifdef MATH_CONTAINERLIB_SUPPORT
+REGISTER_POD(MATH_NS::float2);
+REGISTER_POD(MATH_NS::float3);
+REGISTER_POD(MATH_NS::float4);
+REGISTER_POD(MATH_NS::float3x3);
+REGISTER_POD(MATH_NS::float3x4);
+REGISTER_POD(MATH_NS::float4x4);
+REGISTER_POD(MATH_NS::Quat);
+REGISTER_POD(MATH_NS::TranslateOp);
+REGISTER_POD(MATH_NS::ScaleOp);
+//REGISTER_POD(MATH_NS::PBVolume<N>);
+REGISTER_POD(MATH_NS::AABB);
+REGISTER_POD(MATH_NS::Capsule);
+REGISTER_POD(MATH_NS::Circle);
+REGISTER_POD(MATH_NS::Cone);
+REGISTER_POD(MATH_NS::Cylinder);
+REGISTER_POD(MATH_NS::Ellipsoid);
+REGISTER_POD(MATH_NS::Frustum);
+REGISTER_POD(MATH_NS::HitInfo);
+REGISTER_POD(MATH_NS::Line);
+REGISTER_POD(MATH_NS::LineSegment);
+REGISTER_POD(MATH_NS::OBB);
+REGISTER_POD(MATH_NS::Plane);
+REGISTER_POD(MATH_NS::Polygon);
+REGISTER_POD(MATH_NS::Polyhedron);
+REGISTER_POD(MATH_NS::Polynomial);
+REGISTER_POD(MATH_NS::Ray);
+REGISTER_POD(MATH_NS::Sphere);
+REGISTER_POD(MATH_NS::Torus);
+REGISTER_POD(MATH_NS::Triangle);
+REGISTER_POD(MATH_NS::LCG);
+REGISTER_POD(MATH_NS::float4_storage);
+REGISTER_POD(MATH_NS::Triangle_storage);
+REGISTER_POD(MATH_NS::LineSegment_storage);
 #endif

@@ -307,7 +307,9 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform)
 	
 	PollErrors();
 	
-	glDrawElements(GL_TRIANGLES, mesh->GetMeshData()->indicesCount, GL_UNSIGNED_INT, 0);
+	if (render) glDrawElements(GL_TRIANGLES, mesh->GetMeshData()->indicesCount, GL_UNSIGNED_INT, 0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);

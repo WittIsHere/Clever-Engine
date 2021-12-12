@@ -17,6 +17,8 @@
 	@brief A KD-tree acceleration structure for static geometry. */
 #pragma once
 
+#include "../MathWarnings.h"
+
 #include "../Math/MathTypes.h"
 #include "../Math/myassert.h"
 #include "Triangle.h"
@@ -100,6 +102,9 @@ public:
 	T &Object(int objectIndex);
 	const T &Object(int objectIndex) const;
 
+	/// Returns the total number of objects stored in this tree.
+	int NumObjects() const;
+
 	/// Returns the total number of nodes (all nodes, i.e. inner nodes + leaves) in the tree.
 	int NumNodes() const;
 
@@ -169,7 +174,7 @@ public:
 	///	   minDistance is the minimum distance the objects in this leaf (and all future leaves to be passed to the
 	///    callback) have to the point that is being queried.
 	template<typename Func>
-	inline void NearestObjects(const float3 &point, Func &leafCallback);
+	inline void NearestObjects(const vec &point, Func &leafCallback);
 #endif
 
 private:
@@ -177,7 +182,7 @@ private:
 	static const int maxTreeDepth = 30;
 
 	std::vector<KdTreeNode> nodes;
-	std::vector<T> objects;
+	std::vector<u8, AlignedAllocator<u8, 16> > objects;
 	std::vector<u32*> buckets;
 
 	int AllocateNodePair();
@@ -205,7 +210,7 @@ private:
 struct TriangleKdTreeRayQueryNearestHitVisitor
 {
 	float rayT;
-	float3 pos;
+	vec pos;
 	u32 triangleIndex;
 	float2 barycentricUV;
 
@@ -213,7 +218,7 @@ struct TriangleKdTreeRayQueryNearestHitVisitor
 	{
 		rayT = FLOAT_INF;
 		triangleIndex = KdTree<Triangle>::BUCKET_SENTINEL;
-		pos = float3::nan;
+		pos = vec::nan;
 		barycentricUV = float2::nan;
 	}
 	bool operator()(KdTree<Triangle> &tree, const KdTreeNode &leaf, const Ray &ray, float tNear, float tFar)

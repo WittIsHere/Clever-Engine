@@ -32,7 +32,7 @@ public:
 public:
 	GameObject* rootNode;
 	std::vector<GameObject*> gameObjects;
-
+	GameObject* mainCamera = nullptr;
 	//std::vector<MeshData*> meshPool;
 	std::vector<MeshData*> meshPool;
 	std::vector<TextureData*> texturePool;

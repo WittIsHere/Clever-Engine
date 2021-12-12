@@ -17,6 +17,8 @@
 	@brief FixedPoint is a templatized structure for representing fixed-point decimal numbers. */
 #pragma once
 
+#include "../MathWarnings.h"
+
 #ifdef MATH_ENABLE_STL_SUPPORT
 #include <iostream>
 #endif
@@ -148,7 +150,7 @@ template<typename T, int F>
 void MulPrecise(FixedPoint<T, F> &a, const FixedPoint<T, F> &b)
 {
 	a.value = ((a.Int() * b.Int()) << FixedPoint<T, F>::FracBits) +
-		((a.Int() * b.Frac() + a.Frac() * b.Int())) +
+		(a.Int() * b.Frac() + a.Frac() * b.Int()) +
 		((a.Frac() * b.Frac()) >> (FixedPoint<T, F>::FracBits));
 }
 /*
@@ -306,11 +308,6 @@ std::ostream &operator<<(std::ostream &out, const FixedPoint<T, F> &f)
 		out << f.Int() << "." << f.Frac() * 10000 / FixedPoint<T, F>::One;
 	return out;
 }
-#endif
-
-#ifdef MATH_QT_INTEROP
-Q_DECLARE_METATYPE(FixedPoint)
-Q_DECLARE_METATYPE(FixedPoint*)
 #endif
 
 MATH_END_NAMESPACE

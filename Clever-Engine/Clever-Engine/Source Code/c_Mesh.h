@@ -4,6 +4,8 @@
 #include "Component.h"
 #include "MathGeoLib/include/Geometry/AABB.h"
 #include "MathGeoLib/include/Geometry/OBB.h"
+#include "MathGeoLib/include/Geometry/Sphere.h"
+#include "MathGeoLib/include/Math/float3.h"
 
 struct MeshData;
 class ModuleImporter;
@@ -33,7 +35,8 @@ public:
 	bool drawBBox;
 	AABB aabbox, drawingBox;
 	OBB obb;
-
+	float radius;
+	float3 centerPoint;
 	bool AssignNewData(MeshData* meshData);
 
 private:
