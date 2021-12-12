@@ -128,11 +128,11 @@ update_status ModuleInput::PreUpdate(float dt)
 					if ((dropped_filedir.find(".FBX") != std::string::npos) || (dropped_filedir.find(".fbx") != std::string::npos))
 					{
 						LOG("LOADING fbx: %s", impPath);
-						// App->importer->ImportScene(impPath); // It calls Import Scene and gives it a "Path"
+						App->importer->ImportScene(impPath); // It calls Import Scene and gives it a "Path"
 
 						// -----------------------> DOING
 
-					    // App->importer->ImportToCustomFile(impPath);
+					    //App->importer->ImportToCustomFile(impPath);
 						// LOG("LOADED fbx: %s", impPath);
 
 					}

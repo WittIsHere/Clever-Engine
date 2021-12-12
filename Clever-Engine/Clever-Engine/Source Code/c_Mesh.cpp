@@ -8,16 +8,16 @@
 c_Mesh::c_Mesh(GameObject * parent, COMPONENT_TYPE type) : Component(parent, type)
 {
 	//is empty by default
-	meshData = nullptr;
+	resource = nullptr;
 	drawBBox = true;
 
 	CreateBox();
 }
 
-c_Mesh::c_Mesh(GameObject* parent, ComponentData* data) : Component(parent, data->type)
+c_Mesh::c_Mesh(GameObject* parent, Resource* data) : Component(parent, COMPONENT_TYPE::MESH)
 {
 	this->isEmpty = false;
-	meshData = (MeshData*)data;
+	resource = (ResourceMesh*)data;
 	drawBBox = true;
 
 	CreateBox();
@@ -66,41 +66,41 @@ bool c_Mesh::LoadState(ParsonNode& root)
 
 const uint c_Mesh::GetVertexCount()
 {
-	return meshData->vertexCount;
+	return resource->vertexCount;
 }
 
-MeshData* c_Mesh::GetMeshData()
+ResourceMesh* c_Mesh::GetMeshData()
 {
-	return meshData;
+	return resource;
 }
 
-bool c_Mesh::AssignNewData(MeshData* meshData)
+bool c_Mesh::AssignNewData(ResourceMesh* meshData)
 {
 	bool ret = true;
 	
-	if (this->isEmpty == true && this->meshData == nullptr)
+	if (this->isEmpty == true && this->resource == nullptr)
 	{
-		this->meshData = meshData;
+		this->resource = meshData;
 	}
 	else
 	{
-		RELEASE(this->meshData);
-		this->meshData = meshData;
+		RELEASE(this->resource);
+		this->resource = meshData;
 	}
 	return ret;
 }
 
 void c_Mesh::CreateBox()
 {
-	if (meshData != nullptr)
+	if (resource != nullptr)
 	{
 		std::vector<float3> vertices;
-		for (int i = 0; i < meshData->vertexCount; i++)
+		for (int i = 0; i < resource->vertexCount; i++)
 		{
 			float3 vertex;
-			vertex.x = meshData->vPosData[(i * 3) + 0];
-			vertex.y = meshData->vPosData[(i * 3) + 1];
-			vertex.z = meshData->vPosData[(i * 3) + 2];
+			vertex.x = resource->vPosData[(i * 3) + 0];
+			vertex.y = resource->vPosData[(i * 3) + 1];
+			vertex.z = resource->vPosData[(i * 3) + 2];
 
 			vertices.push_back(vertex);
 		}
@@ -126,15 +126,15 @@ void c_Mesh::CreateBox()
 
 void c_Mesh::UpdateBox()
 {
-	if (meshData != nullptr)
+	if (resource != nullptr)
 	{
 		std::vector<float3> vertices;
-		for (int i = 0; i < meshData->vertexCount; i++)
+		for (int i = 0; i < resource->vertexCount; i++)
 		{
 			float3 vertex;
-			vertex.x = meshData->vPosData[(i * 3) + 0];
-			vertex.y = meshData->vPosData[(i * 3) + 1];
-			vertex.z = meshData->vPosData[(i * 3) + 2];
+			vertex.x = resource->vPosData[(i * 3) + 0];
+			vertex.y = resource->vPosData[(i * 3) + 1];
+			vertex.z = resource->vPosData[(i * 3) + 2];
 
 			vertices.push_back(vertex);
 		}

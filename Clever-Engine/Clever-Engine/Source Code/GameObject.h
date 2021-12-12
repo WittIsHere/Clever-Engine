@@ -32,6 +32,7 @@ public:
 public:
 	//components
 	Component* CreateComponent(ComponentData* CD);
+	Component* CreateComponent(Resource* CD);
 	Component* CreateComponent(COMPONENT_TYPE type);
 
 	uint GetComponentCount();
@@ -45,9 +46,11 @@ public:
 	uint GetChildCount();
 	uint32 GetChildUID(uint childIndex);
 	GameObject* GetChildData(uint childIndex);
+
 	void DeleteChild(uint childIndex);
 	void DeleteChildFromArray(GameObject* GO);
 	void DeleteAllChilds();
+
 	GameObject* GetParent();
 	uint GetParentUID();
 	void UpdateParent();
@@ -55,7 +58,6 @@ public:
 	void Draw(); 
 
 public:
-	
 	std::string name;
 	bool isRoot = false;
 	bool isActive = true;

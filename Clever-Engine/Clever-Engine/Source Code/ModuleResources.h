@@ -19,9 +19,15 @@ public:
 	bool Init();
 	bool Start();
 	update_status Update(float ft);
+	bool CleanUp();
 
 	void ImportAssetsFolder();
 	void ImportOurAssets(PathNode node);
+	
+public:
+	Resource* GetResource(uint32 id);
+	bool AllocateResource(uint32 id, ResourceBase base);
+	bool DeleteResource(uint32 UID);
 
 public:
 

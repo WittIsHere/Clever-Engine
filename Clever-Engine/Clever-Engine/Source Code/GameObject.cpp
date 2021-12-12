@@ -178,7 +178,6 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	{
 	case(COMPONENT_TYPE::TRANSFORM):
 	{
-
 		c_Transform* cmp = new c_Transform(this, CD);	//create component of the corresponding type
 		myComponents.push_back((Component*)cmp);		//add it to the components array
 		cmp->Enable();
@@ -193,14 +192,14 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 		ret = cmp;
 		break;
 	}
-	case(COMPONENT_TYPE::MESH):
-	{
-		c_Mesh* cmp = new c_Mesh(this, CD);
-		myComponents.push_back((Component*)cmp);
-		cmp->Enable();
-		ret = cmp;
-		break;
-	}
+	//case(COMPONENT_TYPE::MESH):
+	//{
+	//	c_Mesh* cmp = new c_Mesh(this, CD);
+	//	myComponents.push_back((Component*)cmp);
+	//	cmp->Enable();
+	//	ret = cmp;
+	//	break;
+	//}
 	case(COMPONENT_TYPE::CAMERA):
 	{
 		c_Camera* cmp = new c_Camera(this, CD);
@@ -212,6 +211,25 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 	}
 	return ret;
 }
+
+Component* GameObject::CreateComponent(Resource* CD)
+{
+	Component* ret = nullptr;
+
+	switch (CD->type)
+	{
+	case(ResourceType::MESH):
+	{
+		c_Mesh* cmp = new c_Mesh(this, CD);
+		myComponents.push_back((Component*)cmp);
+		cmp->Enable();
+		ret = cmp;
+		break;
+	}
+	}
+	return ret;
+}
+
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 {
 	Component* ret = nullptr;

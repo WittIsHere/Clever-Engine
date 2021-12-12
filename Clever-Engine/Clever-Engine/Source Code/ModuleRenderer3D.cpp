@@ -11,6 +11,7 @@
 #include "c_Transform.h"
 #include "GameObject.h"
 #include "Primitive.h"
+#include "ResourceMesh.h"
 
 #include "OpenGl.h"
 
@@ -235,6 +236,28 @@ void ModuleRenderer3D::PrepareMesh(MeshData* mesh)
 
 }
 
+void ModuleRenderer3D::PrepareMesh(ResourceMesh* mesh)
+{
+	glGenBuffers(1, &mesh->vPosID);
+	glGenBuffers(1, &mesh->vTexCoordsID);
+	glGenBuffers(1, &mesh->indicesID);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vPosID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->vertexCount * 3, mesh->vPosData, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vTexCoordsID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * mesh->vertexCount, mesh->vTexCoordsData, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indicesID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->indicesCount, mesh->indicesData, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+}
+
 void ModuleRenderer3D::DrawScene()
 {
 	App->scene->Draw();
@@ -279,12 +302,12 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform)
 		LOG("INFO: indices buffer ID not found");
 	}	
 	
-	if (mesh->GetMeshData()->texture != nullptr)
+	/*if (mesh->GetMeshData()->texture != nullptr)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindTexture(GL_TEXTURE_2D, (GLuint)mesh->GetMeshData()->texture->textureID);
 	}
-	else
+	else*/
 		BindCheckerTex();
 	//-------------------- Modify modelview matrix to fit the current mesh to be drawn
 	float* viewMatrix = App->camera->GetViewMatrix();

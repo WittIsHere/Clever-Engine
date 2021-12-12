@@ -2,6 +2,7 @@
 #define NOMINMAX 1
 #include "Globals.h"
 #include "Component.h"
+#include "ResourceMesh.h"
 #include "MathGeoLib/include/Geometry/AABB.h"
 #include "MathGeoLib/include/Geometry/OBB.h"
 
@@ -13,7 +14,7 @@ class c_Mesh : public Component
 public:
 	//default constructor
 	c_Mesh(GameObject* parent, COMPONENT_TYPE type);
-	c_Mesh(GameObject* parent, ComponentData* data);
+	c_Mesh(GameObject* parent, Resource* data);
 	~c_Mesh();
 
 	bool Enable();
@@ -24,7 +25,7 @@ public:
 	bool LoadState(ParsonNode& root) override;
 
 	const uint GetVertexCount();
-	MeshData* GetMeshData();
+	ResourceMesh* GetMeshData();
 	void CreateBox();
 	void DrawBox() const;
 	void UpdateBox();
@@ -34,9 +35,10 @@ public:
 	AABB aabbox, drawingBox;
 	OBB obb;
 
-	bool AssignNewData(MeshData* meshData);
+	bool AssignNewData(ResourceMesh* meshData);
 
 private:
-	MeshData* meshData = nullptr;
+	//MeshData* meshData = nullptr;
+	ResourceMesh* resource = nullptr;
 
 };

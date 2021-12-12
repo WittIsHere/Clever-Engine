@@ -6,6 +6,7 @@
 #include "ModuleFileSystem.h"
 #include "PathNode.h"
 #include "ResourceBase.h"
+#include "ResourceMesh.h"
 
 #include "c_Mesh.h"
 #include "MeshData.h"
@@ -74,10 +75,8 @@ bool ModuleImporter::Start()
 {
 	LOG("Importing scene test");
 
-	/*const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
-	ImportScene(fbxPath);*/
-
-
+	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
+	ImportScene(fbxPath);
 
 	return true;
 }
@@ -107,13 +106,26 @@ void ModuleImporter::ImportScene(const char* file_path)
 	{
 		if (aiScene->mRootNode != nullptr)
 		{
+			LoadRoot(aiScene->mRootNode, aiScene, file_path);
+		}
+	}
+}
+
+//TODO: make this method be of type myScene and return the loaded scene
+void ModuleImporter::ImportScene2(const char* file_path)
+{
+	const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
+	if (aiScene != nullptr)
+	{
+		if (aiScene->mRootNode != nullptr)
+		{
 			//TODO: separate filename from path and extension
 			LoadRoot2(aiScene->mRootNode, aiScene, file_path);
 		}
 	}
 }
 
-void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
+void ModuleImporter::ImportMesh(aiMesh* mesh, ResourceMesh* myMesh)
 {
 	// Copying number of vertices
 	myMesh->vertexCount = mesh->mNumVertices;
@@ -178,102 +190,100 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, MeshData* myMesh)
 	}
 }
 
-//void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
-//{
-//	if (sceneRoot->mNumChildren > 0)
-//	{
-//		std::string GOname;
-//		App->fileSystem->SplitFilePathInverse(fileName, &GOname);
-//		GameObject* GO = App->scene->CreateGameObject(GOname.c_str(), App->scene->rootNode);
-//		App->scene->rootNode->AddChild(GO);
-//		for (int i = 0; i < sceneRoot->mNumChildren; i++)
-//		{
-//			LoadNode(GO, sceneRoot->mChildren[i], currentScene);
-//		}
-//	}
-//	else LOG("ERROR: Trying to load empty scene!");
-//}
-//
-//void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene)
-//{
-//	GameObject* GO = App->scene->CreateGameObject(currentNode->mName.C_Str(), parent);
-//	parent->AddChild(GO); //add child to parent->myChildren to complete hierarchy
-//
-//	aiVector3D aiScale;
-//	aiQuaternion aiRotation;
-//	aiVector3D aiTranslation;
-//	currentNode->mTransformation.Decompose(aiScale, aiRotation, aiTranslation);							// --- Getting the Transform stored in the node.
-//
-//	c_Transform* transform = GO->GetComponentTransform();
-//
-//	transform->SetLocalPosition({ aiTranslation.x, aiTranslation.y, aiTranslation.z });
-//	transform->SetLocalRotation({ aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w });					 
-//
-//	transform->SetLocalScale({ aiScale.x, aiScale.y, aiScale.z });
-//
-//	if (currentNode->mNumMeshes > 0)
-//	{
-//		for (int i = 0; i < currentNode->mNumMeshes; i++)
-//		{
-//
-//			uint currentAiMeshIndex = currentNode->mMeshes[i];
-//			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
-//
-//			//import the data into the struct
-//			//ImportMesh(currentAiMesh, tempMesh); //---------------------------------------------- Adding func here
-//
-//
-//			std::string finalName = MESHES_PATH;
-//			finalName = finalName + currentNode->mName.C_Str();
-//
-//			TMYMODEL* myModel = new TMYMODEL();
-//			myModel = callCreateAndSave(currentAiMesh, finalName.c_str(), myModel);
-//
-//			MeshData* tempMesh = new MeshData();
-//			tempMesh = LoadModel(finalName.c_str());
-//
-//			//App->scene->meshPool.push_back(tempMesh);
-//
-//			GO->CreateComponent((ComponentData*)tempMesh);
-//
-//			uint tempIndex = currentAiMesh->mMaterialIndex;
-//			if (tempIndex >= 0)
-//			{
-//				//in case there is a texture add the component texture to the previous GO
-//				aiMaterial* currentMaterial = currentScene->mMaterials[currentAiMesh->mMaterialIndex]; //access the mesh material using the mMaterialIndex
-//				aiString texPath;
-//				if (currentMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
-//				{
-//					std::string fullPath = ASSETS_PATH;
-//					fullPath += texPath.C_Str();
-//
-//					uint tempTextureID = LoadTextureFromPath(fullPath.c_str());
-//
-//					if (tempTextureID > 0)
-//					{
-//						TextureData* texData = new TextureData();
-//						texData->type = COMPONENT_TYPE::MATERIAL;
-//						App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
-//
-//						texData->path = texPath.C_Str();	//assign the new texture its path
-//						texData->textureID = tempTextureID;	//assign the new texture its ID
-//
-//						GO->CreateComponent((ComponentData*)texData);
-//
-//						tempMesh->texture = texData;	//assign the texture to the current mesh
-//					}
-//				}
-//			}
-//		}
-//	}
-//	if (currentNode->mNumChildren > 0)
-//	{
-//		for (int i = 0; i < currentNode->mNumChildren; i++)
-//		{
-//			LoadNode(GO, currentNode->mChildren[i], currentScene);
-//		}
-//	}
-//}
+void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
+{
+	if (sceneRoot->mNumChildren > 0)
+	{
+		std::string GOname;
+		App->fileSystem->SplitFilePathInverse(fileName, &GOname);
+		GameObject* GO = App->scene->CreateGameObject(GOname.c_str(), App->scene->rootNode);
+		App->scene->rootNode->AddChild(GO);
+		for (int i = 0; i < sceneRoot->mNumChildren; i++)
+		{
+			LoadNode(GO, sceneRoot->mChildren[i], currentScene, fileName);
+		}
+	}
+	else LOG("ERROR: Trying to load empty scene!");
+}
+
+void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene, const char* path)
+{
+	GameObject* GO = App->scene->CreateGameObject(currentNode->mName.C_Str(), parent);
+	parent->AddChild(GO); //add child to parent->myChildren to complete hierarchy
+
+	aiVector3D aiScale;
+	aiQuaternion aiRotation;
+	aiVector3D aiTranslation;
+	currentNode->mTransformation.Decompose(aiScale, aiRotation, aiTranslation);							// --- Getting the Transform stored in the node.
+
+	c_Transform* transform = GO->GetComponentTransform();
+
+	transform->SetLocalPosition({ aiTranslation.x, aiTranslation.y, aiTranslation.z });
+	transform->SetLocalRotation({ aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w });					 
+
+	transform->SetLocalScale({ aiScale.x, aiScale.y, aiScale.z });
+
+	if (currentNode->mNumMeshes > 0)
+	{
+		for (int i = 0; i < currentNode->mNumMeshes; i++)
+		{
+
+			uint currentAiMeshIndex = currentNode->mMeshes[i];
+			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
+
+			std::string finalName = MESHES_PATH;
+			finalName = finalName + currentNode->mName.C_Str();
+
+			TMYMODEL* myModel = new TMYMODEL();
+			uint32 UID = 0;
+			UID = callCreateAndSave(currentAiMesh, finalName.c_str(), myModel, path);
+
+			RELEASE(myModel);
+
+			Resource* myRes = App->resources->GetResource(UID);
+
+			//App->scene->meshPool.push_back(tempMesh);
+
+			GO->CreateComponent(myRes);
+
+			uint tempIndex = currentAiMesh->mMaterialIndex;
+			if (tempIndex >= 0)
+			{
+				//in case there is a texture add the component texture to the previous GO
+				aiMaterial* currentMaterial = currentScene->mMaterials[currentAiMesh->mMaterialIndex]; //access the mesh material using the mMaterialIndex
+				aiString texPath;
+				if (currentMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
+				{
+					std::string fullPath = ASSETS_PATH;
+					fullPath += texPath.C_Str();
+
+					uint tempTextureID = LoadTextureFromPath(fullPath.c_str());
+
+					if (tempTextureID > 0)
+					{
+						TextureData* texData = new TextureData();
+						texData->type = COMPONENT_TYPE::MATERIAL;
+						App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
+
+						texData->path = texPath.C_Str();	//assign the new texture its path
+						texData->textureID = tempTextureID;	//assign the new texture its ID
+
+						GO->CreateComponent((ComponentData*)texData);
+
+						//tempMesh->texture = texData;	//TODO assign the texture to the current mesh
+					}
+				}
+			}
+		}
+	}
+	if (currentNode->mNumChildren > 0)
+	{
+		for (int i = 0; i < currentNode->mNumChildren; i++)
+		{
+			LoadNode(GO, currentNode->mChildren[i], currentScene, path);
+		}
+	}
+}
 
 void ModuleImporter::LoadRoot2(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
 {
@@ -300,7 +310,8 @@ void ModuleImporter::LoadNode2(aiNode* currentNode, const aiScene* currentScene,
 			finalName = finalName + currentNode->mName.C_Str();
 
 			TMYMODEL* myModel = new TMYMODEL();
-			myModel = callCreateAndSave(currentAiMesh, finalName.c_str(), myModel, fileName);
+			callCreateAndSave(currentAiMesh, finalName.c_str(), myModel, fileName);
+			RELEASE(myModel);
 		}
 	}
 	if (currentNode->mNumChildren > 0)
@@ -400,7 +411,7 @@ void ModuleImporter::ImportToCustomFF(const char* libPath)
 
 }
 
-TMYMODEL* ModuleImporter::callCreateAndSave(const aiMesh* mesh, const char* path, TMYMODEL* myModel, const char* assetsPath)
+uint32 ModuleImporter::callCreateAndSave(const aiMesh* mesh, const char* path, TMYMODEL* myModel, const char* assetsPath)
 {
 	myModel = createMyModel(mesh);
 
@@ -419,7 +430,7 @@ TMYMODEL* ModuleImporter::callCreateAndSave(const aiMesh* mesh, const char* path
 
 	App->resources->library.emplace(uuid, temp);
 
-	return myModel;
+	return uuid;
 }
 
 TMYMODEL* ModuleImporter::createMyModel(const aiMesh* m)
@@ -529,6 +540,52 @@ bool ModuleImporter::SaveModel(const TMYMODEL* m, const char* path)
 //		return NULL;
 //	}
 //}
+
+bool ModuleImporter::LoadModel(const char* path, ResourceMesh* mesh)
+{
+	std::ifstream myfile;
+	myfile.open(path, std::ios::binary);
+
+	if (myfile.is_open())
+	{
+		TMYMODEL* mymodel = (TMYMODEL*)malloc(sizeof(TMYMODEL));
+		myfile.read((char*)mymodel, 5 * sizeof(unsigned)); //READ HEADER
+
+		mymodel->vertices = (float*)malloc(mymodel->verticesSizeBytes);
+		myfile.read((char*)mymodel->vertices, mymodel->verticesSizeBytes);
+
+		mymodel->normals = (float*)malloc(mymodel->normalsSizeBytes);
+		myfile.read((char*)mymodel->normals, mymodel->normalsSizeBytes);
+
+		mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
+		myfile.read((char*)mymodel->textCoords, mymodel->textCoordSizeBytes);
+
+		mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
+		myfile.read((char*)mymodel->indices, mymodel->indiceSizeBytes);
+
+		mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
+		myfile.read(mymodel->info, mymodel->infoSizeBytes);
+
+		myfile.close();
+
+		mesh->indicesData = mymodel->indices;
+		mesh->vNormData = mymodel->normals;
+		mesh->vTexCoordsData = mymodel->textCoords;
+		mesh->vPosData = mymodel->vertices;
+
+		mesh->vertexCount = (mymodel->verticesSizeBytes / (sizeof(float) * 3));
+		mesh->indicesCount = (mymodel->indiceSizeBytes / sizeof(int));
+
+		App->renderer3D->PrepareMesh(mesh);
+
+		LOG("SUCCESS loading %s", path);
+	}
+	else
+	{
+		LOG("FAILED loading %s", path);
+		return NULL;
+	}
+}
 
 MeshData* ModuleImporter::LoadModel(const char* path)
 {

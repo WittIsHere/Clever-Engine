@@ -193,13 +193,16 @@
     <ClCompile Include="Source Code\ResourceBase.cpp">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Resource.cpp">
-      <Filter>Source Code\GameObjects\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="Source Code\ImCurveEdit.cpp" />
     <ClCompile Include="Source Code\ImGradient.cpp" />
     <ClCompile Include="Source Code\ImGuizmo.cpp" />
     <ClCompile Include="Source Code\ImSequencer.cpp" />
+    <ClCompile Include="Source Code\Resource.cpp">
+      <Filter>Source Code\GameObjects\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ResourceMesh.cpp">
+      <Filter>Source Code\GameObjects\Resources\resourceTypes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h">
@@ -511,14 +514,17 @@
     <ClInclude Include="Source Code\ResourceBase.h">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Source Code\GameObjects\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\ImCurveEdit.h" />
     <ClInclude Include="Source Code\ImGradient.h" />
     <ClInclude Include="Source Code\ImGuizmo.h" />
     <ClInclude Include="Source Code\ImSequencer.h" />
     <ClInclude Include="Source Code\ImZoomSlider.h" />
+    <ClInclude Include="Source Code\Resource.h">
+      <Filter>Source Code\GameObjects\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ResourceMesh.h">
+      <Filter>Source Code\GameObjects\Resources\resourceTypes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">
@@ -583,6 +589,9 @@
     </Filter>
     <Filter Include="Source Code\Utils">
       <UniqueIdentifier>{4c7dc9e8-0811-4262-9b9e-198095f82bf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\GameObjects\Resources\resourceTypes">
+      <UniqueIdentifier>{797d7aae-4f09-42ca-a2d5-95243658413d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

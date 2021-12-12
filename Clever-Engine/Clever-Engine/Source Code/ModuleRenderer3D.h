@@ -4,6 +4,7 @@
 #include "Globals.h"
 #include "glmath.h"
 #include "Light.h"
+#include "ResourceMesh.h"
 #include "MathGeoLib/include/Geometry/LineSegment.h"
 
 #define MAX_LIGHTS 8
@@ -32,6 +33,7 @@ public:
 	void OnResize(int width, int height);
 
 	void PrepareMesh(MeshData* mesh);
+	void PrepareMesh(ResourceMesh* mesh);
 	void PrepareDrawScene(SceneData* scene);
 	void DrawMesh(c_Mesh* mesh, c_Transform* transform);
 
