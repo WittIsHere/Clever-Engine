@@ -509,7 +509,7 @@ void ModuleRenderer3D::PollErrors() //Poll and print to the console every openGl
 
 	while (error != GL_NO_ERROR)
 	{
-		LOG("OpenGL error found! %s\n", gluErrorString(error));
+		//LOG("OpenGL error found! %s\n", gluErrorString(error));
 		error = glGetError();
 	}
 }
