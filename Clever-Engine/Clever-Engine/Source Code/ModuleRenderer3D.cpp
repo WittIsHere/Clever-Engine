@@ -151,8 +151,12 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
+	App->camera->CalculateViewMatrix();
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(App->camera->cameraFrustum.ProjectionMatrix().Transposed().ptr());
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(App->camera->GetViewMatrix());
+	glLoadMatrixf(App->camera->viewMatrix.Transposed().ptr());
 
 	// light 0 on cam pos
 	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
@@ -190,14 +194,14 @@ bool ModuleRenderer3D::CleanUp()
 void ModuleRenderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
-
-	glMatrixMode(GL_PROJECTION);
+	App->camera->RecalculateProjection();
+	/*glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	ProjectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
 	glLoadMatrixf(&ProjectionMatrix);
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glLoadIdentity();*/
 }
 
 void ModuleRenderer3D::PrepareDrawScene(SceneData* scene)
@@ -310,7 +314,7 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform)
 	else*/
 		BindCheckerTex();
 	//-------------------- Modify modelview matrix to fit the current mesh to be drawn
-	float* viewMatrix = App->camera->GetViewMatrix();
+	float* viewMatrix = App->camera->cameraFrustum.ProjectionMatrix().Transposed().ptr();
 
 	//to access the MODEL MATRIX we need access to the TRANSFORM of the GO that contains the mesh to be drawn
 	float* modelMatrix = transform->GetWorldTransformPtr();
