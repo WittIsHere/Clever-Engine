@@ -10,12 +10,12 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 {
 	CalculateViewMatrix();
 
-	X = vec3(1.0f, 0.0f, 0.0f);
-	Y = vec3(0.0f, 1.0f, 0.0f);
-	Z = vec3(0.0f, 0.0f, 1.0f);
+	X = float3(1.0f, 0.0f, 0.0f);
+	Y = float3(0.0f, 1.0f, 0.0f);
+	Z = float3(0.0f, 0.0f, 1.0f);
 
-	Position = vec3(0.0f, 0.0f, 5.0f);
-	Reference = vec3(0.0f, 0.0f, 0.0f);
+	Position = float3(0.0f, 0.0f, 5.0f);
+	Reference = float3(0.0f, 0.0f, 0.0f);
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -55,7 +55,9 @@ update_status ModuleCamera3D::Update(float dt)
 
 	// Mouse motion ----------------
 
-	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+	bool hasRotated = false;
+
+	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
 		int dx = -App->input->GetMouseXMotion();
 		int dy = -App->input->GetMouseYMotion();
@@ -64,28 +66,24 @@ update_status ModuleCamera3D::Update(float dt)
 
 		Position -= Reference;
 
-		if(dx != 0)
+		if (dx != 0)
 		{
-			float DeltaX = (float)dx * Sensitivity;
-
-			X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+			const float newDeltaX = (float)dx * Sensitivity;
+			float deltaX = newDeltaX + 0.95f * (lastDeltaX - newDeltaX);
+			lastDeltaX = deltaX;
+			Quat rotateY = Quat::RotateY(Y.y >= 0.f ? deltaX * .1f : -deltaX * .1f);
+			Y = rotateY * Y;
+			Z = rotateY * Z;
+			CalculateViewMatrix();
+			hasRotated = true;
 		}
 
-		if(dy != 0)
+		if (dy != 0)
 		{
-			float DeltaY = (float)dy * Sensitivity;
-
-			Y = rotate(Y, DeltaY, X);
-			Z = rotate(Z, DeltaY, X);
-
-			if(Y.y < 0.0f)
-			{
-				Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-				Y = cross(Z, X);
-			}
+			const float newDeltaY = (float)dy * Sensitivity;
+			float deltaY = newDeltaY + 0.95f * (lastDelatY - newDeltaY);
 		}
+	}
 
 		Position = Reference + Z * length(Position);
 
@@ -101,7 +99,6 @@ update_status ModuleCamera3D::Update(float dt)
 
 		Position += newPos;
 		Reference += newPos;
-	}
 
 	if (App->input->GetMouseZ() > 0)
 	{
@@ -181,43 +178,47 @@ void ModuleCamera3D::CalculateViewMatrix()
 
 GameObject* ModuleCamera3D::MousePicking()
 {
-	//std::vector<GameObject*> possible;
-	//float normX = -(1.0f - (float(App->input->GetMouseY()) * 2.0f) / (float)App->window->GetWidth());
-	//float normY = -(1.0f - (float(App->input->GetMouseX()) * 2.0f) / (float)App->window->GetHeight());
+	std::vector<GameObject*> possible;
+	float normX = -(1.0f - (float(App->input->GetMouseY()) * 2.0f) / (float)App->window->GetWidth());
+	float normY = -(1.0f - (float(App->input->GetMouseX()) * 2.0f) / (float)App->window->GetHeight());
 
-	//LineSegment picking = frustum.UnProjectLineSegment(normX, normY);
-	//float distance;
+	// Draw a Line to intersect with the Game Objects
+	LineSegment picking = cameraFrustum.UnProjectLineSegment(normX, normY);
+	float distance;
 
-	//for (int i = 0; i < App->scene->gameObjects.size(); i++)
-	//{
-	//	if (App->scene->gameObjects[i]->hasMesh == true)
-	//	{
-	//		c_Mesh* mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
+	// Iterate all Game Objects to get the list of them on screen
+	for (int i = 0; i < App->scene->gameObjects.size(); i++)
+	{
+		if (App->scene->gameObjects[i]->hasMesh == true)
+		{
+			// Get the component mesh
+			c_Mesh* mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
 
-	//		if (picking.Intersects(mesh->aabbox))
-	//		{
-	//			float hitNear;
-	//			float hitFar;
+			// Intersect the ray drawed before with the AABB box of the meshes
+			if (picking.Intersects(mesh->aabbox))
+			{
+				float hitNear;
+				float hitFar;
 
-	//			if (picking.Intersects(mesh->obb, hitNear, hitFar))
-	//			{
-	//				possible.push_back(App->scene->gameObjects[i]);
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		i++;
-	//	}
-	//}
+				if (picking.Intersects(mesh->obb, hitNear, hitFar))
+				{
+					possible.push_back(App->scene->gameObjects[i]);
+				}
+			}
+		}
+		else
+		{
+			i++;
+		}
+	}
 
-	//GameObject* pickedObject = nullptr;
-	//float finalDistance = picking.Length();
-	//
-	///*for (int i = 0; i < possible.size(); i++)
-	//{
+	GameObject* pickedObject = nullptr;
+	float finalDistance = picking.Length();
+	
+	/*for (int i = 0; i < possible.size(); i++)
+	{
 
-	//}*/
+	}*/
 
 	return nullptr;
 }

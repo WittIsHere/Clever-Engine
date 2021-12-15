@@ -27,11 +27,11 @@ private:
 	void CalculateViewMatrix();
 
 public:
-	Frustum frustum;
-	vec3 X, Y, Z, Position, Reference;
+	Frustum cameraFrustum;
+	float3 X, Y, Z, Position, Reference;
 	float Distance;
-
+	float4x4 viewMatrix;
 private:
-
-	mat4x4 ViewMatrix, ViewMatrixInverse;
+	float lastDeltaX = 0.f, lastDelatY = 0.f;
+	mat4x4 ViewMatrixInverse;
 };

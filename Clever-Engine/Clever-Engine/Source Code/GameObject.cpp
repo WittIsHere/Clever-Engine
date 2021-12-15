@@ -226,6 +226,7 @@ Component* GameObject::CreateComponent(Resource* CD)
 		c_Mesh* cmp = new c_Mesh(this, CD);
 		myComponents.push_back((Component*)cmp);
 		cmp->Enable();
+		hasMesh = true;
 		ret = cmp;
 		break;
 	}
