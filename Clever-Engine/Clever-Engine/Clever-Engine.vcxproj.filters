@@ -112,12 +112,6 @@
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Circle.cpp">
       <Filter>External Libraries\MathGeoLib\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Cone.cpp">
-      <Filter>External Libraries\MathGeoLib\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Cylinder.cpp">
-      <Filter>External Libraries\MathGeoLib\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Frustum.cpp">
       <Filter>External Libraries\MathGeoLib\Geometry</Filter>
     </ClCompile>
@@ -193,15 +187,62 @@
     <ClCompile Include="Source Code\ResourceBase.cpp">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\ImCurveEdit.cpp" />
-    <ClCompile Include="Source Code\ImGradient.cpp" />
-    <ClCompile Include="Source Code\ImGuizmo.cpp" />
-    <ClCompile Include="Source Code\ImSequencer.cpp" />
     <ClCompile Include="Source Code\Resource.cpp">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\ResourceMesh.cpp">
       <Filter>Source Code\GameObjects\Resources\resourceTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ModuleViewportFrameBuffer.cpp">
+      <Filter>Source Code\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Math\Callstack.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Circle2D.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Math\float4d.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Algorithm\GJK.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Algorithm\GJK2D.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Math\grisu3.c">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Math\grisu3_cpp.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ImCurveEdit.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ImGradient.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ImGuizmo.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ImSequencer.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Geometry\LineSegment2D.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Math\MiniFloat.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Geometry\PBVolume.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Algorithm\SAT.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Triangle2D.cpp">
+      <Filter>External Libraries\ImGuizmo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -290,12 +331,6 @@
       <Filter>External Libraries\MathGeoLib\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\BitOps.h">
-      <Filter>External Libraries\MathGeoLib\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\Complex.h">
-      <Filter>External Libraries\MathGeoLib\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\CoordinateAxisConvention.h">
       <Filter>External Libraries\MathGeoLib\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\FixedPoint.h">
@@ -392,12 +427,6 @@
       <Filter>External Libraries\MathGeoLib\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Circle.h">
-      <Filter>External Libraries\MathGeoLib\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Cone.h">
-      <Filter>External Libraries\MathGeoLib\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Cylinder.h">
       <Filter>External Libraries\MathGeoLib\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Frustum.h">
@@ -514,16 +543,89 @@
     <ClInclude Include="Source Code\ResourceBase.h">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\ImCurveEdit.h" />
-    <ClInclude Include="Source Code\ImGradient.h" />
-    <ClInclude Include="Source Code\ImGuizmo.h" />
-    <ClInclude Include="Source Code\ImSequencer.h" />
-    <ClInclude Include="Source Code\ImZoomSlider.h" />
     <ClInclude Include="Source Code\Resource.h">
       <Filter>Source Code\GameObjects\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\ResourceMesh.h">
       <Filter>Source Code\GameObjects\Resources\resourceTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ModuleViewportFrameBuffer.h">
+      <Filter>Source Code\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\BitFuncs.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\Callstack.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Circle2D.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\float4d.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Algorithm\GJK.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Algorithm\GJK2D.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\grisu3.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ImCurveEdit.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ImGradient.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ImGuizmo.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ImSequencer.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ImZoomSlider.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\InclWindows.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\Interpolate.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Geometry\LineSegment2D.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\MathWarnings.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\MiniFloat.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\MultiLineMacro.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Geometry\OBB2D.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Polygon2DRef.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Algorithm\SAT.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\simd.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\Swap.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Triangle2D.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\vec2d.h">
+      <Filter>External Libraries\ImGuizmo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -593,6 +695,9 @@
     <Filter Include="Source Code\GameObjects\Resources\resourceTypes">
       <UniqueIdentifier>{797d7aae-4f09-42ca-a2d5-95243658413d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External Libraries\ImGuizmo">
+      <UniqueIdentifier>{a2d05a94-0cdd-4af6-9d5b-2bdb7022f7e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source Code\Dependencies\MathGeoLib\include\Math\Matrix.inl">
@@ -612,6 +717,9 @@
     </None>
     <None Include="Source Code\Dependencies\MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_SSE.inl">
       <Filter>External Libraries\MathGeoLib\Geometry</Filter>
+    </None>
+    <None Include="Source Code\Dependencies\MathGeoLib\include\Math\float2.inl">
+      <Filter>External Libraries\ImGuizmo</Filter>
     </None>
   </ItemGroup>
 </Project>

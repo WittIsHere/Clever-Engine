@@ -188,6 +188,7 @@ update_status ModuleUI::Update(float dt)
 
             if (ImGui::BeginMenu("Window"))
             {
+                ImGui::Checkbox("Scene", &activeScene);
                 ImGui::Checkbox("Console", &activeConsole);
                 ImGui::Checkbox("Folder Browser", &folderBrowser);
                 ImGui::Checkbox("Configuration", &activeConfiguration);
@@ -252,6 +253,7 @@ update_status ModuleUI::Update(float dt)
     DrawFolderBrowser(&folderBrowser);
     DrawConfigurationSpace(&activeConfiguration);
     DrawHierarchySpace(&activeHierarchy);
+    DrawSceneSpace(&activeScene);
     DrawInspectorSpace(&activeInspector);
     return UPDATE_CONTINUE;
 }
@@ -657,6 +659,24 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          }  
      }
      ImGui::End();
+ }
+
+ void ModuleUI::DrawSceneSpace(bool* active)
+ {
+     if (*active == true)
+     {
+         ImGui::Begin("Scene", &activeScene, ImGuiWindowFlags_NoScrollbar);
+
+         ImVec2 viewportSize = ImGui::GetCurrentWindow()->Size;
+         if (viewportSize.x != lastViewportSize.x || viewportSize.y != lastViewportSize.y)
+         {
+             App->camera->aspectRatio = viewportSize.x / viewportSize.y;
+             App->camera->RecalculateProjection();
+         }
+         lastViewportSize = viewportSize;
+         ImGui::Image((ImTextureID)App->viewPort->texture, viewportSize, ImVec2(0, 1), ImVec2(1, 0));
+         ImGui::End();
+     }
  }
 
 void ModuleUI::AddLogFPS(float fps, float ms)

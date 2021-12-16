@@ -11,6 +11,7 @@ Application::Application()
 	importer = new ModuleImporter(this);
 	scene = new ModuleScene(this);
 	resources = new ModuleResources(this);
+	viewPort = new ModuleViewportFrameBuffer(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -25,6 +26,7 @@ Application::Application()
 	AddModule(importer);
 	AddModule(scene);
 	AddModule(resources);
+	AddModule(viewPort);
 
 	// Renderer last!
 	AddModule(renderer3D);

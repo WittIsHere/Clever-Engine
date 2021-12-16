@@ -12,6 +12,7 @@
 #include "ModuleScene.h"
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
+#include "ModuleViewportFrameBuffer.h"
 
 #include <vector>
 #include <string>
@@ -28,6 +29,7 @@ public:
 	ModuleImporter* importer;
 	ModuleScene* scene;
 	ModuleResources* resources;
+	ModuleViewportFrameBuffer* viewPort;
 
 private:
 	Timer ms_timer;

@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "ImGui/imgui.h"
 
 #include <vector>
 
@@ -28,6 +29,7 @@ private:
 	void DrawHierarchySpace(bool* active);
 	void ShowChildData(GameObject* GO);
 	void DrawInspectorSpace(bool* active);
+	void DrawSceneSpace(bool* active);
 
 	void ShowDockingDisabledMessage();
 
@@ -55,11 +57,12 @@ private:
 	bool activeDockingSpace = false;
 	bool activeHierarchy = true;
 	bool activeInspector = false;
-
+	bool activeScene = true;
 	//Configuration window variables
 	bool need_scroll = false;
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
+	ImVec2 lastViewportSize;
 
 	//Console window variables
 	std::vector<char*>	buffer;
