@@ -219,7 +219,7 @@ Component* GameObject::CreateComponent(Resource* CD)
 {
 	Component* ret = nullptr;
 
-	switch (CD->type)
+	switch (CD->GetType())
 	{
 	case(ResourceType::MESH):
 	{

@@ -20,6 +20,7 @@
 #include <map>
 #include <functional>
 #include <vector>
+#include <string>
 
 #include <fstream> // Added this
 
@@ -76,7 +77,7 @@ bool ModuleImporter::Start()
 	LOG("Importing scene test");
 
 	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
-	ImportScene(fbxPath);
+	ImportAndLoadScene(fbxPath);
 
 	return true;
 }
@@ -106,22 +107,149 @@ void ModuleImporter::ImportScene(const char* file_path)
 	{
 		if (aiScene->mRootNode != nullptr)
 		{
-			LoadRoot(aiScene->mRootNode, aiScene, file_path);
+			LoadRoot2(aiScene->mRootNode, aiScene, file_path);
 		}
 	}
 }
 
 //TODO: make this method be of type myScene and return the loaded scene
-void ModuleImporter::ImportScene2(const char* file_path)
+void ModuleImporter::ImportAndLoadScene(const char* file_path)
 {
+	//check if the path already exists inside library folder or not.
+	
 	const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (aiScene != nullptr)
 	{
 		if (aiScene->mRootNode != nullptr)
 		{
-			//TODO: separate filename from path and extension
-			//LoadRoot2(aiScene->mRootNode, aiScene, file_path);
 			LoadRoot(aiScene->mRootNode, aiScene, file_path);
+		}
+	}
+}
+
+
+void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
+{
+	if (sceneRoot->mNumChildren > 0)
+	{
+		std::string GOname;
+		App->fileSystem->SplitFilePathInverse(fileName, &GOname);
+		GameObject* GO = App->scene->CreateGameObject(GOname.c_str(), App->scene->rootNode);
+		App->scene->rootNode->AddChild(GO);
+		for (int i = 0; i < sceneRoot->mNumChildren; i++)
+		{
+			LoadNode(GO, sceneRoot->mChildren[i], currentScene, fileName);
+		}
+	}
+	else LOG("ERROR: Trying to load empty scene!");
+}
+
+void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene, const char* path)
+{
+	GameObject* GO = App->scene->CreateGameObject(currentNode->mName.C_Str(), parent);
+	parent->AddChild(GO); //add child to parent->myChildren to complete hierarchy
+
+	aiVector3D aiScale;
+	aiQuaternion aiRotation;
+	aiVector3D aiTranslation;
+	currentNode->mTransformation.Decompose(aiScale, aiRotation, aiTranslation);							// --- Getting the Transform stored in the node.
+
+	c_Transform* transform = GO->GetComponentTransform();
+
+	transform->SetLocalPosition({ aiTranslation.x, aiTranslation.y, aiTranslation.z });
+	transform->SetLocalRotation({ aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w });					 
+
+	transform->SetLocalScale({ aiScale.x, aiScale.y, aiScale.z });
+
+	if (currentNode->mNumMeshes > 0)
+	{
+		for (int i = 0; i < currentNode->mNumMeshes; i++)
+		{
+			uint currentAiMeshIndex = currentNode->mMeshes[i];
+			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
+
+			TMYMODEL* myModel = new TMYMODEL();
+			uint32 UID = 0;
+			UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, path);
+
+			RELEASE(myModel);
+
+			Resource* myRes = App->resources->GetResource(UID);
+
+			//App->scene->meshPool.push_back(tempMesh);
+
+			GO->CreateComponent(myRes);
+
+			uint tempIndex = currentAiMesh->mMaterialIndex;
+			if (tempIndex >= 0)
+			{
+				//in case there is a texture add the component texture to the previous GO
+				aiMaterial* currentMaterial = currentScene->mMaterials[currentAiMesh->mMaterialIndex]; //access the mesh material using the mMaterialIndex
+				aiString texPath;
+				if (currentMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
+				{
+					std::string fullPath = ASSETS_PATH;
+					fullPath += texPath.C_Str();
+
+					uint tempTextureID = LoadTextureFromPath(fullPath.c_str());
+
+					if (tempTextureID > 0)
+					{
+						TextureData* texData = new TextureData();
+						texData->type = COMPONENT_TYPE::MATERIAL;
+						App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
+
+						texData->path = texPath.C_Str();	//assign the new texture its path
+						texData->textureID = tempTextureID;	//assign the new texture its ID
+
+						GO->CreateComponent((ComponentData*)texData);
+
+						//tempMesh->texture = texData;	//TODO assign the texture to the current mesh
+					}
+				}
+			}
+		}
+	}
+	if (currentNode->mNumChildren > 0)
+	{
+		for (int i = 0; i < currentNode->mNumChildren; i++)
+		{
+			LoadNode(GO, currentNode->mChildren[i], currentScene, path);
+		}
+	}
+}
+
+void ModuleImporter::LoadRoot2(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
+{
+	if (sceneRoot->mNumChildren > 0)
+	{
+		for (int i = 0; i < sceneRoot->mNumChildren; i++)
+		{
+			LoadNode2(sceneRoot->mChildren[i], currentScene, fileName);
+		}
+	}
+	else LOG("ERROR: Trying to load empty scene!");
+}
+
+void ModuleImporter::LoadNode2(aiNode* currentNode, const aiScene* currentScene, const char* filePath)
+{
+	if (currentNode->mNumMeshes > 0)
+	{
+		for (int i = 0; i < currentNode->mNumMeshes; i++)
+		{
+			uint currentAiMeshIndex = currentNode->mMeshes[i];
+			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
+
+			TMYMODEL* myModel = new TMYMODEL();
+			CreateAndSaveResourceMesh(currentAiMesh, myModel, filePath);
+			RELEASE(myModel);
+		}
+	}
+	if (currentNode->mNumChildren > 0)
+	{
+		for (int i = 0; i < currentNode->mNumChildren; i++)
+		{
+			LoadNode2(currentNode->mChildren[i], currentScene, filePath);
 		}
 	}
 }
@@ -188,139 +316,6 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, ResourceMesh* myMesh)
 	else
 	{
 		LOG("Warning, no normals found");
-	}
-}
-
-void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
-{
-	if (sceneRoot->mNumChildren > 0)
-	{
-		std::string GOname;
-		App->fileSystem->SplitFilePathInverse(fileName, &GOname);
-		GameObject* GO = App->scene->CreateGameObject(GOname.c_str(), App->scene->rootNode);
-		App->scene->rootNode->AddChild(GO);
-		for (int i = 0; i < sceneRoot->mNumChildren; i++)
-		{
-			LoadNode(GO, sceneRoot->mChildren[i], currentScene, fileName);
-		}
-	}
-	else LOG("ERROR: Trying to load empty scene!");
-}
-
-void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene, const char* path)
-{
-	GameObject* GO = App->scene->CreateGameObject(currentNode->mName.C_Str(), parent);
-	parent->AddChild(GO); //add child to parent->myChildren to complete hierarchy
-
-	aiVector3D aiScale;
-	aiQuaternion aiRotation;
-	aiVector3D aiTranslation;
-	currentNode->mTransformation.Decompose(aiScale, aiRotation, aiTranslation);							// --- Getting the Transform stored in the node.
-
-	c_Transform* transform = GO->GetComponentTransform();
-
-	transform->SetLocalPosition({ aiTranslation.x, aiTranslation.y, aiTranslation.z });
-	transform->SetLocalRotation({ aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w });					 
-
-	transform->SetLocalScale({ aiScale.x, aiScale.y, aiScale.z });
-
-	if (currentNode->mNumMeshes > 0)
-	{
-		for (int i = 0; i < currentNode->mNumMeshes; i++)
-		{
-
-			uint currentAiMeshIndex = currentNode->mMeshes[i];
-			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
-
-			std::string finalName = MESHES_PATH;
-			finalName = finalName + currentNode->mName.C_Str();
-
-			TMYMODEL* myModel = new TMYMODEL();
-			uint32 UID = 0;
-			UID = callCreateAndSave(currentAiMesh, finalName.c_str(), myModel, path);
-
-			RELEASE(myModel);
-
-			Resource* myRes = App->resources->GetResource(UID);
-
-			//App->scene->meshPool.push_back(tempMesh);
-
-			GO->CreateComponent(myRes);
-
-			uint tempIndex = currentAiMesh->mMaterialIndex;
-			if (tempIndex >= 0)
-			{
-				//in case there is a texture add the component texture to the previous GO
-				aiMaterial* currentMaterial = currentScene->mMaterials[currentAiMesh->mMaterialIndex]; //access the mesh material using the mMaterialIndex
-				aiString texPath;
-				if (currentMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
-				{
-					std::string fullPath = ASSETS_PATH;
-					fullPath += texPath.C_Str();
-
-					uint tempTextureID = LoadTextureFromPath(fullPath.c_str());
-
-					if (tempTextureID > 0)
-					{
-						TextureData* texData = new TextureData();
-						texData->type = COMPONENT_TYPE::MATERIAL;
-						App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
-
-						texData->path = texPath.C_Str();	//assign the new texture its path
-						texData->textureID = tempTextureID;	//assign the new texture its ID
-
-						GO->CreateComponent((ComponentData*)texData);
-
-						//tempMesh->texture = texData;	//TODO assign the texture to the current mesh
-					}
-				}
-			}
-		}
-	}
-	if (currentNode->mNumChildren > 0)
-	{
-		for (int i = 0; i < currentNode->mNumChildren; i++)
-		{
-			LoadNode(GO, currentNode->mChildren[i], currentScene, path);
-		}
-	}
-}
-
-void ModuleImporter::LoadRoot2(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
-{
-	if (sceneRoot->mNumChildren > 0)
-	{
-		for (int i = 0; i < sceneRoot->mNumChildren; i++)
-		{
-			LoadNode2(sceneRoot->mChildren[i], currentScene, fileName);
-		}
-	}
-	else LOG("ERROR: Trying to load empty scene!");
-}
-
-void ModuleImporter::LoadNode2(aiNode* currentNode, const aiScene* currentScene, const char* fileName)
-{
-	if (currentNode->mNumMeshes > 0)
-	{
-		for (int i = 0; i < currentNode->mNumMeshes; i++)
-		{
-			uint currentAiMeshIndex = currentNode->mMeshes[i];
-			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
-
-			std::string finalName = MESHES_PATH;
-			finalName = finalName + currentNode->mName.C_Str();
-
-			TMYMODEL* myModel = new TMYMODEL();
-			callCreateAndSave(currentAiMesh, finalName.c_str(), myModel, fileName);
-			RELEASE(myModel);
-		}
-	}
-	if (currentNode->mNumChildren > 0)
-	{
-		for (int i = 0; i < currentNode->mNumChildren; i++)
-		{
-			LoadNode2(currentNode->mChildren[i], currentScene, fileName);
-		}
 	}
 }
 
@@ -398,7 +393,7 @@ uint ModuleImporter::LoadTextureFromPath(const char* path)
 	return textureBuffer;
 }
 
-void ModuleImporter::ImportToCustomFF(const char* libPath)
+void ModuleImporter::ImportToCustomFF(const char* libPath) //this is actually mesh to customff
 {
 	const aiScene* aiScene = aiImportFile(libPath, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (aiScene != nullptr)
@@ -412,11 +407,18 @@ void ModuleImporter::ImportToCustomFF(const char* libPath)
 
 }
 
-uint32 ModuleImporter::callCreateAndSave(const aiMesh* mesh, const char* path, TMYMODEL* myModel, const char* assetsPath)
+uint32 ModuleImporter::CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* myModel, const char* assetsPath)
 {
-	myModel = createMyModel(mesh);
+	//create custom file format inside TMYMODEL class
+	myModel = CreateMyModel(mesh);
 
-	if (SaveModel(myModel, path) == true)
+	//generate a UUID for the resource. It will also be the name of the file
+	uint32 uuid = Random::GetRandomUint();
+
+	std::string path = MESHES_PATH + std::to_string(uuid);
+
+	//save the TMYMODEL into a file
+	if (SaveModel(myModel, path.c_str()) == true)
 	{
 		LOG("%s Saved correctly", path);
 	}
@@ -425,8 +427,6 @@ uint32 ModuleImporter::callCreateAndSave(const aiMesh* mesh, const char* path, T
 		LOG("%s Saved INCORRECTLY", path);
 	}
 	
-	uint32 uuid = Random::GetRandomUint();
-
 	ResourceBase temp = *(new ResourceBase(uuid, assetsPath, path, ResourceTypes::R_MESH));
 
 	App->resources->library.emplace(uuid, temp);
@@ -434,7 +434,7 @@ uint32 ModuleImporter::callCreateAndSave(const aiMesh* mesh, const char* path, T
 	return uuid;
 }
 
-TMYMODEL* ModuleImporter::createMyModel(const aiMesh* m)
+TMYMODEL* ModuleImporter::CreateMyModel(const aiMesh* m)
 {
 	TMYMODEL* mymodel = (TMYMODEL*)malloc(sizeof(TMYMODEL));
 

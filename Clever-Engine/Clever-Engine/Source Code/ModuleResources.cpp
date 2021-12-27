@@ -27,7 +27,7 @@ bool ModuleResources::Start()
 	LOG("ModuleResources Starting");
 	bool ret = true;
 	
-	//ImportAssetsFolder();
+	ImportAssetsFolder();
 
 	return ret;
 }
@@ -98,7 +98,7 @@ Resource* ModuleResources::GetResource(uint32 id)
 			{
 				auto rItem = resources.find(id);
 				//add 1 to the references count and return the resource
-				rItem->second->references += 1;
+				rItem->second->AddReference();
 				return rItem->second;
 			}
 			else
@@ -113,8 +113,8 @@ Resource* ModuleResources::GetResource(uint32 id)
 	{
 		auto rItem = resources.find(id);
 		//add 1 to the references count and return the resource
-		rItem->second->references += 1;
-		return rItem->second; 
+		rItem->second->AddReference();
+		return rItem->second;
 	}
 }
 
@@ -161,7 +161,7 @@ bool ModuleResources::AllocateResource(uint32 id, ResourceBase base)
 	ResourceMesh* resource = new ResourceMesh();  
 	resource->assetsPath = base.assetsPath.c_str();
 	resource->libraryPath = base.libraryPath.c_str();
-	resource->uid = id;
+	resource->ForceUID(id);
 
 	bool success = false;
 	success = App->importer->LoadModel(resource->libraryPath.c_str(), resource);
@@ -177,12 +177,12 @@ bool ModuleResources::AllocateResource(uint32 id, ResourceBase base)
 
 	if (success)
 	{
-		resources.emplace(resource->uid, resource);
+		resources.emplace(resource->GetUID(), resource);
 		LOG("[STATUS] Resource Manager: Successfully Allocated Resource in Memory!");
 	}
 	else
 	{
-		DeleteResource(resource->uid);	// This deletes from resources and library!.
+		DeleteResource(resource->GetUID());	// This deletes from resources and library!.
 		LOG("[ERROR] Resource Manager: Importer could not load the Resource Data from file");
 	}
 

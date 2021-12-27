@@ -156,7 +156,6 @@ bool ModuleScene::LoadScene(const char* path)
 			gameObjects[i]->UpdateParent();
 			parent->AddChild(gameObjects[i]);
 		}
-
 	}
 
 

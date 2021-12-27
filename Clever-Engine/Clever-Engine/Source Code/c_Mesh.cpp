@@ -49,13 +49,11 @@ bool c_Mesh::SaveState(ParsonNode& root) const
 {
 	root.SetNumber("Type", (uint)type);
 	root.SetBool("ShowBoundingBox", drawBBox);
-	/*	
-	if (meshData != nullptr)
+	
+	if (resource != nullptr)
 	{
-		root.SetInteger("VertexCount", meshData->vertexCount);
-		root.SetInteger("vPosID", meshData->vPosData);
-		root.Setf
-	}*/
+		//root.SetNumber("ID", );
+	}
 	return true;
 }
 
@@ -74,18 +72,18 @@ ResourceMesh* c_Mesh::GetMeshData()
 	return resource;
 }
 
-bool c_Mesh::AssignNewData(ResourceMesh* meshData)
+bool c_Mesh::AssignNewData(ResourceMesh* res)
 {
 	bool ret = true;
 	
 	if (this->isEmpty == true && this->resource == nullptr)
 	{
-		this->resource = meshData;
+		this->resource = res;
 	}
 	else
 	{
-		RELEASE(this->resource);
-		this->resource = meshData;
+		this->resource->AddReference(-1);
+		this->resource = res;
 	}
 	return ret;
 }

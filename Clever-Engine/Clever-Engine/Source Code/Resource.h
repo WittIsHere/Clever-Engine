@@ -22,16 +22,23 @@ public:
 	virtual bool CleanUp();
 
 public:
+	ResourceType GetType() const;
 	const char* GetTypeAsString() const; 
+	bool HasForcedUID() const;
+	uint32 GetUID() const;
+	uint GetReferenceCount() const;
+
+	void ForceUID(uint32 uid);
+	void AddReference(int numberOfReferences = 1);
 
 public: //TODO: pasar a private pofavo
-	bool hasForcedUID;
-
-	ResourceType		type;
-
-	uint32				uid;
-	uint				references;
-
 	std::string			assetsPath;
 	std::string			libraryPath;
+
+private:
+	bool hasForcedUID;
+	ResourceType		type;
+	uint32				UID;
+	uint				references;
+
 };
