@@ -243,16 +243,16 @@ void ModuleRenderer3D::PrepareMesh(MeshData* mesh)
 void ModuleRenderer3D::PrepareMesh(ResourceMesh* mesh)
 {
 	glGenBuffers(1, &mesh->vPosID);
-	glGenBuffers(1, &mesh->vTexCoordsID);
 	glGenBuffers(1, &mesh->indicesID);
+
+	glGenBuffers(1, &mesh->vTexCoordsID);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vTexCoordsID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * mesh->vertexCount, mesh->vTexCoordsData, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vPosID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->vertexCount * 3, mesh->vPosData, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->vTexCoordsID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * mesh->vertexCount, mesh->vTexCoordsData, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indicesID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->indicesCount, mesh->indicesData, GL_STATIC_DRAW);

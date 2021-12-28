@@ -73,11 +73,6 @@ bool ModuleImporter::Init()
 
 bool ModuleImporter::Start()
 {
-	LOG("Importing scene test");
-
-	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
-	ImportScene(fbxPath);
-
 	return true;
 }
 
@@ -101,7 +96,7 @@ bool ModuleImporter::CleanUp()
 //TODO: make this method be of type myScene and return the loaded scene
 void ModuleImporter::ImportScene(const char* file_path)
 {
-	const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
+	const aiScene* aiScene = aiImportFile(file_path, 0);
 	if (aiScene != nullptr)
 	{
 		if (aiScene->mRootNode != nullptr)
@@ -236,6 +231,11 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 			finalName = finalName + currentNode->mName.C_Str();
 
 			TMYMODEL* myModel = new TMYMODEL();
+	/*		for (size_t i = 0; i < currentAiMesh->mNumVertices; i++)
+			{
+				myModel->textCoords[i] = 0.0f;
+			}*/
+
 			uint32 UID = 0;
 			UID = callCreateAndSave(currentAiMesh, finalName.c_str(), myModel, path);
 
@@ -445,14 +445,34 @@ TMYMODEL* ModuleImporter::createMyModel(const aiMesh* m)
 	mymodel->normalsSizeBytes = m->mNumVertices * sizeof(float) * 3;//3==x,y,z equal vertex
 	mymodel->normals = (float*)malloc(mymodel->normalsSizeBytes);
 	memcpy(mymodel->normals, m->mNormals, mymodel->normalsSizeBytes);
-
-	mymodel->textCoordSizeBytes = m->mNumVertices * sizeof(float) * 2;//3==u,v
-	mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
-	for (int i = 0; i < m->mNumVertices; i++)
+	if (m->HasTextureCoords(1))
 	{
-		*(mymodel->textCoords + i * 2) = m->mTextureCoords[0][i].x;
-		*(mymodel->textCoords + i * 2 + 1) = 1.0 - m->mTextureCoords[0][i].y; //this coord image is inverted
+		for (size_t j = 0; j < m->mNumVertices; ++j)
+		{
+			mymodel->textCoordSizeBytes = m->mNumVertices * sizeof(float) * 2;//3==u,v
+			mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
+			for (int i = 0; i < m->mNumVertices; i++)
+			{
+				*(mymodel->textCoords + i * 2) = m->mTextureCoords[0][i].x;
+				*(mymodel->textCoords + i * 2 + 1) = 1.0 - m->mTextureCoords[0][i].y; //this coord image is inverted
+			}
+		}
 	}
+	else
+	{
+		mymodel->textCoordSizeBytes = 0;
+	}
+
+
+
+	//mymodel->textCoordSizeBytes = m->mNumVertices * sizeof(float) * 2;//3==u,v
+	//mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
+	//for (int i = 0; i < m->mNumVertices; i++)
+	//{
+	//	*(mymodel->textCoords + i * 2) = m->mTextureCoords[0][i].x;
+	//	*(mymodel->textCoords + i * 2 + 1) = 1.0 - m->mTextureCoords[0][i].y; //this coord image is inverted
+	//}
+
 
 	mymodel->indiceSizeBytes = m->mNumFaces * sizeof(unsigned) * 3; //3==indices/face
 	mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
@@ -464,11 +484,11 @@ TMYMODEL* ModuleImporter::createMyModel(const aiMesh* m)
 		*(mymodel->indices + 2 + i * 3) = f->mIndices[2];
 	}
 
-	const char* someinfo = "This is a great model for my engine. Author: Juan"; // '\0' OjO
-	mymodel->infoSizeBytes = 128; //or str length
-	mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
-	memcpy(mymodel->info, someinfo, mymodel->infoSizeBytes);
-	mymodel->info[mymodel->infoSizeBytes - 1] = '\0';
+	//const char* someinfo = "This is a great model for my engine. Author: Juan"; // '\0' OjO
+	//mymodel->infoSizeBytes = 128; //or str length
+	//mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
+	//memcpy(mymodel->info, someinfo, mymodel->infoSizeBytes);
+	//mymodel->info[mymodel->infoSizeBytes - 1] = '\0';
 
 	return mymodel;
 
@@ -493,9 +513,13 @@ bool ModuleImporter::SaveModel(const TMYMODEL* m, const char* path)
 
 		myfile.write((char*)m->vertices, m->verticesSizeBytes);
 		myfile.write((char*)m->normals, m->normalsSizeBytes);
+	/*	if (m->textCoordSizeBytes != 0)
+		{
+			myfile.write((char*)m->textCoords, m->textCoordSizeBytes);
+		}*/
 		myfile.write((char*)m->textCoords, m->textCoordSizeBytes);
 		myfile.write((char*)m->indices, m->indiceSizeBytes);
-		myfile.write((char*)m->info, m->infoSizeBytes); // xx
+		//myfile.write((char*)m->info, m->infoSizeBytes); // xx
 
 		myfile.close();
 
@@ -557,15 +581,19 @@ bool ModuleImporter::LoadModel(const char* path, ResourceMesh* mesh)
 
 		mymodel->normals = (float*)malloc(mymodel->normalsSizeBytes);
 		myfile.read((char*)mymodel->normals, mymodel->normalsSizeBytes);
-
+		//if (mymodel->textCoordSizeBytes != 0)
+		//{
+		//	mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
+		//	myfile.read((char*)mymodel->textCoords, mymodel->textCoordSizeBytes);
+		//}
 		mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
 		myfile.read((char*)mymodel->textCoords, mymodel->textCoordSizeBytes);
 
 		mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
 		myfile.read((char*)mymodel->indices, mymodel->indiceSizeBytes);
 
-		mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
-		myfile.read(mymodel->info, mymodel->infoSizeBytes);
+		//mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
+		//myfile.read(mymodel->info, mymodel->infoSizeBytes);
 
 		myfile.close();
 
@@ -612,8 +640,8 @@ MeshData* ModuleImporter::LoadModel(const char* path)
 		mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
 		myfile.read((char*)mymodel->indices, mymodel->indiceSizeBytes);
 
-		mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
-		myfile.read(mymodel->info, mymodel->infoSizeBytes);
+		//mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
+		//myfile.read(mymodel->info, mymodel->infoSizeBytes);
 
 		myfile.close();
 

@@ -28,6 +28,11 @@ bool ModuleScene::Start()
 	rootNode->AddChild(mainCamera);
 	mainCamera->CreateComponent(COMPONENT_TYPE::CAMERA);
 
+	LOG("Importing scene test");
+	const char* fbxPath = ("Assets/Models/Street_environment_V01.FBX");
+	//const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
+	App->importer->ImportScene(fbxPath);
+
 	return ret;                        
 }
 

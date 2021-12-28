@@ -218,18 +218,20 @@ Component* GameObject::CreateComponent(ComponentData* CD)
 Component* GameObject::CreateComponent(Resource* CD)
 {
 	Component* ret = nullptr;
-
-	switch (CD->type)
+	if (CD != NULL)
 	{
-	case(ResourceType::MESH):
-	{
-		c_Mesh* cmp = new c_Mesh(this, CD);
-		myComponents.push_back((Component*)cmp);
-		cmp->Enable();
-		hasMesh = true;
-		ret = cmp;
-		break;
-	}
+		switch (CD->type)
+		{
+		case(ResourceType::MESH):
+		{
+			c_Mesh* cmp = new c_Mesh(this, CD);
+			myComponents.push_back((Component*)cmp);
+			cmp->Enable();
+			hasMesh = true;
+			ret = cmp;
+			break;
+		}
+		}
 	}
 	return ret;
 }
