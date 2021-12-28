@@ -34,6 +34,12 @@ bool ModuleCamera3D::Start()
 
 	bool ret = true;
 
+	aspectRatio = 1.f;
+	verticalFOV = 60.f;
+	nearPlaneDistance = 0.1f;
+	farPlaneDistance = 1000.f;
+	
+
 	return ret;
 }
 
