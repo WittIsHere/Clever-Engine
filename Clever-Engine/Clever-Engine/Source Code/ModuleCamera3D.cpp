@@ -5,17 +5,20 @@
 #include "GameObject.h"
 #include "ModuleScene.h"
 #include "MathGeoLib/include/Geometry/LineSegment.h"
+#include "MathGeoLib/include/Math/float3.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	CalculateViewMatrix();
 
 	X = float3(1.0f, 0.0f, 0.0f);
 	Y = float3(0.0f, 1.0f, 0.0f);
 	Z = float3(0.0f, 0.0f, 1.0f);
 
-	Position = float3(0.0f, 0.0f, 5.0f);
+	Position = float3(0.0f, 5.0f, -15.0f);
 	Reference = float3(0.0f, 0.0f, 0.0f);
+
+	cameraFrustum.SetKind(FrustumProjectiveSpace::FrustumSpaceGL, FrustumHandedness::FrustumRightHanded);
+	CalculateViewMatrix();
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -121,7 +124,7 @@ update_status ModuleCamera3D::Update(float dt)
 	}
 
 	// Recalculate matrix -------------
-	CalculateViewMatrix();
+	//CalculateViewMatrix();
 
 	return UPDATE_CONTINUE;
 }
@@ -163,21 +166,18 @@ void ModuleCamera3D::CalculateViewMatrix()
 		RecalculateProjection();
 	}
 
-	cameraFrustum.pos = Position;
-	cameraFrustum.front = Z.Normalized();
-	cameraFrustum.up = Y.Normalized();
-	float3::Orthonormalize(cameraFrustum.front, cameraFrustum.up);
+	cameraFrustum.SetPos(Position);
+	cameraFrustum.SetFront(Z.Normalized());
+	cameraFrustum.SetUp(Y.Normalized());
+	float3::Orthonormalize((float3&)cameraFrustum.Front(), (float3&)cameraFrustum.Up());
 	X = Y.Cross(Z);
 	viewMatrix = cameraFrustum.ViewMatrix();
 }
 
 void ModuleCamera3D::RecalculateProjection()
 {
-	cameraFrustum.type = FrustumType::PerspectiveFrustum;
-	cameraFrustum.nearPlaneDistance = nearPlaneDistance;
-	cameraFrustum.farPlaneDistance = farPlaneDistance;
-	cameraFrustum.verticalFov = (verticalFOV * 3.141592 / 2) / 180.f;
-	cameraFrustum.horizontalFov = 2.f * atan(tanf(cameraFrustum.verticalFov * 0.5f) * aspectRatio);
+	cameraFrustum.SetViewPlaneDistances(nearPlaneDistance, farPlaneDistance);
+	cameraFrustum.SetVerticalFovAndAspectRatio(verticalFOV * DEGTORAD, aspectRatio);
 }
 
 GameObject* ModuleCamera3D::MousePicking()
