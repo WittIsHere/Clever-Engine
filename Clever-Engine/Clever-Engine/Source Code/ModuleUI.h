@@ -22,21 +22,22 @@ public:
 	void Render();
 	bool CleanUp();
 
-private:
-	void DrawConsoleSpace(bool* active);
-	void DrawFolderBrowser(bool* active);
-	void DrawConfigurationSpace(bool* active);
-	void DrawHierarchySpace(bool* active);
-	void ShowChildData(GameObject* GO);
-	void DrawInspectorSpace(bool* active);
-	void DrawSceneSpace(bool* active);
-
-	void ShowDockingDisabledMessage();
-
-public:
 	void ConsoleLog(const char* text);
 	void AddLogFPS(float fps, float ms);
-	void DrawDirectoryRecursive(const char* directory/*, const char* filter_extension*/);
+
+private:
+	void DrawConsoleSpace(bool* active);
+	void DrawConfigurationSpace(bool* active);
+	void DrawHierarchySpace(bool* active);
+	void DrawInspectorSpace(bool* active);
+	void DrawSceneSpace(bool* active);
+	void DrawBrowserSpace(bool* active);
+
+	void DrawDirectoryRecursive(const char* directory);
+
+	void ShowChildData(GameObject* GO);
+	void ShowDockingDisabledMessage();
+
 
 public:
 	bool showDemoWindow;
@@ -46,18 +47,19 @@ public:
 	bool changeFPSlimit = false;
 	bool changeTitleName = false;
 	int max_fps = 60;
-
 	int nodeClicked = -1;
 
 private:
+
 	//Bool variables to activate the different windows
 	bool activeConsole = true;
-	bool folderBrowser = true;
+	bool activeBrowser = true;
 	bool activeConfiguration = false;
 	bool activeDockingSpace = false;
 	bool activeHierarchy = true;
 	bool activeInspector = false;
 	bool activeScene = true;
+
 	//Configuration window variables
 	bool need_scroll = false;
 	std::vector<float> fps_log;
@@ -69,5 +71,4 @@ private:
 	bool scrollToBottom;
 
 	char selected_file[FILE_MAX];
-
 };

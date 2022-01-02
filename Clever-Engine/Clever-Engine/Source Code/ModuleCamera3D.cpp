@@ -113,12 +113,12 @@ update_status ModuleCamera3D::Update(float dt)
 		Position += newPos;
 		Reference += newPos;
 
-	if (App->input->GetMouseZ() > 0)
+	if (App->input->GetMouseZ() < 0)
 	{
 		Distance -= speed + 3;
 		Position = Reference + Z * Distance;
 	}
-	if (App->input->GetMouseZ() < 0)
+	if (App->input->GetMouseZ() > 0)
 	{
 		Distance += speed + 3;
 		Position = Reference + Z * Distance;

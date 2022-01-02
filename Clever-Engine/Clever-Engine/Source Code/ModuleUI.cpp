@@ -9,10 +9,11 @@
 #include "c_Transform.h"
 #include "c_Material.h"
 #include "c_Mesh.h"
+
 #include <vector>
 #include <string.h>
 #include <algorithm>
-
+#include <filesystem>
 
 #include "Dependencies/ImGui/imgui.h"
 #include "Dependencies/ImGui/imgui_internal.h"
@@ -25,10 +26,8 @@ ModuleUI::ModuleUI(Application* app, bool start_enabled) : Module(app, start_ena
 fps_log(LOG_LENGTH), ms_log(LOG_LENGTH)
 {}
 
-// Destructor
 ModuleUI::~ModuleUI()
 {}
-
 
 bool ModuleUI::Start()
 {
@@ -96,9 +95,10 @@ update_status ModuleUI::Update(float dt)
     }
     // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
     // because it would be confusing to have two docking targets within each others.
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
     ImGuiViewport* viewport = ImGui::GetMainViewport();
+
     ImGui::SetNextWindowPos(viewport->GetWorkPos());
     ImGui::SetNextWindowSize(viewport->GetWorkSize());
     ImGui::SetNextWindowViewport(viewport->ID);
@@ -141,7 +141,6 @@ update_status ModuleUI::Update(float dt)
                 }
                 ImGui::EndMenu();
             }
-
             if (ImGui::BeginMenu("Create"))
             {
                 if (ImGui::BeginMenu("GameObject"))
@@ -185,17 +184,15 @@ update_status ModuleUI::Update(float dt)
                 }
                 ImGui::EndMenu();
             }
-
             if (ImGui::BeginMenu("Window"))
             {
                 ImGui::Checkbox("Scene", &activeScene);
                 ImGui::Checkbox("Console", &activeConsole);
-                ImGui::Checkbox("Folder Browser", &folderBrowser);
+                ImGui::Checkbox("Folder Browser", &activeBrowser);
                 ImGui::Checkbox("Configuration", &activeConfiguration);
                 ImGui::Checkbox("Hierarchy", &activeHierarchy);
                 ImGui::EndMenu();
             }
-
             if (ImGui::BeginMenu("Help"))
             {
                 if (ImGui::MenuItem("Documentation"))
@@ -209,7 +206,6 @@ update_status ModuleUI::Update(float dt)
 
                 ImGui::EndMenu();
             }
-
             if (ImGui::BeginMenu("Development"))
             {
                 if (ImGui::MenuItem("ImGui Github"))
@@ -240,23 +236,25 @@ update_status ModuleUI::Update(float dt)
                 
                 ImGui::EndMenu();
             }
+
             ImGui::EndMenuBar();
         }
 
         ImGui::End();
     }
 
-    //if (showDemoWindow)
-    //    ImGui::ShowDemoWindow(&showDemoWindow);
-    //draw windows
+    // Draw windows
+
     DrawConsoleSpace(&activeConsole);
-    DrawFolderBrowser(&folderBrowser);
+    DrawBrowserSpace(&activeBrowser);
     DrawConfigurationSpace(&activeConfiguration);
     DrawHierarchySpace(&activeHierarchy);
     DrawSceneSpace(&activeScene);
     DrawInspectorSpace(&activeInspector);
+
     return UPDATE_CONTINUE;
 }
+
 update_status ModuleUI::PostUpdate(float dt)
 {
 
@@ -708,7 +706,32 @@ void ModuleUI::ShowDockingDisabledMessage()
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 }
 
-void ModuleUI::DrawDirectoryRecursive(const char* directory/*, const char* filter_extension*/)
+void ModuleUI::DrawBrowserSpace(bool* active)
+{
+
+    if (*active == false)
+        return;
+
+    if (!ImGui::Begin("Folder Browser", active))
+    {
+        ImGui::End();
+        return;
+    }
+
+    
+    ImGui::BeginChild("File Browser", ImVec2(0, 300), true);
+
+    const char* assetsDirectory = "assets";
+    
+
+    DrawDirectoryRecursive(BROWSER_PATH);
+
+    ImGui::EndChild();
+
+    ImGui::End();
+}
+
+void ModuleUI::DrawDirectoryRecursive(const char* directory)
 {
     vector<string> files;
     vector<string> dirs;
@@ -722,11 +745,11 @@ void ModuleUI::DrawDirectoryRecursive(const char* directory/*, const char* filte
     {
         if (ImGui::TreeNodeEx((dir + (*it)).c_str(), 0, "%s/", (*it).c_str()))
         {
-            DrawDirectoryRecursive((dir + (*it)).c_str()/*, filter_extension*/);
+            DrawDirectoryRecursive((dir + (*it)).c_str());
             ImGui::TreePop();
         }
     }
-
+    
     std::sort(files.begin(), files.end());
 
     for (vector<string>::const_iterator it = files.begin(); it != files.end(); ++it)
@@ -735,49 +758,14 @@ void ModuleUI::DrawDirectoryRecursive(const char* directory/*, const char* filte
 
         bool ok = true;
 
-       /* if (filter_extension && str.substr(str.find_last_of(".") + 1) != filter_extension)
-            ok = false;*/
-
         if (ok && ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
         {
-            if (ImGui::IsItemClicked()) {
+            if (ImGui::IsItemClicked())
+            {
                 sprintf_s(selected_file, FILE_MAX, "%s%s", dir.c_str(), str.c_str());
-
-                /*if (ImGui::IsMouseDoubleClicked(0))
-                    file_dialog = ready_to_close;
-                    */
             }
 
             ImGui::TreePop();
         }
     }
-}
-
-void ModuleUI::DrawFolderBrowser(bool* active)
-{
-    if (*active == false)
-        return;
-
-    if (!ImGui::Begin("Folder Browser", active))
-    {
-        ImGui::End();
-        return;
-    }
-    {   //folder browser space
-      /*  for (uint i = 0; i < buffer.size(); i++)
-        {
-            const char* item = buffer[i];
-            imgui::textunformatted(item);
-        }
-        if (scrolltobottom)
-        {
-            imgui::setscrollhere(1.0f);
-            scrolltobottom = false;
-        }*/
-
-         ImGui::BeginChild("File Browser", ImVec2(0, 300), true);
-         DrawDirectoryRecursive(BROWSER_PATH/*, filter_extension*/);
-         ImGui::EndChild();
-    }
-    ImGui::End();
 }
