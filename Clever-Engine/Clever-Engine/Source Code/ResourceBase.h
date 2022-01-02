@@ -3,20 +3,29 @@
 
 #include <string>
 
-enum ResourceTypes
+enum class ResourceType
 {
-    R_EMPTY,
-    R_MESH
+    MODEL,
+    MESH,
+    MATERIAL,
+    TEXTURE,
+    NONE
 };
 
 class ResourceBase
 {
 public:
-    ResourceBase(uint32 UID, const std::string& assetsPath, const std::string& libraryPath, const ResourceTypes& type);
+    ResourceBase(uint32 UID, const std::string& assetsPath, const std::string& libraryPath, const ResourceType& type);
     /*ResourceBase(const Resource* resource);*/
     ~ResourceBase();
 
     bool CleanUp();
+
+    ResourceType GetType() const;
+    const char* GetTypeAsString() const;
+    uint32 GetUID() const;
+    const char* GetAssetsPath() const;
+    const char* GetLibraryPath() const;
 
 public:
     uint32 UID;
@@ -24,5 +33,5 @@ public:
     std::string assetsPath;
     std::string libraryPath;
 
-    ResourceTypes type;
+    ResourceType type;
 };

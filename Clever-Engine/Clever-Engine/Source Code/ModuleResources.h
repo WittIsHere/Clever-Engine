@@ -23,6 +23,9 @@ public:
 
 	void ImportAssetsFolder();
 	void ImportOurAssets(PathNode node);
+
+	bool SaveMetaFile(ResourceBase res, const char* name = nullptr);
+	ParsonNode LoadMetaFile(const char* assetsPath, char** buffer);
 	
 public:
 	Resource* GetResource(uint32 id);

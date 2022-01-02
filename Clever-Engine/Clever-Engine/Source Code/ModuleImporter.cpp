@@ -112,21 +112,70 @@ void ModuleImporter::ImportScene(const char* file_path)
 	}
 }
 
-//TODO: make this method be of type myScene and return the loaded scene
+//Take the path to a .FBX, import it to our custom format and load it into scene
 void ModuleImporter::ImportAndLoadScene(const char* file_path)
 {
-	//check if the path already exists inside library folder or not.
-	
-	const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
-	if (aiScene != nullptr)
+	// For each file, check if a .meta exists
+	std::string path;
+	std::string filename;
+	App->fileSystem->SplitFilePath(file_path, &path, &filename);
+
+	std::string fullName = path + filename + META_EXTENSION;
+
+	// If the meta exists then load all related resources 
+	if (App->fileSystem->Exists(fullName.c_str()))
 	{
-		if (aiScene->mRootNode != nullptr)
+		int j = 0;
+
+		std::string GOname;
+		App->fileSystem->SplitFilePathInverse(fullName.c_str(), &GOname);
+		GameObject* GO = App->scene->CreateGameObject(GOname.c_str(), App->scene->rootNode);
+
+		LOG("Trying to import file from assets that already has a meta. File name: %s", file_path);
+		//read the meta file and get the resource id. Then, loop every resource in the corresponding meta files and add it as childs of the GO.
+		while (App->fileSystem->Exists(fullName.c_str()))
 		{
-			LoadRoot(aiScene->mRootNode, aiScene, file_path);
+			char* buffer = nullptr;
+			ParsonNode metaRoot = App->resources->LoadMetaFile(fullName.c_str(), &buffer);
+			uint32 resourceUid = (uint32)metaRoot.GetNumber("UID");
+			RELEASE_ARRAY(buffer);
+
+			if (!metaRoot.NodeIsValid())
+			{
+				LOG("Error: Could not get the Meta Root Node! error path: %s", fullName.c_str());
+				return;
+			}
+			
+			Resource* res = App->resources->GetResource(resourceUid);
+			
+			if (res == nullptr)
+			{
+				LOG("[ERROR] invalid ID from meta, resource not found. path: %s", fullName);
+			}
+			else
+			{
+				//TODO: keep the GO hierarchy loading resource models. Also keep the names of the GO inside metas?
+				GO->CreateComponent(res);
+			}
+
+			j++;
+			fullName = path + filename + std::to_string(j) + META_EXTENSION;
+		}
+	}
+	
+	//if there is no meta file for this fbx yet, import it unsing assimp.
+	else
+	{
+		const aiScene* aiScene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
+		if (aiScene != nullptr)
+		{
+			if (aiScene->mRootNode != nullptr)
+			{
+				LoadRoot(aiScene->mRootNode, aiScene, file_path);
+			}
 		}
 	}
 }
-
 
 void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
 {
@@ -175,7 +224,10 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 			RELEASE(myModel);
 
 			Resource* myRes = App->resources->GetResource(UID);
-
+			if (myRes == nullptr)
+			{
+				LOG("ERROR: ");
+			}
 			//App->scene->meshPool.push_back(tempMesh);
 
 			GO->CreateComponent(myRes);
@@ -414,8 +466,7 @@ uint32 ModuleImporter::CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* m
 
 	//generate a UUID for the resource. It will also be the name of the file
 	uint32 uuid = Random::GetRandomUint();
-
-	std::string path = MESHES_PATH + std::to_string(uuid);
+	std::string path = MESHES_PATH + std::to_string(uuid) + CUSTOM_FF_EXTENSION;
 
 	//save the TMYMODEL into a file
 	if (SaveModel(myModel, path.c_str()) == true)
@@ -427,10 +478,13 @@ uint32 ModuleImporter::CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* m
 		LOG("%s Saved INCORRECTLY", path);
 	}
 	
-	ResourceBase temp = *(new ResourceBase(uuid, assetsPath, path, ResourceTypes::R_MESH));
+	ResourceBase temp = *(new ResourceBase(uuid, assetsPath, path, ResourceType::MESH));
 
 	App->resources->library.emplace(uuid, temp);
 
+	//write the meta file to connect the assets file with the resource in lib
+	App->resources->SaveMetaFile(temp);
+	
 	return uuid;
 }
 

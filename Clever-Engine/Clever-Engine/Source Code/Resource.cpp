@@ -66,6 +66,16 @@ uint Resource::GetReferenceCount() const
 	return references;
 }
 
+const char* Resource::GetAssetsPath() const
+{
+	return assetsPath.c_str();;
+}
+
+const char* Resource::GetLibraryPath() const
+{
+	return libraryPath.c_str();
+}
+
 void Resource::ForceUID(uint32 uid)
 {
 	UID = uid;

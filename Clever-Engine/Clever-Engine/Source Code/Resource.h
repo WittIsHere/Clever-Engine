@@ -1,16 +1,8 @@
 #pragma once
 
 #include "Globals.h"
+#include "ResourceBase.h"
 #include <string>
-
-enum class ResourceType					
-{
-	MODEL,
-	MESH,
-	MATERIAL,
-	TEXTURE,
-	NONE
-};
 
 class Resource
 {
@@ -27,6 +19,8 @@ public:
 	bool HasForcedUID() const;
 	uint32 GetUID() const;
 	uint GetReferenceCount() const;
+	const char* GetAssetsPath() const;
+	const char* GetLibraryPath() const;
 
 	void ForceUID(uint32 uid);
 	void AddReference(int numberOfReferences = 1);

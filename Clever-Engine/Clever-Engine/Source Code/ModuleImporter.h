@@ -36,6 +36,7 @@ public:
 	void LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene, const char* path);
 
 	void LoadRoot2(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName);
+
 	void LoadNode2(aiNode* currentNode, const aiScene* currentScene, const char* fileName);
 
 	void LoadTextureFromPathAndFill(const char* path, MeshData* myMesh);
