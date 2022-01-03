@@ -718,10 +718,20 @@ void ModuleUI::DrawBrowserSpace(bool* active)
     if (ImGui::Begin("Folder Browser", active))
     {
         App->fileSystem->DiscoverFiles(BROWSER_PATH, files_list, dirs_list);
-        content_files = dirs_list;
+
         for (int i = 0; i < dirs_list.size(); i++)
         {
-            ImGui::Text("%s", dirs_list[i].c_str());
+            if (App->fileSystem->IsDirectory(dirs_list[i].c_str()))
+            {
+                if (ImGui::Button(dirs_list[i].c_str()))
+                {
+                    std::vector<std::string> files_list2;
+                    std::vector<std::string> dirs_list2;
+                    App->fileSystem->DiscoverFiles(dirs_list[i].c_str(), files_list2, dirs_list2);
+                    currentFolder = dirs_list[i];
+                    content_files = files_list2;
+                }
+            }
         }
         ImGui::End();
         return;
@@ -735,17 +745,42 @@ void ModuleUI::DrawContentBrowserSpace(bool* active)
     if (*active == false)
         return;
 
-   std::vector<std::string> myContentFiles = content_files;
+    std::vector<std::string> myContentFiles = content_files;
+    std::string myCurrentFolder = currentFolder;
 
     if (ImGui::Begin("Content Browser", active))
     {
+        ImGui::Text(myCurrentFolder.c_str());
+        ImGui::Separator();
+
+        static float padding = 16.0f;
+        static float thumbnailSize = 128;
+        float cellSize = thumbnailSize + padding;
+        float panelWidth = ImGui::GetContentRegionAvail().x;
+
+        int columnCount = (int)(panelWidth / cellSize);
+        if (columnCount < 1)
+            columnCount = 1;
+
+        ImGui::Columns(columnCount, 0, false);
+
         for (int i = 0; i < myContentFiles.size(); i++)
         {
-            ImGui::Text("%s", myContentFiles[i].c_str());
+            if (ImGui::Button(myContentFiles[i].c_str(), { thumbnailSize,thumbnailSize }))
+            {
+
+            }
+            ImGui::Text(myContentFiles[i].c_str());
+            ImGui::NextColumn();
         }
+
+        ImGui::Columns(1);
+
         ImGui::End();
         return;
     }
+
+   
 
     ImGui::End();
 }

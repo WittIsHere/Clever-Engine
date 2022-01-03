@@ -75,5 +75,6 @@ private:
 	char selected_file[FILE_MAX];
 
 	// Content Broswer variables
+	std::string currentFolder;
 	std::vector<std::string> content_files;
 };
