@@ -6,7 +6,7 @@
 
 Resource::Resource(ResourceType type) :
 type(type),
-uid(Random::GetRandomUint()),
+UID(Random::GetRandomUint()),
 references(0),
 assetsPath("[NONE]"),
 libraryPath("[NONE]"),
@@ -33,6 +33,11 @@ bool Resource::CleanUp()
 	return ret;
 }
 
+ResourceType Resource::GetType() const
+{
+	return type;
+}
+
 const char* Resource::GetTypeAsString() const
 {
 	switch (type)
@@ -44,4 +49,40 @@ const char* Resource::GetTypeAsString() const
 	}
 
 	return "NONE";
+}
+
+bool Resource::HasForcedUID() const
+{
+	return hasForcedUID;
+}
+
+uint32 Resource::GetUID() const
+{
+	return UID;
+}
+
+uint Resource::GetReferenceCount() const
+{
+	return references;
+}
+
+const char* Resource::GetAssetsPath() const
+{
+	return assetsPath.c_str();;
+}
+
+const char* Resource::GetLibraryPath() const
+{
+	return libraryPath.c_str();
+}
+
+void Resource::ForceUID(uint32 uid)
+{
+	UID = uid;
+	hasForcedUID = true;
+}
+
+void Resource::AddReference(int numberOfReferences)
+{
+	references += numberOfReferences;
 }

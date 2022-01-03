@@ -25,7 +25,6 @@ bool ModuleScene::Start()
 	LOG("ModuleScene Starting");
 	bool ret = true;
 	mainCamera = CreateGameObject("Camera", rootNode);
-	rootNode->AddChild(mainCamera);
 	mainCamera->CreateComponent(COMPONENT_TYPE::CAMERA);
 
 	LOG("Importing scene test");
@@ -161,7 +160,6 @@ bool ModuleScene::LoadScene(const char* path)
 			gameObjects[i]->UpdateParent();
 			parent->AddChild(gameObjects[i]);
 		}
-
 	}
 
 
@@ -180,7 +178,7 @@ void ModuleScene::CreateRootNode()
 GameObject* ModuleScene::CreateGameObject(const char* name, GameObject* parent)
 {
 	GameObject* ret = new GameObject(name, parent);
-	//parent->AddChild()
+	parent->AddChild(ret);
 	gameObjects.push_back(ret);
 
 	return ret;

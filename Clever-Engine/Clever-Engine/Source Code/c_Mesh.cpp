@@ -3,7 +3,8 @@
 #include "ModuleScene.h"
 #include "JSONParser.h"
 #include "SDL/include/SDL_opengl.h"
-
+#include "Application.h"
+#include "ModuleResources.h"
 
 c_Mesh::c_Mesh(GameObject * parent, COMPONENT_TYPE type) : Component(parent, type)
 {
@@ -49,18 +50,32 @@ bool c_Mesh::SaveState(ParsonNode& root) const
 {
 	root.SetNumber("Type", (uint)type);
 	root.SetBool("ShowBoundingBox", drawBBox);
-	/*	
-	if (meshData != nullptr)
+	
+	if (resource != nullptr)
 	{
-		root.SetInteger("VertexCount", meshData->vertexCount);
-		root.SetInteger("vPosID", meshData->vPosData);
-		root.Setf
-	}*/
+		root.SetNumber("UID", resource->GetUID());
+		root.SetString("assetsPath", resource->GetAssetsPath());
+		root.SetString("libraryPath", resource->GetLibraryPath());
+	}
 	return true;
 }
 
 bool c_Mesh::LoadState(ParsonNode& root)
 {
+	bool ret = true;
+
+	resource = nullptr;
+
+	std::string assetsPath = std::string(root.GetString("assetsPath"));
+
+	//get the corresponding resorce and allocate it into memory
+	resource = (ResourceMesh*)App->resources->GetResource((uint32)root.GetNumber("UID"));
+	
+	if (resource == nullptr)
+	{
+		LOG("[ERROR] Loading Scene: Could not find Mesh %s with UID: %u! Try reimporting the model.", root.GetString("File"), (uint32)root.GetNumber("UID"));
+	}
+
 	return true;
 }
 
@@ -71,21 +86,21 @@ const uint c_Mesh::GetVertexCount()
 
 ResourceMesh* c_Mesh::GetMeshData()
 {
-	return resource;
+	return resource;	
 }
 
-bool c_Mesh::AssignNewData(ResourceMesh* meshData)
+bool c_Mesh::AssignNewData(ResourceMesh* res)
 {
 	bool ret = true;
 	
 	if (this->isEmpty == true && this->resource == nullptr)
 	{
-		this->resource = meshData;
+		this->resource = res;
 	}
 	else
 	{
-		RELEASE(this->resource);
-		this->resource = meshData;
+		this->resource->AddReference(-1);
+		this->resource = res;
 	}
 	return ret;
 }

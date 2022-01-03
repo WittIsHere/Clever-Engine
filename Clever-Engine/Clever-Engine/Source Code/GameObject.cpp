@@ -220,8 +220,8 @@ Component* GameObject::CreateComponent(Resource* CD)
 	Component* ret = nullptr;
 	if (CD != NULL)
 	{
-		switch (CD->type)
-		{
+		switch (CD->GetType())
+		{	
 		case(ResourceType::MESH):
 		{
 			c_Mesh* cmp = new c_Mesh(this, CD);
@@ -229,8 +229,8 @@ Component* GameObject::CreateComponent(Resource* CD)
 			cmp->Enable();
 			hasMesh = true;
 			ret = cmp;
-			break;
 		}
+			break;
 		}
 	}
 	return ret;

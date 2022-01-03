@@ -1,5 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
+#include "JSONParser.h"
 #include "ModuleResources.h"
 #include "ModuleImporter.h"
 #include "Resource.h"
@@ -19,6 +20,7 @@ bool ModuleResources::Init()
 	LOG("ModuleResources Init");
 	bool ret = true;
 
+	ImportAssetsFolder();
 	return ret;
 }
 
@@ -26,8 +28,7 @@ bool ModuleResources::Start()
 {
 	LOG("ModuleResources Starting");
 	bool ret = true;
-	
-	//ImportAssetsFolder();
+	 
 
 	return ret;
 }
@@ -59,20 +60,136 @@ void ModuleResources::ImportAssetsFolder()
 	PathNode ourAssets = App->fileSystem->GetAllFiles("Assets", nullptr, nullptr);
 	ImportOurAssets(ourAssets);
 }
-
 void ModuleResources::ImportOurAssets(PathNode node)
 {
 	std::vector<std::string> myAssets;
 
 	for (int i = 0; i < node.children.size(); i++)
 	{
+		// Grab all files with extension .FBX from a folder and put them iniside myAssets vector.
 		App->fileSystem->GetAllFilesWithExtensionMod(node.children[i].path.c_str(), "FBX", myAssets);
+		App->fileSystem->GetAllFilesWithExtensionMod(node.children[i].path.c_str(), "fbx", myAssets);
 	}
 
 	for (int i = 0; i < myAssets.size(); i++)
 	{
-		App->importer->ImportToCustomFF(myAssets[i].c_str());
+		//new attempt
+		std::string path;
+		std::string filename;
+		App->fileSystem->SplitFilePath(myAssets[i].c_str(), &path, &filename);
+
+		std::string fullName = path + filename + META_EXTENSION;
+		int j = 0;
+		
+		// If the meta exists then load all related lib files into lib map and skip the file
+		if (App->fileSystem->Exists(fullName.c_str()))
+		{
+			while (App->fileSystem->Exists(fullName.c_str()))
+			{
+				char* buffer = nullptr;
+				ParsonNode metaRoot = LoadMetaFile(fullName.c_str(), &buffer);
+				//get the id and type from meta
+				uint32 resourceUid = (uint32)metaRoot.GetNumber("UID");
+				int type = metaRoot.GetNumber("Type");
+				RELEASE_ARRAY(buffer);
+
+				if (metaRoot.NodeIsValid())
+				{
+					//create the lib path "library/meshes/XXXXXXXXX.MYMESH"
+					std::string ffExtension = CUSTOM_FF_EXTENSION;
+					std::string libPath = MESHES_PATH + std::to_string(resourceUid) + ffExtension;  //TODO fix this path with a GetLibFolderByExtension
+
+					//emplace the resourceBase 
+					library.emplace(resourceUid, ResourceBase(resourceUid, myAssets[i].c_str(), libPath, (ResourceType)type));
+
+					//update the path to make the root to point to the next meta of the fbx filename + i
+					j++;
+					fullName = path + filename + std::to_string(j) + META_EXTENSION;
+				}
+				else
+				{
+					LOG("ERROR: meta file not valid. Meta path: %s", fullName.c_str());
+					continue;
+				}
+
+			}
+		}
+		else
+		{
+			// If the meta cannot be located, import to CFF.d (load the .FBX with assimp and convert it to MYMODDEL)
+			App->importer->ImportToCustomFF(myAssets[i].c_str());
+		}
 	}
+	int j = 0;
+
+}
+
+bool ModuleResources::SaveMetaFile(ResourceBase resource, const char* name)
+{
+	//Load meta file with info ------------------						
+	ParsonNode metaRoot = ParsonNode();									
+	metaRoot.SetNumber("UID", resource.GetUID());																					
+	metaRoot.SetNumber("Type", (uint)resource.GetType());																			
+
+	//metaRoot.SetString("Name", name); 																							
+	metaRoot.SetString("AssetsPath", resource.GetAssetsPath());
+	metaRoot.SetString("LibraryPath", resource.GetLibraryPath());																	
+
+	double modTime = (double)App->fileSystem->GetLastModTime(resource.GetAssetsPath());
+	metaRoot.SetNumber("ModTime", modTime);
+	//resource->SaveMeta(metaRoot);																									
+
+	//Save Meta into a file
+	char* buffer = nullptr;
+
+	std::string path;
+	std::string filename;
+	App->fileSystem->SplitFilePath(resource.GetAssetsPath(), &path, &filename);
+
+	std::string fullPath = path + filename + META_EXTENSION;
+	//add a number after the filename in case the file already exists
+	int i = 1;
+	std::string temp = fullPath;
+	while (App->fileSystem->Exists(temp.c_str()))
+	{
+		temp = filename + std::to_string(i);
+		filename = temp;
+		i++;
+	}
+
+	std::string fullName = path + filename + META_EXTENSION;
+
+	uint written = metaRoot.SerializeToFile(fullName.c_str(), &buffer);
+	if (written > 0)
+	{
+		LOG("[STATUS] Resource Manager: Successfully Saved the Meta File for Resource %lu! Path: %s", resource.GetUID(), path.c_str());
+	}
+	else
+	{
+		LOG("[ERROR] Resource Manager: Could not Save the Meta File of Resource %lu! Error: File System could not write the file.", resource.GetUID());
+	}
+
+	RELEASE_ARRAY(buffer);
+
+	return true;
+}
+
+ParsonNode ModuleResources::LoadMetaFile(const char* finalPath, char** buffer)
+{
+	if (finalPath == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not load the .meta File! Error: Given path was nullptr!");
+	}
+
+	uint read = App->fileSystem->Load(finalPath, buffer);
+	if (read == 0)
+	{
+		LOG("[ERROR] Resource Manager: Could not load the .meta File with Path: %s! Error: No Meta File exists with the given path.", finalPath);
+	}
+
+	//release the buffer after
+
+	return ParsonNode(*buffer);
 }
 
 Resource* ModuleResources::GetResource(uint32 id)
@@ -88,7 +205,7 @@ Resource* ModuleResources::GetResource(uint32 id)
 	{
 		if (library.find(id) == library.end()) //map.find() returns an iterator that ends up being equal to map.end() if the search was unsuccessfull.
 		{
-			LOG("[Error] Module Resources: trying to get a resource with an ID that is not found inside library ");
+			LOG("[Error] Module Resources: trying to get a resource with an ID that is not found inside library. ID: %d", id);
 			return nullptr;
 		}
 		else
@@ -98,7 +215,7 @@ Resource* ModuleResources::GetResource(uint32 id)
 			{
 				auto rItem = resources.find(id);
 				//add 1 to the references count and return the resource
-				rItem->second->references += 1;
+				rItem->second->AddReference();
 				return rItem->second;
 			}
 			else
@@ -113,8 +230,8 @@ Resource* ModuleResources::GetResource(uint32 id)
 	{
 		auto rItem = resources.find(id);
 		//add 1 to the references count and return the resource
-		rItem->second->references += 1;
-		return rItem->second; 
+		rItem->second->AddReference();
+		return rItem->second;
 	}
 }
 
@@ -161,7 +278,7 @@ bool ModuleResources::AllocateResource(uint32 id, ResourceBase base)
 	ResourceMesh* resource = new ResourceMesh();  
 	resource->assetsPath = base.assetsPath.c_str();
 	resource->libraryPath = base.libraryPath.c_str();
-	resource->uid = id;
+	resource->ForceUID(id);
 
 	bool success = false;
 	success = App->importer->LoadModel(resource->libraryPath.c_str(), resource);
@@ -177,12 +294,12 @@ bool ModuleResources::AllocateResource(uint32 id, ResourceBase base)
 
 	if (success)
 	{
-		resources.emplace(resource->uid, resource);
+		resources.emplace(resource->GetUID(), resource);
 		LOG("[STATUS] Resource Manager: Successfully Allocated Resource in Memory!");
 	}
 	else
 	{
-		DeleteResource(resource->uid);	// This deletes from resources and library!.
+		DeleteResource(resource->GetUID());	// This deletes from resources and library!.
 		LOG("[ERROR] Resource Manager: Importer could not load the Resource Data from file");
 	}
 
