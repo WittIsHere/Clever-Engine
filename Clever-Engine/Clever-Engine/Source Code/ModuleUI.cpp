@@ -247,6 +247,7 @@ update_status ModuleUI::Update(float dt)
 
     DrawConsoleSpace(&activeConsole);
     DrawBrowserSpace(&activeBrowser);
+    DrawContentBrowserSpace(&activeContentB);
     DrawConfigurationSpace(&activeConfiguration);
     DrawHierarchySpace(&activeHierarchy);
     DrawSceneSpace(&activeScene);
@@ -708,25 +709,43 @@ void ModuleUI::ShowDockingDisabledMessage()
 
 void ModuleUI::DrawBrowserSpace(bool* active)
 {
-
     if (*active == false)
         return;
 
-    if (!ImGui::Begin("Folder Browser", active))
+    std::vector<std::string> files_list;
+    std::vector<std::string> dirs_list;
+
+    if (ImGui::Begin("Folder Browser", active))
     {
+        App->fileSystem->DiscoverFiles(BROWSER_PATH, files_list, dirs_list);
+        content_files = dirs_list;
+        for (int i = 0; i < dirs_list.size(); i++)
+        {
+            ImGui::Text("%s", dirs_list[i].c_str());
+        }
         ImGui::End();
         return;
     }
 
-    
-    ImGui::BeginChild("File Browser", ImVec2(0, 300), true);
+    ImGui::End();
+}
 
-    const char* assetsDirectory = "assets";
-    
+void ModuleUI::DrawContentBrowserSpace(bool* active)
+{
+    if (*active == false)
+        return;
 
-    DrawDirectoryRecursive(BROWSER_PATH);
+   std::vector<std::string> myContentFiles = content_files;
 
-    ImGui::EndChild();
+    if (ImGui::Begin("Content Browser", active))
+    {
+        for (int i = 0; i < myContentFiles.size(); i++)
+        {
+            ImGui::Text("%s", myContentFiles[i].c_str());
+        }
+        ImGui::End();
+        return;
+    }
 
     ImGui::End();
 }

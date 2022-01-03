@@ -32,6 +32,7 @@ private:
 	void DrawInspectorSpace(bool* active);
 	void DrawSceneSpace(bool* active);
 	void DrawBrowserSpace(bool* active);
+	void DrawContentBrowserSpace(bool* active);
 
 	void DrawDirectoryRecursive(const char* directory);
 
@@ -54,6 +55,7 @@ private:
 	//Bool variables to activate the different windows
 	bool activeConsole = true;
 	bool activeBrowser = true;
+	bool activeContentB = true;
 	bool activeConfiguration = false;
 	bool activeDockingSpace = false;
 	bool activeHierarchy = true;
@@ -71,4 +73,7 @@ private:
 	bool scrollToBottom;
 
 	char selected_file[FILE_MAX];
+
+	// Content Broswer variables
+	std::vector<std::string> content_files;
 };
