@@ -68,6 +68,7 @@ void ModuleResources::ImportOurAssets(PathNode node)
 	{
 		// Grab all files with extension .FBX from a folder and put them iniside myAssets vector.
 		App->fileSystem->GetAllFilesWithExtensionMod(node.children[i].path.c_str(), "FBX", myAssets);
+		App->fileSystem->GetAllFilesWithExtensionMod(node.children[i].path.c_str(), "fbx", myAssets);
 	}
 
 	for (int i = 0; i < myAssets.size(); i++)
