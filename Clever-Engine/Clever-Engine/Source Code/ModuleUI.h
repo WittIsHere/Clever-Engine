@@ -34,8 +34,6 @@ private:
 	void DrawBrowserSpace(bool* active);
 	void DrawContentBrowserSpace(bool* active);
 
-	void DrawDirectoryRecursive(const char* directory);
-
 	void ShowChildData(GameObject* GO);
 	void ShowDockingDisabledMessage();
 

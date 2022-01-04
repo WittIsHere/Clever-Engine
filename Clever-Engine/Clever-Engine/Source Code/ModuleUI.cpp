@@ -674,6 +674,21 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          }
          lastViewportSize = viewportSize;
          ImGui::Image((ImTextureID)App->viewPort->texture, viewportSize, ImVec2(0, 1), ImVec2(1, 0));
+
+         if (ImGui::BeginDragDropTarget())
+         {
+             if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+             {
+                 const char* path = (const char*)payload->Data;
+                 std::string full = BROWSER_PATH;
+                 full = full += currentFolder;
+                 full = full += '/';
+                 full = full += path;
+                 App->importer->ImportScene(full.c_str());
+             }
+             ImGui::EndDragDropTarget();
+         }
+
          ImGui::End();
      }
  }
@@ -766,10 +781,15 @@ void ModuleUI::DrawContentBrowserSpace(bool* active)
 
         for (int i = 0; i < myContentFiles.size(); i++)
         {
-            if (ImGui::Button(myContentFiles[i].c_str(), { thumbnailSize,thumbnailSize }))
+            ImGui::Button(myContentFiles[i].c_str(), { thumbnailSize,thumbnailSize });
+            if (ImGui::BeginDragDropSource())
             {
-
+                const char* arg = myContentFiles[i].c_str();
+                int size = strlen(arg);
+                ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", arg, size * sizeof(const char), ImGuiCond_Once);
+                ImGui::EndDragDropSource();
             }
+
             ImGui::Text(myContentFiles[i].c_str());
             ImGui::NextColumn();
         }
@@ -783,43 +803,4 @@ void ModuleUI::DrawContentBrowserSpace(bool* active)
    
 
     ImGui::End();
-}
-
-void ModuleUI::DrawDirectoryRecursive(const char* directory)
-{
-    vector<string> files;
-    vector<string> dirs;
-
-    std::string dir((directory) ? directory : "");
-    dir += "/";
-
-    App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
-
-    for (vector<string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
-    {
-        if (ImGui::TreeNodeEx((dir + (*it)).c_str(), 0, "%s/", (*it).c_str()))
-        {
-            DrawDirectoryRecursive((dir + (*it)).c_str());
-            ImGui::TreePop();
-        }
-    }
-    
-    std::sort(files.begin(), files.end());
-
-    for (vector<string>::const_iterator it = files.begin(); it != files.end(); ++it)
-    {
-        const string& str = *it;
-
-        bool ok = true;
-
-        if (ok && ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
-        {
-            if (ImGui::IsItemClicked())
-            {
-                sprintf_s(selected_file, FILE_MAX, "%s%s", dir.c_str(), str.c_str());
-            }
-
-            ImGui::TreePop();
-        }
-    }
 }
