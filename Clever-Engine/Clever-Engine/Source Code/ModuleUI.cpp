@@ -680,11 +680,8 @@ void ModuleUI::DrawHierarchySpace(bool* active)
              if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
              {
                  const char* path = (const char*)payload->Data;
-                 std::string full = BROWSER_PATH;
-                 full = full += currentFolder;
-                 full = full += '/';
-                 full = full += path;
-                 App->importer->ImportScene(full.c_str());
+                 std::string full = BROWSER_PATH + currentFolder + '/' + path;
+                 App->importer->ImportAndLoadScene(full.c_str());
              }
              ImGui::EndDragDropTarget();
          }
