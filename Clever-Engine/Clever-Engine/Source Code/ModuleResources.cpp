@@ -149,20 +149,17 @@ bool ModuleResources::SaveMetaFile(ResourceBase resource, const char* name)
 	std::string fullPath = path + filename + META_EXTENSION;
 	//add a number after the filename in case the file already exists
 	int i = 1;
-	std::string temp = fullPath;
-	while (App->fileSystem->Exists(temp.c_str()))
+	while (App->fileSystem->Exists(fullPath.c_str()))
 	{
-		temp = filename + std::to_string(i);
-		filename = temp;
+		fullPath = path + filename + std::to_string(i) + META_EXTENSION;
 		i++;
 	}
 
-	std::string fullName = path + filename + META_EXTENSION;
+	uint written = metaRoot.SerializeToFile(fullPath.c_str(), &buffer);
 
-	uint written = metaRoot.SerializeToFile(fullName.c_str(), &buffer);
 	if (written > 0)
 	{
-		LOG("[STATUS] Resource Manager: Successfully Saved the Meta File for Resource %lu! Path: %s", resource.GetUID(), path.c_str());
+		LOG("[STATUS] Resource Manager: Successfully Saved the Meta File for Resource %d Path: %s", resource.GetUID(), fullPath.c_str());
 	}
 	else
 	{

@@ -76,7 +76,7 @@ bool ModuleImporter::Start()
 {
 	LOG("Importing scene test");
 
-	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
+	const char* fbxPath = ("Assets/Models/Street_environment.FBX");
 	ImportAndLoadScene(fbxPath);
 
 	return true;
