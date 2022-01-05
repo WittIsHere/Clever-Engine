@@ -38,8 +38,11 @@ bool c_Camera::Update()
 
 	c_Transform* trs = (c_Transform*)COMPONENT_TYPE::TRANSFORM;
 	trs = App->scene->mainCamera->GetComponentTransform();
+	App->renderer3D->PollErrors();
 
 	DrawFrustum();
+	App->renderer3D->PollErrors();
+
 	return true;
 }
 
@@ -89,9 +92,6 @@ void c_Camera::DrawFrustum()
 	glVertex3f(cornerpoints[7].x, cornerpoints[7].y, cornerpoints[7].z);
 	glVertex3f(cornerpoints[3].x, cornerpoints[3].y, cornerpoints[3].z);
 
-	glEnd();
-
-	glColor3f(1, 1, 1);
 	glEnd();
 }
 

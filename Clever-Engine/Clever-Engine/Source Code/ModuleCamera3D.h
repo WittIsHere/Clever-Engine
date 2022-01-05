@@ -19,7 +19,8 @@ public:
 	GameObject* MousePicking();
 	void LookAt(const float3&Spot);
 	//void Move(const float3&Movement);
-	//float* GetViewMatrix();
+	float* GetViewMatrix();
+	float* GetProjectionMatrix();
 	void CalculateViewMatrix();
 	void RecalculateProjection();
 

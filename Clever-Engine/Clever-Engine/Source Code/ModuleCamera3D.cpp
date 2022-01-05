@@ -158,13 +158,26 @@ void ModuleCamera3D::LookAt( const float3 &Spot)
 //	CalculateViewMatrix();
 //}
 
-// -----------------------------------------------------------------
-//float* ModuleCamera3D::GetViewMatrix() //i guess the type is float* to avoid including mat4x4 everywhere
-//{
-//	return &viewMatrix;
-//}
 
-// -----------------------------------------------------------------
+float* ModuleCamera3D::GetViewMatrix()
+{
+	static float4x4 viewMatrix;
+
+	viewMatrix = cameraFrustum.ViewMatrix();
+	viewMatrix.Transpose();
+
+	return (float*)viewMatrix.v;
+}
+
+float* ModuleCamera3D::GetProjectionMatrix()
+{
+	static float4x4 projectionMatrix;
+
+	projectionMatrix = cameraFrustum.ProjectionMatrix().Transposed();
+
+	return (float*)projectionMatrix.v;
+}
+
 void ModuleCamera3D::CalculateViewMatrix()
 {
 	if (projectionIsDirty)
@@ -177,6 +190,7 @@ void ModuleCamera3D::CalculateViewMatrix()
 	cameraFrustum.SetUp(Y.Normalized());
 	float3::Orthonormalize((float3&)cameraFrustum.Front(), (float3&)cameraFrustum.Up());
 	X = Y.Cross(Z);
+	cameraFrustum.ComputeViewMatrix();
 	viewMatrix = cameraFrustum.ViewMatrix();
 }
 
