@@ -247,6 +247,7 @@ update_status ModuleUI::Update(float dt)
 
     DrawConsoleSpace(&activeConsole);
     DrawBrowserSpace(&activeBrowser);
+    DrawContentBrowserSpace(&activeContentB);
     DrawConfigurationSpace(&activeConfiguration);
     DrawHierarchySpace(&activeHierarchy);
     DrawSceneSpace(&activeScene);
@@ -673,6 +674,18 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          }
          lastViewportSize = viewportSize;
          ImGui::Image((ImTextureID)App->viewPort->texture, viewportSize, ImVec2(0, 1), ImVec2(1, 0));
+
+         if (ImGui::BeginDragDropTarget())
+         {
+             if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+             {
+                 const char* path = (const char*)payload->Data;
+                 std::string full = BROWSER_PATH + currentFolder + '/' + path;
+                 App->importer->ImportAndLoadScene(full.c_str());
+             }
+             ImGui::EndDragDropTarget();
+         }
+
          ImGui::End();
      }
  }
@@ -708,64 +721,83 @@ void ModuleUI::ShowDockingDisabledMessage()
 
 void ModuleUI::DrawBrowserSpace(bool* active)
 {
-
     if (*active == false)
         return;
 
-    if (!ImGui::Begin("Folder Browser", active))
+    std::vector<std::string> files_list;
+    std::vector<std::string> dirs_list;
+
+    if (ImGui::Begin("Folder Browser", active))
     {
+        App->fileSystem->DiscoverFiles(BROWSER_PATH, files_list, dirs_list);
+
+        for (int i = 0; i < dirs_list.size(); i++)
+        {
+            if (App->fileSystem->IsDirectory(dirs_list[i].c_str()))
+            {
+                if (ImGui::Button(dirs_list[i].c_str()))
+                {
+                    std::vector<std::string> files_list2;
+                    std::vector<std::string> dirs_list2;
+                    App->fileSystem->DiscoverFiles(dirs_list[i].c_str(), files_list2, dirs_list2);
+                    currentFolder = dirs_list[i];
+                    content_files = files_list2;
+                }
+            }
+        }
         ImGui::End();
         return;
     }
 
-    
-    ImGui::BeginChild("File Browser", ImVec2(0, 300), true);
-
-    const char* assetsDirectory = "assets";
-    
-
-    DrawDirectoryRecursive(BROWSER_PATH);
-
-    ImGui::EndChild();
-
     ImGui::End();
 }
 
-void ModuleUI::DrawDirectoryRecursive(const char* directory)
+void ModuleUI::DrawContentBrowserSpace(bool* active)
 {
-    vector<string> files;
-    vector<string> dirs;
+    if (*active == false)
+        return;
 
-    std::string dir((directory) ? directory : "");
-    dir += "/";
+    std::vector<std::string> myContentFiles = content_files;
+    std::string myCurrentFolder = currentFolder;
 
-    App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
-
-    for (vector<string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
+    if (ImGui::Begin("Content Browser", active))
     {
-        if (ImGui::TreeNodeEx((dir + (*it)).c_str(), 0, "%s/", (*it).c_str()))
+        ImGui::Text(myCurrentFolder.c_str());
+        ImGui::Separator();
+
+        static float padding = 16.0f;
+        static float thumbnailSize = 128;
+        float cellSize = thumbnailSize + padding;
+        float panelWidth = ImGui::GetContentRegionAvail().x;
+
+        int columnCount = (int)(panelWidth / cellSize);
+        if (columnCount < 1)
+            columnCount = 1;
+
+        ImGui::Columns(columnCount, 0, false);
+
+        for (int i = 0; i < myContentFiles.size(); i++)
         {
-            DrawDirectoryRecursive((dir + (*it)).c_str());
-            ImGui::TreePop();
-        }
-    }
-    
-    std::sort(files.begin(), files.end());
-
-    for (vector<string>::const_iterator it = files.begin(); it != files.end(); ++it)
-    {
-        const string& str = *it;
-
-        bool ok = true;
-
-        if (ok && ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
-        {
-            if (ImGui::IsItemClicked())
+            ImGui::Button(myContentFiles[i].c_str(), { thumbnailSize,thumbnailSize });
+            if (ImGui::BeginDragDropSource())
             {
-                sprintf_s(selected_file, FILE_MAX, "%s%s", dir.c_str(), str.c_str());
+                const char* arg = myContentFiles[i].c_str();
+                int size = strlen(arg);
+                ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", arg, size * sizeof(const char), ImGuiCond_Once);
+                ImGui::EndDragDropSource();
             }
 
-            ImGui::TreePop();
+            ImGui::Text(myContentFiles[i].c_str());
+            ImGui::NextColumn();
         }
+
+        ImGui::Columns(1);
+
+        ImGui::End();
+        return;
     }
+
+   
+
+    ImGui::End();
 }
