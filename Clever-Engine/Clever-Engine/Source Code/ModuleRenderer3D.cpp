@@ -167,14 +167,14 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	PlanePrimitive p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
-
+	DrawScene();
 	return UPDATE_CONTINUE;
 }
 
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	DrawScene();
+	
 	App->ui->Render();
 
 	SDL_GL_SwapWindow(App->window->window);
@@ -320,7 +320,7 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform)
 	float* modelMatrix = transform->GetWorldTransformPtr();
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(viewMatrix);
+	//glLoadMatrixf(viewMatrix);
 	
 	/*float4x4 scaleMatrix = float4x4::identity.Scale(float3(2.0f, 2.0f, 2.0f));
 	scaleMatrix.Transpose();
