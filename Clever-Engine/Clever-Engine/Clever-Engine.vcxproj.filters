@@ -22,9 +22,6 @@
     <ClCompile Include="Source Code\Dependencies\ImGui\imgui_widgets.cpp">
       <Filter>External Libraries\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\Color.cpp">
-      <Filter>Source Code\Containers</Filter>
-    </ClCompile>
     <ClCompile Include="Source Code\glmath.cpp">
       <Filter>Source Code\Math</Filter>
     </ClCompile>
@@ -244,6 +241,10 @@
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Geometry\Triangle2D.cpp">
       <Filter>External Libraries\ImGuizmo</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\Color.cpp">
+      <Filter>Source Code\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Particle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h">
@@ -272,9 +273,6 @@
     </ClInclude>
     <ClInclude Include="Source Code\Dependencies\ImGui\imstb_truetype.h">
       <Filter>External Libraries\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\Color.h">
-      <Filter>Source Code\Containers</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\glmath.h">
       <Filter>Source Code\Math</Filter>
@@ -519,9 +517,6 @@
     <ClInclude Include="Source Code\Dependencies\PhysFS\include\physfs.h">
       <Filter>External Libraries\PhysFS</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\PathNode.h">
-      <Filter>Source Code\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\ModuleFileSystem.h">
       <Filter>Source Code\Modules</Filter>
     </ClInclude>
@@ -627,6 +622,15 @@
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Math\vec2d.h">
       <Filter>External Libraries\ImGuizmo</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\Color.h">
+      <Filter>Source Code\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\PathNode.h">
+      <Filter>Source Code\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Particle.h">
+      <Filter>Source Code\Containers\Particle System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">
@@ -697,6 +701,9 @@
     </Filter>
     <Filter Include="External Libraries\ImGuizmo">
       <UniqueIdentifier>{a2d05a94-0cdd-4af6-9d5b-2bdb7022f7e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Code\Containers\Particle System">
+      <UniqueIdentifier>{9b921768-5424-481a-893f-104ff988f848}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

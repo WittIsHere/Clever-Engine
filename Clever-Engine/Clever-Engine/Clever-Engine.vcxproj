@@ -221,6 +221,7 @@
     <ClCompile Include="Source Code\ModuleUI.cpp" />
     <ClCompile Include="Source Code\ModuleViewportFrameBuffer.cpp" />
     <ClCompile Include="Source Code\ModuleWindow.cpp" />
+    <ClCompile Include="Source Code\Particle.cpp" />
     <ClCompile Include="Source Code\Primitive.cpp" />
     <ClCompile Include="Source Code\c_Material.cpp" />
     <ClCompile Include="Source Code\Resource.cpp" />
@@ -347,6 +348,7 @@
     <ClInclude Include="Source Code\ModuleViewportFrameBuffer.h" />
     <ClInclude Include="Source Code\ModuleWindow.h" />
     <ClInclude Include="Source Code\OpenGl.h" />
+    <ClInclude Include="Source Code\Particle.h" />
     <ClInclude Include="Source Code\PathNode.h" />
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\c_Material.h" />
