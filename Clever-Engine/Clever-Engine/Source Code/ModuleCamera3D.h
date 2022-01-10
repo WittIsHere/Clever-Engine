@@ -24,18 +24,18 @@ public:
 	void CalculateViewMatrix();
 	void RecalculateProjection();
 
-public:
+private:
 	Frustum cameraFrustum;
+
 	float3 X, Y, Z, Position, Reference;
 	float Distance;
 	float4x4 viewMatrix;
-	bool projectionIsDirty = false;
+
 	float aspectRatio = 1.f;
 	float verticalFOV = 0.1f;
 	float nearPlaneDistance = 0.1f;
 	float farPlaneDistance = 5000.f;
 	
-private:
 	float lastDeltaX = 0.f, lastDeltaY = 0.f;
 	mat4x4 ViewMatrixInverse;
 };

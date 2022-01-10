@@ -24,8 +24,8 @@ bool ModuleScene::Start()
 {
 	LOG("ModuleScene Starting");
 	bool ret = true;
-	mainCamera = CreateGameObject("Camera", rootNode);
-	mainCamera->CreateComponent(COMPONENT_TYPE::CAMERA);
+	/*mainCamera = CreateGameObject("Camera", rootNode);
+	mainCamera->CreateComponent(COMPONENT_TYPE::CAMERA);*/
 
 	LOG("Importing scene test");
 	//const char* fbxPath = ("Assets/Models/Street_environment.FBX");

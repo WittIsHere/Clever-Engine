@@ -180,10 +180,6 @@ float* ModuleCamera3D::GetProjectionMatrix()
 
 void ModuleCamera3D::CalculateViewMatrix()
 {
-	if (projectionIsDirty)
-	{
-		RecalculateProjection();
-	}
 
 	cameraFrustum.SetPos(Position);
 	cameraFrustum.SetFront(Z.Normalized());
@@ -192,6 +188,7 @@ void ModuleCamera3D::CalculateViewMatrix()
 	X = Y.Cross(Z);
 	cameraFrustum.ComputeViewMatrix();
 	viewMatrix = cameraFrustum.ViewMatrix();
+
 }
 
 void ModuleCamera3D::RecalculateProjection()

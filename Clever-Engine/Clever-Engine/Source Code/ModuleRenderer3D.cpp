@@ -139,8 +139,6 @@ bool ModuleRenderer3D::Init()
 
 bool ModuleRenderer3D::Start()
 {
-	// Import Scene -------
-	/*currentScene = &App->importer->myScene;*/
 
 	return true;
 }
@@ -148,26 +146,24 @@ bool ModuleRenderer3D::Start()
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate(float dt)
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	App->camera->CalculateViewMatrix();
 
 	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(App->camera->cameraFrustum.ProjectionMatrix().Transposed().ptr());
+	glLoadMatrixf(App->camera->GetProjectionMatrix());
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(App->camera->viewMatrix.Transposed().ptr());
+	glLoadMatrixf(App->camera->GetViewMatrix());
 
-	// light 0 on cam pos
-	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
-
-	for(uint i = 0; i < MAX_LIGHTS; ++i)
+	for (uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
 	PlanePrimitive p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
+
 	DrawScene();
+
 	return UPDATE_CONTINUE;
 }
 
@@ -269,34 +265,34 @@ void ModuleRenderer3D::DrawScene()
 
 void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform)
 {
-	//vertices
+
 	if (mesh == nullptr)
 	{
 		LOG("[error]: mesh equals nullptr");
 		return;
 	}
-
-	if (mesh->GetMeshData() == nullptr)
+	else if (mesh->GetMeshData() == nullptr)
 	{
-		LOG("[error]: trying to draw a copmponent mesh without data");
+		LOG("[error]: trying to draw a component mesh without data");
 		return;
 	}
 
-	if (mesh->GetMeshData()->vPosID != 0)
-	{
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->GetMeshData()->vPosID);
-		glVertexPointer(3, GL_FLOAT, 0, NULL);
-	}
-	else
-		LOG("INFO: vertex positions buffer ID not found");
+	//PollErrors();
 
-	//textures
+	glPushMatrix();
+	glMultMatrixf(transform->GetWorldTransformPtr());
+
+	
+	// We start drawing the mesh
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->GetMeshData()->vPosID);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->GetMeshData()->vTexCoordsID);
 	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
-	//indices
 	if (mesh->GetMeshData()->indicesID != 0)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetMeshData()->indicesID);
@@ -306,131 +302,20 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform)
 		LOG("INFO: indices buffer ID not found");
 	}	
 	
-	/*if (mesh->GetMeshData()->texture != nullptr)
-	{
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glBindTexture(GL_TEXTURE_2D, (GLuint)mesh->GetMeshData()->texture->textureID);
-	}
-	else*/
-		BindCheckerTex();
-	//-------------------- Modify modelview matrix to fit the current mesh to be drawn
-	float* viewMatrix = App->camera->cameraFrustum.ProjectionMatrix().Transposed().ptr();
+	BindCheckerTex();
 
-	//to access the MODEL MATRIX we need access to the TRANSFORM of the GO that contains the mesh to be drawn
-	float* modelMatrix = transform->GetWorldTransformPtr();
-
-	glMatrixMode(GL_MODELVIEW);
-	//glLoadMatrixf(viewMatrix);
-	
-	/*float4x4 scaleMatrix = float4x4::identity.Scale(float3(2.0f, 2.0f, 2.0f));
-	scaleMatrix.Transpose();
-	glMultMatrixf((float*)&scaleMatrix);
-	float4x4 translationMatrix = float4x4::identity.Translate(float3(10, 0, 0));
-	translationMatrix.Transpose();
-	glMultMatrixf((float*)&translationMatrix);*/
-
-	//--------------Multiply here the model matrix
-	glMultMatrixf(modelMatrix);
-	
-	PollErrors();
-	
 	if (render) glDrawElements(GL_TRIANGLES, mesh->GetMeshData()->indicesCount, GL_UNSIGNED_INT, 0);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
-	
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-void ModuleRenderer3D::DrawCube()
-{
-	GLfloat vertices[] = { 0.0f,0.0f,0.0f,     // 0
-					       1.0f,0.0f,0.0f,     // 1
-					       1.0f,1.0f,0.0f,     // 2
-					       0.0f,1.0f,0.0f,     // 3
-					       0.0f,0.0f,-1.0f,    // 4
-					       1.0f,0.0f,-1.0f,    // 5
-					       1.0f,1.0f,-1.0f,    // 6
-					       0.0f,1.0f,-1.0f };  // 7
-
-	GLushort indices[] = { 0,1,2,
-						   0,2,3,
-		                   1,5,6,
-		                   1,6,2,
-		                   0,5,1,
-		                   0,4,5,
-		                   0,7,4,
-		                   0,3,7,
-		                   4,7,6,
-		                   4,6,5,
-		                   3,2,6,
-		                   3,6,7};
-
-
-	glGenBuffers(1, &vertex_Buffer);
-	glGenBuffers(1, &indices_Buffer);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_Buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-}
-
-void ModuleRenderer3D::DMPlane()
-{
-	glLineWidth(2.0f);
-	glBegin(GL_TRIANGLES);
-
-	glTexCoord2f(0.0f, 0.f);       glVertex3f(-2.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 0.f);        glVertex3f(2.f, 1.f, 0.f);
-	glTexCoord2f(0.f, 1.f);        glVertex3f(-2.f, 4.f, 0.f);
-
-	glTexCoord2f(0.f, 1.f);        glVertex3f(-2.f, 4.f, 0.f);
-	glTexCoord2f(1.f, 0.f);        glVertex3f(2.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 1.f);        glVertex3f(2.f, 4.f, 0.f);
-
-	glEnd();
-	glFlush();
-}
-
-void ModuleRenderer3D::TestPlane()
-{
-	GLfloat vertices[] = { 0.0f,0.0f,0.0f,			//0.0f,0.0f,    // 0
-						   1.0f,0.0f,0.0f,			//1.0f,0.0f,    // 1
-						   1.0f,1.0f,0.0f,			//1.0f,1.0f,    // 2
-						   0.0f,1.0f,0.0f, };		//0.0f,1.0f };  // 3  
-
-	GLfloat textCoords[] = { 0.0f,0.0f,
-		                     1.0f,0.0f,
-		                     1.0f,1.0f,
-	                         0.0f,1.0f};
-
-	GLushort indices[] = { 0,1,2,
-						   0,2,3};
-
-
-	glGenBuffers(1, &vertex_Buffer);
-	glGenBuffers(1, &texCoords_Buffer);
-	glGenBuffers(1, &indices_Buffer);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_Buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 4, vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, texCoords_Buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float)* 2* 4, textCoords, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_TEXTURE_COORD_ARRAY, 0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glPopMatrix();
 }
 
 void ModuleRenderer3D::CreateCheckerTex()
@@ -531,4 +416,97 @@ void ModuleRenderer3D::DrawRay()
 
 	glLineWidth(1.0f);
 	glColor3f(1.0f, 1.0f, 1.0f);
+}
+
+
+// Testing purposes functions
+
+void ModuleRenderer3D::DrawCube()
+{
+	GLfloat vertices[] = { 0.0f,0.0f,0.0f,     // 0
+						   1.0f,0.0f,0.0f,     // 1
+						   1.0f,1.0f,0.0f,     // 2
+						   0.0f,1.0f,0.0f,     // 3
+						   0.0f,0.0f,-1.0f,    // 4
+						   1.0f,0.0f,-1.0f,    // 5
+						   1.0f,1.0f,-1.0f,    // 6
+						   0.0f,1.0f,-1.0f };  // 7
+
+	GLushort indices[] = { 0,1,2,
+						   0,2,3,
+						   1,5,6,
+						   1,6,2,
+						   0,5,1,
+						   0,4,5,
+						   0,7,4,
+						   0,3,7,
+						   4,7,6,
+						   4,6,5,
+						   3,2,6,
+						   3,6,7 };
+
+
+	glGenBuffers(1, &vertex_Buffer);
+	glGenBuffers(1, &indices_Buffer);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_Buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+}
+
+void ModuleRenderer3D::DMPlane()
+{
+	glLineWidth(2.0f);
+	glBegin(GL_TRIANGLES);
+
+	glTexCoord2f(0.0f, 0.f);       glVertex3f(-2.f, 1.f, 0.f);
+	glTexCoord2f(1.f, 0.f);        glVertex3f(2.f, 1.f, 0.f);
+	glTexCoord2f(0.f, 1.f);        glVertex3f(-2.f, 4.f, 0.f);
+
+	glTexCoord2f(0.f, 1.f);        glVertex3f(-2.f, 4.f, 0.f);
+	glTexCoord2f(1.f, 0.f);        glVertex3f(2.f, 1.f, 0.f);
+	glTexCoord2f(1.f, 1.f);        glVertex3f(2.f, 4.f, 0.f);
+
+	glEnd();
+	glFlush();
+}
+
+void ModuleRenderer3D::TestPlane()
+{
+	GLfloat vertices[] = { 0.0f,0.0f,0.0f,			//0.0f,0.0f,    // 0
+						   1.0f,0.0f,0.0f,			//1.0f,0.0f,    // 1
+						   1.0f,1.0f,0.0f,			//1.0f,1.0f,    // 2
+						   0.0f,1.0f,0.0f, };		//0.0f,1.0f };  // 3  
+
+	GLfloat textCoords[] = { 0.0f,0.0f,
+							 1.0f,0.0f,
+							 1.0f,1.0f,
+							 0.0f,1.0f };
+
+	GLushort indices[] = { 0,1,2,
+						   0,2,3 };
+
+
+	glGenBuffers(1, &vertex_Buffer);
+	glGenBuffers(1, &texCoords_Buffer);
+	glGenBuffers(1, &indices_Buffer);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_Buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 4, vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, texCoords_Buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * 4, textCoords, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_Buffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

@@ -35,10 +35,14 @@ bool c_Mesh::Enable()
 
 bool c_Mesh::Update()
 {
-	if (drawBBox) 
-		DrawBox();
 
 	return true;
+}
+
+void c_Mesh::Draw()
+{
+	if (drawBBox)
+		DrawBox();
 }
 
 bool c_Mesh::Disable()

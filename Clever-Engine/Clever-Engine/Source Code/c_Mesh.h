@@ -21,6 +21,7 @@ public:
 
 	bool Enable();
 	bool Update();
+	void Draw();
 	bool Disable();
 
 	bool SaveState(ParsonNode& root) const override;

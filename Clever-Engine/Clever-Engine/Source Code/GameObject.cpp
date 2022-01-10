@@ -426,6 +426,7 @@ void GameObject::Draw()
 		{
 			c_Mesh* cmp = (c_Mesh*)myComponents[i];
 			App->renderer3D->DrawMesh(cmp, this->transform);
+			myComponents[i]->Draw();
 		}
 	}
 }

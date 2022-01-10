@@ -669,7 +669,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          ImVec2 viewportSize = ImGui::GetCurrentWindow()->Size;
          if (viewportSize.x != lastViewportSize.x || viewportSize.y != lastViewportSize.y)
          {
-             App->camera->aspectRatio = viewportSize.x / viewportSize.y;
+             //App->camera->aspectRatio = viewportSize.x / viewportSize.y;
              App->camera->RecalculateProjection();
          }
          lastViewportSize = viewportSize;

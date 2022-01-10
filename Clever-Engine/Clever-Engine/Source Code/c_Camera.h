@@ -33,7 +33,7 @@ public:
 
 	bool ContainBOX(const AABB& referenceBox) const;
 
-public:
+private:
 	Frustum frustum;
 	float horizontalFOV = 60.0f;
 	float aspectRatio = 1.5f;

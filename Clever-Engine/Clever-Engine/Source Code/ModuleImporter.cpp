@@ -501,33 +501,14 @@ TMYMODEL* ModuleImporter::CreateMyModel(const aiMesh* m)
 	mymodel->normalsSizeBytes = m->mNumVertices * sizeof(float) * 3;//3==x,y,z equal vertex
 	mymodel->normals = (float*)malloc(mymodel->normalsSizeBytes);
 	memcpy(mymodel->normals, m->mNormals, mymodel->normalsSizeBytes);
-	if (m->HasTextureCoords(1))
+
+	mymodel->textCoordSizeBytes = m->mNumVertices * sizeof(float) * 2;//3==u,v
+	mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
+	for (int i = 0; i < m->mNumVertices; i++)
 	{
-		for (size_t j = 0; j < m->mNumVertices; ++j)
-		{
-			mymodel->textCoordSizeBytes = m->mNumVertices * sizeof(float) * 2;//3==u,v
-			mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
-			for (int i = 0; i < m->mNumVertices; i++)
-			{
-				*(mymodel->textCoords + i * 2) = m->mTextureCoords[0][i].x;
-				*(mymodel->textCoords + i * 2 + 1) = 1.0 - m->mTextureCoords[0][i].y; //this coord image is inverted
-			}
-		}
+		*(mymodel->textCoords + i * 2) = m->mTextureCoords[0][i].x;
+		*(mymodel->textCoords + i * 2 + 1) = 1.0 - m->mTextureCoords[0][i].y; //this coord image is inverted
 	}
-	else
-	{
-		mymodel->textCoordSizeBytes = 0;
-	}
-
-
-
-	//mymodel->textCoordSizeBytes = m->mNumVertices * sizeof(float) * 2;//3==u,v
-	//mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
-	//for (int i = 0; i < m->mNumVertices; i++)
-	//{
-	//	*(mymodel->textCoords + i * 2) = m->mTextureCoords[0][i].x;
-	//	*(mymodel->textCoords + i * 2 + 1) = 1.0 - m->mTextureCoords[0][i].y; //this coord image is inverted
-	//}
 
 
 	mymodel->indiceSizeBytes = m->mNumFaces * sizeof(unsigned) * 3; //3==indices/face
