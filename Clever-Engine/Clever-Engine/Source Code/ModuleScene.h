@@ -29,6 +29,8 @@ public:
 
 	bool DeleteFromMeshPool(MeshData* mesh);
 
+	void MousePicking(const LineSegment& picking);
+
 public:
 	GameObject* rootNode;
 	std::vector<GameObject*> gameObjects;

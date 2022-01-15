@@ -16,7 +16,8 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
-	GameObject* MousePicking();
+	LineSegment GenerateRaycast(float normalizedX, float normalizedY);
+
 	void LookAt(const float3&Spot);
 	//void Move(const float3&Movement);
 	float* GetViewMatrix();
@@ -24,8 +25,11 @@ public:
 	void CalculateViewMatrix();
 	void RecalculateProjection();
 
+	bool test = false;
+
 private:
 	Frustum cameraFrustum;
+	LineSegment lastRay;
 
 	float3 X, Y, Z, Position, Reference;
 	float Distance;

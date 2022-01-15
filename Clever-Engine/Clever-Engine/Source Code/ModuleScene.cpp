@@ -249,3 +249,52 @@ bool ModuleScene::DeleteFromMeshPool(MeshData* mesh)
 
 	return true;
 }
+
+void  ModuleScene::MousePicking(const LineSegment &picking)
+{
+	std::vector<GameObject*> possible;
+
+	// Iterate all Game Objects to get the list of them on screen
+	for (int i = 0; i < App->scene->gameObjects.size(); i++)
+	{
+		if (App->scene->gameObjects[i]->hasMesh == true)
+		{
+			// Get the component mesh
+			c_Mesh* mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
+
+			// Intersect the ray drawed before with the AABB box of the meshes
+
+			bool hit = picking.Intersects(mesh->GetAABB());
+			bool hit2 = picking.Intersects(mesh->GetOBB());
+
+			if (hit == true)
+			{
+				int a = 0;
+			}
+			else if(hit2 == true)
+			{
+				int a = 0;
+			}
+
+
+			/*if (picking.Intersects(mesh->GetAABB()))
+			{
+				float hitNear;
+				float hitFar;
+
+				if (picking.Intersects(mesh->GetOBB(), hitNear, hitFar))
+				{
+					possible.push_back(App->scene->gameObjects[i]);
+				}
+			}*/
+		}
+	}
+
+	GameObject* pickedObject = nullptr;
+	float finalDistance = picking.Length();
+
+	/*for (int i = 0; i < possible.size(); i++)
+	{
+
+	}*/
+}

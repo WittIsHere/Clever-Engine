@@ -667,6 +667,11 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          ImGui::Begin("Scene", &activeScene, ImGuiWindowFlags_NoScrollbar);
 
          ImVec2 viewportSize = ImGui::GetCurrentWindow()->Size;
+
+
+         viewPortX = viewportSize.x;
+         viewPortY = viewportSize.y;
+
          if (viewportSize.x != lastViewportSize.x || viewportSize.y != lastViewportSize.y)
          {
              //App->camera->aspectRatio = viewportSize.x / viewportSize.y;

@@ -233,3 +233,13 @@ void c_Mesh::DrawBox() const
 	glLineWidth(1.0f);
 	glPopMatrix();
 }
+
+const AABB& c_Mesh::GetAABB() const
+{
+	return aabbox;
+}
+
+const OBB& c_Mesh::GetOBB() const
+{
+	return obb;
+}
