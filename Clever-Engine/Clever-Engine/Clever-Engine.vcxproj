@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -151,6 +151,7 @@
     <ClCompile Include="Source Code\Color.cpp" />
     <ClCompile Include="Source Code\Component.cpp" />
     <ClCompile Include="Source Code\c_Camera.cpp" />
+    <ClCompile Include="Source Code\c_ParticleSystem.cpp" />
     <ClCompile Include="Source Code\Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Source Code\Dependencies\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Source Code\Dependencies\ImGui\imgui_draw.cpp" />
@@ -200,6 +201,8 @@
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Math\TransformOps.cpp" />
     <ClCompile Include="Source Code\Dependencies\MathGeoLib\include\Time\Clock.cpp" />
     <ClCompile Include="Source Code\Dependencies\parson\parson.c" />
+    <ClCompile Include="Source Code\Emitter.cpp" />
+    <ClCompile Include="Source Code\EmitterInstance.cpp" />
     <ClCompile Include="Source Code\ImCurveEdit.cpp" />
     <ClCompile Include="Source Code\ImGradient.cpp" />
     <ClCompile Include="Source Code\ImGuizmo.cpp" />
@@ -222,6 +225,7 @@
     <ClCompile Include="Source Code\ModuleViewportFrameBuffer.cpp" />
     <ClCompile Include="Source Code\ModuleWindow.cpp" />
     <ClCompile Include="Source Code\Particle.cpp" />
+    <ClCompile Include="Source Code\ParticleModule.cpp" />
     <ClCompile Include="Source Code\Primitive.cpp" />
     <ClCompile Include="Source Code\c_Material.cpp" />
     <ClCompile Include="Source Code\Resource.cpp" />
@@ -236,6 +240,7 @@
     <ClInclude Include="Source Code\Component.h" />
     <ClInclude Include="Source Code\ComponentData.h" />
     <ClInclude Include="Source Code\c_Camera.h" />
+    <ClInclude Include="Source Code\c_ParticleSystem.h" />
     <ClInclude Include="Source Code\Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Source Code\Dependencies\ImGui\imgui.h" />
     <ClInclude Include="Source Code\Dependencies\ImGui\imgui_impl_opengl3.h" />
@@ -322,6 +327,8 @@
     <ClInclude Include="Source Code\Dependencies\MathGeoLib\include\Time\Clock.h" />
     <ClInclude Include="Source Code\Dependencies\parson\parson.h" />
     <ClInclude Include="Source Code\Dependencies\PhysFS\include\physfs.h" />
+    <ClInclude Include="Source Code\Emitter.h" />
+    <ClInclude Include="Source Code\EmitterInstance.h" />
     <ClInclude Include="Source Code\ImCurveEdit.h" />
     <ClInclude Include="Source Code\ImGradient.h" />
     <ClInclude Include="Source Code\ImGuizmo.h" />
@@ -349,6 +356,7 @@
     <ClInclude Include="Source Code\ModuleWindow.h" />
     <ClInclude Include="Source Code\OpenGl.h" />
     <ClInclude Include="Source Code\Particle.h" />
+    <ClInclude Include="Source Code\ParticleModule.h" />
     <ClInclude Include="Source Code\PathNode.h" />
     <ClInclude Include="Source Code\Primitive.h" />
     <ClInclude Include="Source Code\c_Material.h" />

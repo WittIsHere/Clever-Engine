@@ -7,6 +7,7 @@
 #include "ResourceMesh.h"
 #include "MathGeoLib/include/Geometry/LineSegment.h"
 #include "MathGeoLib/include/Geometry/OBB.h"
+#include "Particle.h"
 
 #define MAX_LIGHTS 8
 #define CHECKERS_HEIGHT 128
@@ -18,6 +19,25 @@ class c_Transform;
 class c_Mesh;
 class GameObject;
 
+struct ParticleRenderer
+{
+	ParticleRenderer(Color color, const float4x4 transform);
+
+	void Render();
+	void LoadBuffers();
+
+	uint		VAO;
+
+	Color		color;
+	float4x4	transform;
+};
+
+const float ParticlesCoords[] = {
+1, 1,
+1, 0,
+0, 0,
+1, 0
+};
 
 class ModuleRenderer3D : public Module
 {
@@ -28,7 +48,7 @@ public:
 	bool Init();
 	bool Start();
 	update_status PreUpdate(float dt);
-	update_status PostUpdate(float dt);
+	update_status PostUpdate(float dt);		
 	bool CleanUp();
 
 	void OnResize(int width, int height);
@@ -44,6 +64,10 @@ public:
 	void PollErrors();
 	void DrawRay();
 	//void PollErrors(const char* additionalString);
+
+	//void AddParticle(const float4x4& transform, R_Texture* material, Color color, float distanceToCamera)
+	void AddParticle(const float4x4& transform, Color color, float distanceToCamera);
+	void DrawParticles();
 	
 private:
 	void DrawScene();
@@ -70,6 +94,8 @@ public:
 	bool defaultTexture = false;
 
     bool vsync = true;
+
+	std::map<float, ParticleRenderer> particles;
 
 private:
 	SceneData* currentScene = nullptr;

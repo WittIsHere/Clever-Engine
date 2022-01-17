@@ -4,6 +4,7 @@
 #include "MeshData.h"
 #include "MaterialData.h"
 #include "ModuleImporter.h"
+#include "EmitterInstance.h"
 #include <vector>
 
 class GameObject;
@@ -36,6 +37,9 @@ public:
 	//std::vector<MeshData*> meshPool;
 	std::vector<MeshData*> meshPool;
 	std::vector<TextureData*> texturePool;
+
+	EmitterInstance* ourEmitter = nullptr;
+	
 
 private:
 

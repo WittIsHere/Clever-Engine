@@ -125,12 +125,14 @@ bool ModuleRenderer3D::Init()
 
 	defaultTexture = true;
 
+	particles.clear();
 	// Test meshes -------
 	// DrawCube();
 	//TestPlane();
 	
 	// Create (not bind) checker texture
 	CreateCheckerTex();
+
 	
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -174,7 +176,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	
+	DrawParticles();
 	App->ui->Render();
 
 	SDL_GL_SwapWindow(App->window->window);
@@ -260,6 +262,21 @@ void ModuleRenderer3D::PrepareMesh(ResourceMesh* mesh)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+}
+
+void ModuleRenderer3D::AddParticle(const float4x4& transform, Color color, float distanceToCamera)
+{
+	ParticleRenderer renderer = ParticleRenderer(color, transform);
+	particles.emplace(distanceToCamera, renderer);
+}
+
+void ModuleRenderer3D::DrawParticles()
+{
+	std::map<float, ParticleRenderer>::reverse_iterator it;				//Render from far to close to the camera
+	for (it = particles.rbegin(); it != particles.rend(); ++it)
+	{
+		it->second.Render();
+	}
 }
 
 void ModuleRenderer3D::DrawScene()
@@ -530,5 +547,44 @@ void ModuleRenderer3D::DrawRay()
 	glEnd();
 
 	glLineWidth(1.0f);
-	glColor3f(1.0f, 1.0f, 1.0f);
+	glColor3f(1.0f, 1.0f, 1.0f);  
+}
+
+ParticleRenderer::ParticleRenderer(Color color, const float4x4 transform) :
+	color(color),
+	transform(transform),
+	VAO(0)
+{
+
+}
+
+void ParticleRenderer::LoadBuffers()
+{
+	glGenBuffers(1, &VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ParticlesCoords), ParticlesCoords, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (GLvoid*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void ParticleRenderer::Render()
+{
+	glColor3f(color.r, color.g, color.b);
+
+	glLineWidth(2.0f);
+	glBegin(GL_TRIANGLES);
+
+	glTexCoord2f(0.0f, 0.f);       glVertex3f(-2.f, 1.f, 0.f);
+	glTexCoord2f(1.f, 0.f);        glVertex3f(2.f, 1.f, 0.f);
+	glTexCoord2f(0.f, 1.f);        glVertex3f(-2.f, 4.f, 0.f);
+
+	glTexCoord2f(0.f, 1.f);        glVertex3f(-2.f, 4.f, 0.f);
+	glTexCoord2f(1.f, 0.f);        glVertex3f(2.f, 1.f, 0.f);
+	glTexCoord2f(1.f, 1.f);        glVertex3f(2.f, 4.f, 0.f);
+
+	glEnd();
+	glFlush();
 }

@@ -244,7 +244,21 @@
     <ClCompile Include="Source Code\Color.cpp">
       <Filter>Source Code\Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\Particle.cpp" />
+    <ClCompile Include="Source Code\Particle.cpp">
+      <Filter>Source Code\Containers\Particle System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\Emitter.cpp">
+      <Filter>Source Code\Containers\Particle System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\EmitterInstance.cpp">
+      <Filter>Source Code\Containers\Particle System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\c_ParticleSystem.cpp">
+      <Filter>Source Code\GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\ParticleModule.cpp">
+      <Filter>Source Code\Containers\Particle System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h">
@@ -629,6 +643,18 @@
       <Filter>Source Code\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\Particle.h">
+      <Filter>Source Code\Containers\Particle System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\Emitter.h">
+      <Filter>Source Code\Containers\Particle System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\EmitterInstance.h">
+      <Filter>Source Code\Containers\Particle System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\c_ParticleSystem.h">
+      <Filter>Source Code\GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ParticleModule.h">
       <Filter>Source Code\Containers\Particle System</Filter>
     </ClInclude>
   </ItemGroup>

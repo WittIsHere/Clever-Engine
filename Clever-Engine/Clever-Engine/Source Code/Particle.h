@@ -23,6 +23,7 @@ public:
 
 	float maxLifetime;
 	float currentLifetime;
+	float normalizedLifetime;
 	
 	float size = 1.0f;
 	Color color;

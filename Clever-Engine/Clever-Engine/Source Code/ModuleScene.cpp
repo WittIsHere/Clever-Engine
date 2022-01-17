@@ -32,6 +32,7 @@ bool ModuleScene::Start()
 	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
 	App->importer->ImportAndLoadScene(fbxPath);
 
+
 	return ret;                        
 }
 
@@ -53,6 +54,10 @@ update_status ModuleScene::Update(float dt)
 		{
 			gameObjects[i]->Update();
 		}
+
+		if (ourEmitter != nullptr)
+			ourEmitter->Update(dt);
+
 	}
 	return UPDATE_CONTINUE;
 }
@@ -61,8 +66,8 @@ bool ModuleScene::Draw()
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		if(gameObjects[i]->isActive == true)
-			gameObjects[i]->Draw();          
+		if (gameObjects[i]->isActive == true)
+			gameObjects[i]->Draw();
 	}
 	return true;
 }
