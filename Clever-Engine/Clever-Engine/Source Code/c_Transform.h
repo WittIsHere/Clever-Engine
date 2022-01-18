@@ -14,7 +14,7 @@ public:
 	~c_Transform();
 
 	bool Enable();
-	bool Update();
+	bool Update(float dt);
 	bool Disable();
 
 	bool SaveState(ParsonNode& root) const override;

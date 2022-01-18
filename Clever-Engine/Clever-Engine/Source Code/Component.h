@@ -14,7 +14,7 @@ public:
 	~Component();
 
 	virtual bool Enable();
-	virtual bool Update();
+	virtual bool Update(float dt);
 	virtual bool Disable();
 
 	virtual bool SaveState(ParsonNode& root) const;

@@ -73,13 +73,13 @@ bool GameObject::Init()
 	return ret;
 }
 
-bool GameObject::Update()
+bool GameObject::Update(float dt)
 {
 	bool ret = false;
 
 	for (int i = 0; i < myComponents.size(); i++)
 	{
-		if (myComponents[i]->Update() == true)
+		if (myComponents[i]->Update(dt) == true)
 		{
 			ret = true;
 		}

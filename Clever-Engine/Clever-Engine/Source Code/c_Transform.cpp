@@ -24,7 +24,7 @@ bool c_Transform::Enable()
 	return true;
 }
 
-bool c_Transform::Update()
+bool c_Transform::Update(float dt)
 {
 	return true;
 }

@@ -9,6 +9,7 @@ enum class ResourceType
     MESH,
     MATERIAL,
     TEXTURE,
+    PARTICLE_SYSTEM,
     NONE
 };
 

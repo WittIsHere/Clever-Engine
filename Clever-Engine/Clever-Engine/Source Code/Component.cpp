@@ -16,7 +16,7 @@ bool Component::Enable()
 	return false;
 }
 
-bool Component::Update()
+bool Component::Update(float dt)
 {
 	return false;
 }

@@ -26,7 +26,7 @@ public:
 	bool SaveState(ParsonNode& root) const override;
 	bool LoadState(ParsonNode& root) override;
 
-	bool Update();
+	bool Update(float dt);
 	void DrawFrustum();
 	//void Inspector(Application* App);
 	

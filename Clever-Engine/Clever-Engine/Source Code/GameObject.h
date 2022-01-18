@@ -23,7 +23,7 @@ public:
 	// Methods
 
 	bool Init();
-	bool Update();
+	bool Update(float dt);
 	bool CleanUp();
 
 	bool SaveState(ParsonNode& root) const;

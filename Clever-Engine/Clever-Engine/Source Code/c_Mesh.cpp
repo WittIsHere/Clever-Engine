@@ -33,7 +33,7 @@ bool c_Mesh::Enable()
 	return true;
 }
 
-bool c_Mesh::Update()
+bool c_Mesh::Update(float dt)
 {
 	if (drawBBox) 
 		DrawBox();

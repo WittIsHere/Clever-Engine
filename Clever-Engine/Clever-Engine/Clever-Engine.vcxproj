@@ -231,6 +231,7 @@
     <ClCompile Include="Source Code\Resource.cpp" />
     <ClCompile Include="Source Code\ResourceBase.cpp" />
     <ClCompile Include="Source Code\ResourceMesh.cpp" />
+    <ClCompile Include="Source Code\ResourceParticleSystem.cpp" />
     <ClCompile Include="Source Code\Timer.cpp" />
     <ClCompile Include="Source Code\c_Transform.cpp" />
   </ItemGroup>
@@ -364,6 +365,7 @@
     <ClInclude Include="Source Code\Resource.h" />
     <ClInclude Include="Source Code\ResourceBase.h" />
     <ClInclude Include="Source Code\ResourceMesh.h" />
+    <ClInclude Include="Source Code\ResourceParticleSystem.h" />
     <ClInclude Include="Source Code\Timer.h" />
     <ClInclude Include="Source Code\c_Transform.h" />
     <ClInclude Include="Source Code\TransformData.h" />

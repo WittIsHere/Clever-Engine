@@ -21,7 +21,7 @@ bool c_Material::Enable()
 	return true;
 }
 
-bool c_Material::Update()
+bool c_Material::Update(float dt)
 {
 	return true;
 }

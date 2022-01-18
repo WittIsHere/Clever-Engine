@@ -57,7 +57,7 @@ update_status ModuleScene::Update(float dt)
 
 		if (gameObjects[i]->isActive)
 		{
-			gameObjects[i]->Update();
+			gameObjects[i]->Update(dt);
 		}
 
 		if (ourEmitterInstance != nullptr)

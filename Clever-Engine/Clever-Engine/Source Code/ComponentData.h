@@ -10,6 +10,7 @@ enum COMPONENT_TYPE
 	MESH,
 	MATERIAL,
 	CAMERA,
+	PARTICLE_SYSTEM
 };
 
 class ComponentData

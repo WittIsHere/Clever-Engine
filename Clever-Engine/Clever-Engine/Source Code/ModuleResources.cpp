@@ -5,6 +5,7 @@
 #include "ModuleImporter.h"
 #include "Resource.h"
 #include "ResourceMesh.h"
+#include "ResourceParticleSystem.h"
 
 #include "PathNode.h"
 
@@ -187,6 +188,33 @@ ParsonNode ModuleResources::LoadMetaFile(const char* finalPath, char** buffer)
 	//release the buffer after
 
 	return ParsonNode(*buffer);
+}
+
+Resource* ModuleResources::CreateResource(ResourceType type, const char* assetsPath, uint32 forcedUID)
+{
+	Resource* resource = nullptr;
+	switch (type)
+	{
+	case ResourceType::MESH: { resource = new ResourceMesh(); }			break;
+	//case ResourceType::MATERIAL: { resource = new R_Material(); }		break;
+	//case ResourceType::TEXTURE: { resource = new R_Texture(); }		break;
+	//case ResourceType::MODEL: { resource = new R_Model(); }			break;
+	case ResourceType::PARTICLE_SYSTEM: { resource = new ResourceParticleSystem(); }	break;
+	case ResourceType::NONE: { /*resource = nullptr;*/ }				break;			// In case NONE is a trigger and a method needs to be called.
+	}
+
+	if (resource != nullptr)
+	{
+		if (assetsPath != nullptr)
+		{
+			resource->assetsPath = assetsPath;
+		}
+
+		if (forcedUID != 0) resource->ForceUID(forcedUID);
+		resource->libraryPath = PARTICLESYSTEMS_PATH + std::to_string(resource->GetUID()) + PARTICLESYSTEMS_AST_EXTENSION;
+	}
+
+	return resource;
 }
 
 Resource* ModuleResources::GetResource(uint32 id)

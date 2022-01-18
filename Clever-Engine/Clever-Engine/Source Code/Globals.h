@@ -47,20 +47,24 @@ enum update_status
 #define WIN_PADDING false
 
 //Dirty assets folder path ----------
+#define BROWSER_PATH "Assets/"
 #define ASSETS_PATH "Assets/Textures/"
 #define ASSETS_SCENES_PATH "Assets/Scenes/"
 #define ASSETS_MODELS_PATH "Assets/Models/"
+#define ASSETS_PARTICLESYSTEMS_PATH "Assets/ParticleSystems"
+
 // Not that dirty Library directories
 #define LIBRARY_PATH "Library/"
 #define FOLDERS_PATH "Library/Folders/"
 #define MESHES_PATH "Library/Meshes/"
 #define MATERIALS_PATH "Library/Materials/"
 #define TEXTURES_PATH "Library/Textures/"
-#define BROWSER_PATH "Assets/"
+#define PARTICLESYSTEMS_PATH "Library/ParticleSystems"
 
 #define CUSTOM_FF_EXTENSION ".MYMESH"
 #define JSON_EXTENSION ".json"
 #define META_EXTENSION ".meta"
+#define PARTICLESYSTEMS_AST_EXTENSION ".PS"
 
 // Deletes a buffer
 #define RELEASE( x )\
