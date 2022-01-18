@@ -67,28 +67,28 @@ struct EmitterSpawn : ParticleModule
 	bool hideSpawn = false;
 };
 
-struct EmitterArea : ParticleModule
-{
-	EmitterArea() : ParticleModule(Type::EMITTER_AREA) {};
-
-	void Save(ParsonNode& node) override;
-	void Load(ParsonNode& node) override;
-
-	void Spawn(EmitterInstance* emitter, Particle* particle);
-	void Update(float dt, EmitterInstance* emitter);
-
-	float areaX1 = 0.f;
-	float areaX2 = 1.f;
-
-	float areaY1 = 0.f;
-	float areaY2 = 1.f;
-
-	float areaZ1 = 0.f;
-	float areaZ2 = 1.f;
-	
-	bool hideArea = false;
-	bool eraseArea = false;
-};
+//struct EmitterArea : ParticleModule
+//{
+//	EmitterArea() : ParticleModule(Type::EMITTER_AREA) {};
+//
+//	void Save(ParsonNode& node) override;
+//	void Load(ParsonNode& node) override;
+//
+//	void Spawn(EmitterInstance* emitter, Particle* particle);
+//	void Update(float dt, EmitterInstance* emitter);
+//
+//	float areaX1 = 0.f;
+//	float areaX2 = 1.f;
+//
+//	float areaY1 = 0.f;
+//	float areaY2 = 1.f;
+//
+//	float areaZ1 = 0.f;
+//	float areaZ2 = 1.f;
+//	
+//	bool hideArea = false;
+//	bool eraseArea = false;
+//};
 
 struct ParticleMovement : ParticleModule
 {
@@ -109,31 +109,31 @@ struct ParticleMovement : ParticleModule
 	float3 initialPosition1 = float3::zero;
 	float3 initialPosition2 = float3::zero;
 	
-	float3 initialAcceleration1 = float3(0.0f, -0.5f, .0f);
+	float3 initialAcceleration1 = float3(0.0f, 0.5f, .0f);
 	float3 initialAcceleration2 = float3(0.0f, -0.5f, .0f);
 	
 	bool hideMovement = false;
 	bool eraseMovement = false;
 };
 
-struct ParticleColor : ParticleModule
-{
-	ParticleColor() : ParticleModule(Type::PARTICLE_COLOR) {};
-
-	void Save(ParsonNode& node) override;
-	void Load(ParsonNode& node) override;
-
-	void Spawn(EmitterInstance* emitter, Particle* particle);
-	void Update(float dt, EmitterInstance* emitter);
-
-	Color initialColor1 = Color(1.0f, 1.0f, 1.0f, 1.0f); //black by default
-	Color initialColor2 = Color(1.0f, 1.0f, 1.0f, 1.0f); //black by default
-
-	bool colorOverLifetime = false;
-
-	bool hideColor = false;
-	bool eraseColor = false;
-};
+//struct ParticleColor : ParticleModule
+//{
+//	ParticleColor() : ParticleModule(Type::PARTICLE_COLOR) {};
+//
+//	void Save(ParsonNode& node) override;
+//	void Load(ParsonNode& node) override;
+//
+//	void Spawn(EmitterInstance* emitter, Particle* particle);
+//	void Update(float dt, EmitterInstance* emitter);
+//
+//	Color initialColor1 = Color(1.0f, 1.0f, 1.0f, 1.0f); //black by default
+//	Color initialColor2 = Color(1.0f, 1.0f, 1.0f, 1.0f); //black by default
+//
+//	bool colorOverLifetime = false;
+//
+//	bool hideColor = false;
+//	bool eraseColor = false;
+//};
 
 struct ParticleLifetime : ParticleModule
 {
@@ -151,24 +151,24 @@ struct ParticleLifetime : ParticleModule
 	bool eraseLifetime = false;
 };
 
-struct ParticleSize : ParticleModule
-{
-	ParticleSize() : ParticleModule(Type::PARTICLE_SIZE) {};
-
-	void Save(ParsonNode& node) override;
-	void Load(ParsonNode& node) override;
-
-	void Spawn(EmitterInstance* emitter, Particle* particle);
-	void Update(float dt, EmitterInstance* emitter);
-
-	bool SizeOverTime = false;
-
-	float initialSize1 = 1.f;
-	float initialSize2 = 1.f;
-
-	bool hideSize = false;
-	bool eraseSize = false;
-};
+//struct ParticleSize : ParticleModule
+//{
+//	ParticleSize() : ParticleModule(Type::PARTICLE_SIZE) {};
+//
+//	void Save(ParsonNode& node) override;
+//	void Load(ParsonNode& node) override;
+//
+//	void Spawn(EmitterInstance* emitter, Particle* particle);
+//	void Update(float dt, EmitterInstance* emitter);
+//
+//	bool SizeOverTime = false;
+//
+//	float initialSize1 = 1.f;
+//	float initialSize2 = 1.f;
+//
+//	bool hideSize = false;
+//	bool eraseSize = false;
+//};
 
 //struct ParticleRotation : ParticleModule
 //{
@@ -184,32 +184,32 @@ struct ParticleSize : ParticleModule
 //	bool eraseRotation = false;
 //};
 
-struct ParticleBillboarding : ParticleModule
-{
-	enum class BillboardingType
-	{
-		ScreenAligned,
-		WorldAligned,
-		XAxisAligned,
-		YAxisAligned,
-		ZAxisAligned,
-
-		None,
-	};
-
-	ParticleBillboarding() : ParticleModule(Type::PARTICLE_BILLBOARDING) {};
-
-	void Save(ParsonNode& node) override;
-	void Load(ParsonNode& node) override;
-
-	void Spawn(EmitterInstance* emitter, Particle* particle);
-	void Update(float dt, EmitterInstance* emitter);
-
-	Quat GetAlignmentRotation(const float3& position, const float4x4& cameraTransform);
-
-	BillboardingType billboardingType = BillboardingType::ScreenAligned;
-	bool hideBillboarding = false;
-	bool eraseBillboarding = false;
-};
+//struct ParticleBillboarding : ParticleModule
+//{
+//	enum class BillboardingType
+//	{
+//		ScreenAligned,
+//		WorldAligned,
+//		XAxisAligned,
+//		YAxisAligned,
+//		ZAxisAligned,
+//
+//		None,
+//	};
+//
+//	ParticleBillboarding() : ParticleModule(Type::PARTICLE_BILLBOARDING) {};
+//
+//	void Save(ParsonNode& node) override;
+//	void Load(ParsonNode& node) override;
+//
+//	void Spawn(EmitterInstance* emitter, Particle* particle);
+//	void Update(float dt, EmitterInstance* emitter);
+//
+//	Quat GetAlignmentRotation(const float3& position, const float4x4& cameraTransform);
+//
+//	BillboardingType billboardingType = BillboardingType::ScreenAligned;
+//	bool hideBillboarding = false;
+//	bool eraseBillboarding = false;
+//};
 
 #endif

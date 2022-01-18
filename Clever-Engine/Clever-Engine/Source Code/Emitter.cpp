@@ -100,12 +100,12 @@ void Emitter::Load(ParsonNode& node)
 			case ParticleModule::Type::EMITTER_BASE: particleModule = new EmitterBase(); break;
 			case ParticleModule::Type::EMITTER_SPAWN: particleModule = new EmitterSpawn(); break;
 			case ParticleModule::Type::PARTICLE_LIFETIME: particleModule = new ParticleLifetime(); break;
-			case ParticleModule::Type::PARTICLE_COLOR: particleModule = new ParticleColor(); break;
 			case ParticleModule::Type::PARTICLE_MOVEMENT: particleModule = new ParticleMovement(); break;
-			case ParticleModule::Type::EMITTER_AREA: particleModule = new EmitterArea(); break;
+			//case ParticleModule::Type::PARTICLE_COLOR: particleModule = new ParticleColor(); break;
+			//case ParticleModule::Type::EMITTER_AREA: particleModule = new EmitterArea(); break;
 			//case ParticleModule::Type::PARTICLE_ROTATION: particleModule = new ParticleRotation(); break;
-			case ParticleModule::Type::PARTICLE_SIZE: particleModule = new ParticleSize(); break;
-			case ParticleModule::Type::PARTICLE_BILLBOARDING: particleModule = new ParticleBillboarding(); break;
+			//case ParticleModule::Type::PARTICLE_SIZE: particleModule = new ParticleSize(); break;
+			//case ParticleModule::Type::PARTICLE_BILLBOARDING: particleModule = new ParticleBillboarding(); break;
 		}
 
 		if (particleModule != nullptr)
@@ -124,12 +124,14 @@ void Emitter::SetAsDefault()
 {
 	AddModuleFromType(ParticleModule::Type::EMITTER_BASE);
 	AddModuleFromType(ParticleModule::Type::EMITTER_SPAWN);
-	AddModuleFromType(ParticleModule::Type::EMITTER_AREA);
 	AddModuleFromType(ParticleModule::Type::PARTICLE_LIFETIME);
-	AddModuleFromType(ParticleModule::Type::PARTICLE_COLOR);
 	AddModuleFromType(ParticleModule::Type::PARTICLE_MOVEMENT);
+	/*
+	AddModuleFromType(ParticleModule::Type::EMITTER_AREA);
+	AddModuleFromType(ParticleModule::Type::PARTICLE_COLOR);
 	AddModuleFromType(ParticleModule::Type::PARTICLE_SIZE);
 	AddModuleFromType(ParticleModule::Type::PARTICLE_BILLBOARDING);
+	*/
 }
 
 bool Emitter::AddModuleFromType(ParticleModule::Type type)
@@ -151,24 +153,24 @@ bool Emitter::AddModuleFromType(ParticleModule::Type type)
 		case (ParticleModule::Type::EMITTER_SPAWN):
 			modules.push_back(new EmitterSpawn);
 			break;
-		case (ParticleModule::Type::EMITTER_AREA):
+		/*case (ParticleModule::Type::EMITTER_AREA):
 			modules.push_back(new EmitterArea);
 			break;
 		case(ParticleModule::Type::PARTICLE_COLOR):
 			modules.push_back(new ParticleColor);
-			break;	
+			break;	*/
 		case(ParticleModule::Type::PARTICLE_LIFETIME):
 			modules.push_back(new ParticleLifetime);
 			break;
 		case(ParticleModule::Type::PARTICLE_MOVEMENT):
 			modules.push_back(new ParticleMovement);
 			break;
-		case(ParticleModule::Type::PARTICLE_SIZE):
+		/*case(ParticleModule::Type::PARTICLE_SIZE):
 			modules.push_back(new ParticleSize);
 			break;
 		case(ParticleModule::Type::PARTICLE_BILLBOARDING):
 			modules.push_back(new ParticleBillboarding);
-			break;
+			break;*/
 		case(ParticleModule::Type::NONE):
 			return false;
 	}

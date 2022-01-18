@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleCamera3D.h"
 #include "GameObject.h"
+#include "Emitter.h"
 #include "ModuleScene.h"
 
 ModuleScene::ModuleScene(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -17,6 +18,9 @@ bool ModuleScene::Init()
 	bool ret = true;
 	
 	CreateRootNode();
+	ourEmitter = new Emitter("testEmitter");
+	ourEmitterInstance = new EmitterInstance();
+
 	return ret;
 }
 
@@ -27,11 +31,12 @@ bool ModuleScene::Start()
 	mainCamera = CreateGameObject("Camera", rootNode);
 	mainCamera->CreateComponent(COMPONENT_TYPE::CAMERA);
 
+	ourEmitter->SetAsDefault();
+	ourEmitterInstance->Init(ourEmitter, nullptr);
 	LOG("Importing scene test");
 	//const char* fbxPath = ("Assets/Models/Street_environment.FBX");
 	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
 	App->importer->ImportAndLoadScene(fbxPath);
-
 
 	return ret;                        
 }
@@ -55,8 +60,8 @@ update_status ModuleScene::Update(float dt)
 			gameObjects[i]->Update();
 		}
 
-		if (ourEmitter != nullptr)
-			ourEmitter->Update(dt);
+		if (ourEmitterInstance != nullptr)
+			ourEmitterInstance->Update(dt);
 
 	}
 	return UPDATE_CONTINUE;
@@ -82,7 +87,12 @@ bool ModuleScene::CleanUp()
 		RELEASE((*object));
 	}
 
-	gameObjects.clear();
+	gameObjects.clear();	
+	ourEmitterInstance->ResetEmitter();
+	ourEmitter->CleanUp();
+
+	RELEASE(ourEmitterInstance);
+	RELEASE(ourEmitter);
 
 	rootNode = nullptr;
 	return true;

@@ -170,13 +170,13 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	p.axis = true;
 	p.Render();
 	DrawScene();
+	DrawParticles();
 	return UPDATE_CONTINUE;
 }
 
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	DrawParticles();
 	App->ui->Render();
 
 	SDL_GL_SwapWindow(App->window->window);
@@ -277,6 +277,8 @@ void ModuleRenderer3D::DrawParticles()
 	{
 		it->second.Render();
 	}
+	
+	particles.clear();
 }
 
 void ModuleRenderer3D::DrawScene()
@@ -572,19 +574,29 @@ void ParticleRenderer::LoadBuffers()
 
 void ParticleRenderer::Render()
 {
-	glColor3f(color.r, color.g, color.b);
+	glPushMatrix();
+	glMultMatrixf(transform.ptr());
 
-	glLineWidth(2.0f);
+	glColor4f(color.r, color.g, color.b, color.a);
+
+	//Drawing to tris in direct mode
 	glBegin(GL_TRIANGLES);
 
-	glTexCoord2f(0.0f, 0.f);       glVertex3f(-2.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 0.f);        glVertex3f(2.f, 1.f, 0.f);
-	glTexCoord2f(0.f, 1.f);        glVertex3f(-2.f, 4.f, 0.f);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(.5f, -.5f, .0f);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-.5f, .5f, .0f);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-.5f, -.5f, .0f);
 
-	glTexCoord2f(0.f, 1.f);        glVertex3f(-2.f, 4.f, 0.f);
-	glTexCoord2f(1.f, 0.f);        glVertex3f(2.f, 1.f, 0.f);
-	glTexCoord2f(1.f, 1.f);        glVertex3f(2.f, 4.f, 0.f);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(.5f, -.5f, .0f);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(.5f, .5f, .0f);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-.5f, .5f, .0f);
 
 	glEnd();
-	glFlush();
+	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

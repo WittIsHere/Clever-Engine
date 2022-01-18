@@ -30,12 +30,13 @@ void EmitterBase::Spawn(EmitterInstance* emitter, Particle* particle)
 
 	//float3 position = go->GetComponentTransform()->GetWorldTransform().TranslatePart();
 	//position += origin;
-	particle->position = hardCodedPosition;
+ 	particle->position = hardCodedPosition;
 
 	//Quat rotation = go->GetComponentTransform()->GetWorldTransform().RotatePart().ToQuat();
 	particle->worldRotation = Quat::identity;
 }
 
+//updates distance to camera and normalized lifetime
 void EmitterBase::Update(float dt, EmitterInstance* emitter)
 {
 	//update particles
@@ -82,50 +83,48 @@ void EmitterSpawn::Update(float dt, EmitterInstance* emitter)
 		}
 	}
 }
-
-void EmitterArea::Save(ParsonNode& node)
-{
-	node.SetInteger("Type", (int)type);
-
-	node.SetNumber("areaX1", areaX1);
-	node.SetNumber("areaX2", areaX2);
-
-	node.SetNumber("areaY1", areaY1);
-	node.SetNumber("areaY2", areaY2);
-
-	node.SetNumber("areaZ1", areaZ1);
-	node.SetNumber("areaZ2", areaZ2);
-}
-
-void EmitterArea::Load(ParsonNode& node)
-{
-	areaX1 = node.GetNumber("areaX1");
-	areaX2 = node.GetNumber("areaX2");
-
-	areaY1 = node.GetNumber("areaY1");
-	areaY2 = node.GetNumber("areaY2");
-
-	areaZ1 = node.GetNumber("areaZ1");
-	areaZ2 = node.GetNumber("areaZ2");
-}
-
-void EmitterArea::Spawn(EmitterInstance* emitter, Particle* particle)
-{
-	float positionX = math::Lerp(areaX1, areaX2, randomGenerator.Float());
-	float positionY = math::Lerp(areaY1, areaY2, randomGenerator.Float());
-	float positionZ = math::Lerp(areaZ1, areaZ2, randomGenerator.Float());
-
-	particle->position = float3(particle->position.x + positionX, particle->position.y + positionY, particle->position.z + positionZ);
-}
-
-void EmitterArea::Update(float dt, EmitterInstance* emitter)
-{
-
-}
+//
+//void EmitterArea::Save(ParsonNode& node)
+//{
+//	node.SetInteger("Type", (int)type);
+//
+//	node.SetNumber("areaX1", areaX1);
+//	node.SetNumber("areaX2", areaX2);
+//
+//	node.SetNumber("areaY1", areaY1);
+//	node.SetNumber("areaY2", areaY2);
+//
+//	node.SetNumber("areaZ1", areaZ1);
+//	node.SetNumber("areaZ2", areaZ2);
+//}
+//
+//void EmitterArea::Load(ParsonNode& node)
+//{
+//	areaX1 = node.GetNumber("areaX1");
+//	areaX2 = node.GetNumber("areaX2");
+//
+//	areaY1 = node.GetNumber("areaY1");
+//	areaY2 = node.GetNumber("areaY2");
+//
+//	areaZ1 = node.GetNumber("areaZ1");
+//	areaZ2 = node.GetNumber("areaZ2");
+//}
+//
+//void EmitterArea::Spawn(EmitterInstance* emitter, Particle* particle)
+//{
+//	float positionX = math::Lerp(areaX1, areaX2, randomGenerator.Float());
+//	float positionY = math::Lerp(areaY1, areaY2, randomGenerator.Float());
+//	float positionZ = math::Lerp(areaZ1, areaZ2, randomGenerator.Float());
+//
+//	particle->position = float3(particle->position.x + positionX, particle->position.y + positionY, particle->position.z + positionZ);
+//}
+//
+//void EmitterArea::Update(float dt, EmitterInstance* emitter)
+//{
+//}
 
 void ParticleMovement::Save(ParsonNode& node)
 {
-	//TODO PARTICLE SYSTEM
 	node.SetInteger("Type", (int)type);
 
 	node.SetNumber("initialIntensity1",initialIntensity1);
@@ -191,65 +190,65 @@ void ParticleMovement::Update(float dt, EmitterInstance* emitter)
 		emitter->emitter->DeleteModuleFromType(ParticleModule::Type::PARTICLE_MOVEMENT);
 	}
 }
-
-void ParticleColor::Save(ParsonNode& node)
-{
-	node.SetInteger("Type", (int)type);//TODO PARTICLE SYSTEM
-
-	node.SetColor("initialColor1",initialColor1);
-	node.SetColor("initialColor2", initialColor2);
-
-	node.SetBool("colorOverLifetime", colorOverLifetime);
-}
-
-void ParticleColor::Load(ParsonNode& node)
-{
-	initialColor1 = node.GetColor("initialColor1");
-	initialColor2 = node.GetColor("initialColor2");
-
-	colorOverLifetime = node.GetBool("colorOverLifetime");
-}
-
-void ParticleColor::Spawn(EmitterInstance* emitter, Particle* particle)
-{
-	if (!colorOverLifetime)
-	{
-		particle->color.r = math::Lerp(initialColor1.r, initialColor2.r, randomGenerator.Float());
-		particle->color.g = math::Lerp(initialColor1.g, initialColor2.g, randomGenerator.Float());
-		particle->color.b = math::Lerp(initialColor1.b, initialColor2.b, randomGenerator.Float());
-	}
-}
-
-void ParticleColor::Update(float dt, EmitterInstance* emitter)
-{
-	if (colorOverLifetime)
-	{
-		for (unsigned int i = 0; i < emitter->activeParticles; ++i)
-		{
-			unsigned int particleIndex = emitter->particleIndices[i];
-			Particle* particle = &emitter->particles[particleIndex];
-
-			float redDifference = initialColor2.r - initialColor1.r;
-			float newRed = initialColor1.r + (redDifference * particle->normalizedLifetime);
-
-			float greenDifference = initialColor2.g - initialColor1.g;
-			float newGreen = initialColor1.g + (greenDifference * particle->normalizedLifetime);
-
-			float blueDifference = initialColor2.b - initialColor1.b;
-			float newBlue = initialColor1.b + (blueDifference * particle->normalizedLifetime);
-
-			float alphaDifference = initialColor2.a - initialColor1.a;
-			float newAlpha = initialColor1.a + (alphaDifference * particle->normalizedLifetime);
-
-			particle->color = Color(newRed, newGreen, newBlue, newAlpha);
-		}
-	}
-
-	if (eraseColor == true)
-	{
-		emitter->emitter->DeleteModuleFromType(ParticleModule::Type::PARTICLE_COLOR);
-	}
-}
+//
+//void ParticleColor::Save(ParsonNode& node)
+//{
+//	node.SetInteger("Type", (int)type);//TODO PARTICLE SYSTEM
+//
+//	node.SetColor("initialColor1",initialColor1);
+//	node.SetColor("initialColor2", initialColor2);
+//
+//	node.SetBool("colorOverLifetime", colorOverLifetime);
+//}
+//
+//void ParticleColor::Load(ParsonNode& node)
+//{
+//	initialColor1 = node.GetColor("initialColor1");
+//	initialColor2 = node.GetColor("initialColor2");
+//
+//	colorOverLifetime = node.GetBool("colorOverLifetime");
+//}
+//
+//void ParticleColor::Spawn(EmitterInstance* emitter, Particle* particle)
+//{
+//	if (!colorOverLifetime)
+//	{
+//		particle->color.r = math::Lerp(initialColor1.r, initialColor2.r, randomGenerator.Float());
+//		particle->color.g = math::Lerp(initialColor1.g, initialColor2.g, randomGenerator.Float());
+//		particle->color.b = math::Lerp(initialColor1.b, initialColor2.b, randomGenerator.Float());
+//	}
+//}
+//
+//void ParticleColor::Update(float dt, EmitterInstance* emitter)
+//{
+//	if (colorOverLifetime)
+//	{
+//		for (unsigned int i = 0; i < emitter->activeParticles; ++i)
+//		{
+//			unsigned int particleIndex = emitter->particleIndices[i];
+//			Particle* particle = &emitter->particles[particleIndex];
+//
+//			float redDifference = initialColor2.r - initialColor1.r;
+//			float newRed = initialColor1.r + (redDifference * particle->normalizedLifetime);
+//
+//			float greenDifference = initialColor2.g - initialColor1.g;
+//			float newGreen = initialColor1.g + (greenDifference * particle->normalizedLifetime);
+//
+//			float blueDifference = initialColor2.b - initialColor1.b;
+//			float newBlue = initialColor1.b + (blueDifference * particle->normalizedLifetime);
+//
+//			float alphaDifference = initialColor2.a - initialColor1.a;
+//			float newAlpha = initialColor1.a + (alphaDifference * particle->normalizedLifetime);
+//
+//			particle->color = Color(newRed, newGreen, newBlue, newAlpha);
+//		}
+//	}
+//
+//	if (eraseColor == true)
+//	{
+//		emitter->emitter->DeleteModuleFromType(ParticleModule::Type::PARTICLE_COLOR);
+//	}
+//}
 
 void ParticleLifetime::Save(ParsonNode& node)
 {
@@ -292,135 +291,135 @@ void ParticleLifetime::Update(float dt, EmitterInstance* emitter)
 		emitter->emitter->DeleteModuleFromType(ParticleModule::Type::PARTICLE_LIFETIME);
 	}
 }
-
-void ParticleBillboarding::Save(ParsonNode& node)
-{
-	node.SetInteger("Type", (int)type);
-
-	node.SetInteger("billboardingType",(int)billboardingType);
-
-	node.SetBool("hideBillboarding", hideBillboarding);
-	node.SetBool("eraseBillboarding", eraseBillboarding);
-}
-
-void ParticleBillboarding::Load(ParsonNode& node)
-{
-	billboardingType = (BillboardingType)node.GetInteger("billboardingType");
-
-	hideBillboarding = node.GetBool("hideBillboarding");
-	eraseBillboarding = node.GetBool("eraseBillboarding");
-}
-
-void ParticleBillboarding::Spawn(EmitterInstance* emitter, Particle* particle)
-{
-	particle->worldRotation = GetAlignmentRotation(particle->position, App->camera->cameraFrustum.WorldMatrix());
-}
-
-void ParticleBillboarding::Update(float dt, EmitterInstance* emitter)
-{
-	if (hideBillboarding == false)
-	{
-		for (unsigned int i = 0; i < emitter->activeParticles; ++i)
-		{
-			unsigned int particleIndex = emitter->particleIndices[i];
-			Particle* particle = &emitter->particles[particleIndex];
-
-			particle->worldRotation = GetAlignmentRotation(particle->position, App->camera->cameraFrustum.WorldMatrix());
-		}
-	}
-	 
-	if (eraseBillboarding == true)
-	{
-		emitter->emitter->DeleteModuleFromType(ParticleModule::Type::PARTICLE_BILLBOARDING);
-	}
-}
-
-Quat ParticleBillboarding::GetAlignmentRotation(const float3& position, const float4x4& cameraTransform)
-{
-	float3 N, U, _U, R;
-	float3 direction = float3(cameraTransform.TranslatePart() - position).Normalized(); //normalized vector between the camera and gameobject position
-
-	switch (billboardingType)
-	{
-		case(BillboardingType::ScreenAligned):
-		{
-			N = cameraTransform.WorldZ().Normalized().Neg();	// N is the inverse of the camera +Z
-			U = cameraTransform.WorldY().Normalized();			// U is the up vector from the camera (already perpendicular to N)
-			R = U.Cross(N).Normalized();						// R is the cross product between  U and N
-		}
-		break;
-		case(BillboardingType::WorldAligned):
-		{
-			N = direction;										// N is the direction
-			_U = cameraTransform.WorldY().Normalized();			// _U is the up vector form the camera, only used to calculate R
-			R = _U.Cross(N).Normalized();						// R is the cross product between U and N
-			U = N.Cross(R).Normalized();						// U is the cross product between N and R
-		}
-		break;
-		case(BillboardingType::XAxisAligned):
-		{
-			R = float3::unitX;									// R = (1,0,0)
-			U = direction.Cross(R).Normalized();				// U cross between R and direction
-			N = R.Cross(U).Normalized();						// N faces the camera
-		}			
-		break;
-		case(BillboardingType::YAxisAligned):
-		{
-			U = float3::unitY;
-			R = U.Cross(direction).Normalized();
-			N = R.Cross(U).Normalized();
-		}
-		break;
-		case(BillboardingType::ZAxisAligned):
-		{
-			N = float3::unitZ;
-			R = direction.Cross(N).Normalized();
-			U = N.Cross(R).Normalized();
-		}
-		break;
-	}
-	float3x3 result = float3x3(R, U, N);
-
-	return result.ToQuat();
-}
-
-void ParticleSize::Save(ParsonNode& node)
-{
-	node.SetInteger("Type", (int)type);
-
-	node.SetBool("SizeOverTime", SizeOverTime);
-
-	node.SetNumber("initialSize1", (double)initialSize1);
-	node.SetNumber("initialSize2", (double)initialSize2);
-}
-
-void ParticleSize::Load(ParsonNode& node)
-{
-	SizeOverTime = node.GetBool("SizeOverTime");
-
-	initialSize1 = (float)node.GetNumber("initialSize1");
-	initialSize2 = (float)node.GetNumber("initialSize2");
-}
-
-void ParticleSize::Spawn(EmitterInstance* emitter, Particle* particle)
-{
-	if (!SizeOverTime)
-		particle->size = math::Lerp(initialSize1, initialSize2, randomGenerator.Float());
-	else
-		particle->size = initialSize1;
-}
-
-void ParticleSize::Update(float dt, EmitterInstance* emitter)
-{
-	if (SizeOverTime)
-	{
-		for (unsigned int i = 0; i < emitter->activeParticles; ++i)
-		{
-			unsigned int particleIndex = emitter->particleIndices[i];
-			Particle* particle = &emitter->particles[particleIndex];
-
-			float sizeDifference = initialSize2 - initialSize1;
-			particle->size = initialSize1 + (sizeDifference * particle->normalizedLifetime);
-		}
-	}
-}
+//
+//void ParticleBillboarding::Save(ParsonNode& node)
+//{
+//	node.SetInteger("Type", (int)type);
+//
+//	node.SetInteger("billboardingType",(int)billboardingType);
+//
+//	node.SetBool("hideBillboarding", hideBillboarding);
+//	node.SetBool("eraseBillboarding", eraseBillboarding);
+//}
+//
+//void ParticleBillboarding::Load(ParsonNode& node)
+//{
+//	billboardingType = (BillboardingType)node.GetInteger("billboardingType");
+//
+//	hideBillboarding = node.GetBool("hideBillboarding");
+//	eraseBillboarding = node.GetBool("eraseBillboarding");
+//}
+//
+//void ParticleBillboarding::Spawn(EmitterInstance* emitter, Particle* particle)
+//{
+//	particle->worldRotation = GetAlignmentRotation(particle->position, App->camera->cameraFrustum.WorldMatrix());
+//}
+//
+//void ParticleBillboarding::Update(float dt, EmitterInstance* emitter)
+//{
+//	if (hideBillboarding == false)
+//	{
+//		for (unsigned int i = 0; i < emitter->activeParticles; ++i)
+//		{
+//			unsigned int particleIndex = emitter->particleIndices[i];
+//			Particle* particle = &emitter->particles[particleIndex];
+//
+//			particle->worldRotation = GetAlignmentRotation(particle->position, App->camera->cameraFrustum.WorldMatrix());
+//		}
+//	}
+//	 
+//	if (eraseBillboarding == true)
+//	{
+//		emitter->emitter->DeleteModuleFromType(ParticleModule::Type::PARTICLE_BILLBOARDING);
+//	}
+//}
+//
+//Quat ParticleBillboarding::GetAlignmentRotation(const float3& position, const float4x4& cameraTransform)
+//{
+//	float3 N, U, _U, R;
+//	float3 direction = float3(cameraTransform.TranslatePart() - position).Normalized(); //normalized vector between the camera and gameobject position
+//
+//	switch (billboardingType)
+//	{
+//		case(BillboardingType::ScreenAligned):
+//		{
+//			N = cameraTransform.WorldZ().Normalized().Neg();	// N is the inverse of the camera +Z
+//			U = cameraTransform.WorldY().Normalized();			// U is the up vector from the camera (already perpendicular to N)
+//			R = U.Cross(N).Normalized();						// R is the cross product between  U and N
+//		}
+//		break;
+//		case(BillboardingType::WorldAligned):
+//		{
+//			N = direction;										// N is the direction
+//			_U = cameraTransform.WorldY().Normalized();			// _U is the up vector form the camera, only used to calculate R
+//			R = _U.Cross(N).Normalized();						// R is the cross product between U and N
+//			U = N.Cross(R).Normalized();						// U is the cross product between N and R
+//		}
+//		break;
+//		case(BillboardingType::XAxisAligned):
+//		{
+//			R = float3::unitX;									// R = (1,0,0)
+//			U = direction.Cross(R).Normalized();				// U cross between R and direction
+//			N = R.Cross(U).Normalized();						// N faces the camera
+//		}			
+//		break;
+//		case(BillboardingType::YAxisAligned):
+//		{
+//			U = float3::unitY;
+//			R = U.Cross(direction).Normalized();
+//			N = R.Cross(U).Normalized();
+//		}
+//		break;
+//		case(BillboardingType::ZAxisAligned):
+//		{
+//			N = float3::unitZ;
+//			R = direction.Cross(N).Normalized();
+//			U = N.Cross(R).Normalized();
+//		}
+//		break;
+//	}
+//	float3x3 result = float3x3(R, U, N);
+//
+//	return result.ToQuat();
+//}
+//
+//void ParticleSize::Save(ParsonNode& node)
+//{
+//	node.SetInteger("Type", (int)type);
+//
+//	node.SetBool("SizeOverTime", SizeOverTime);
+//
+//	node.SetNumber("initialSize1", (double)initialSize1);
+//	node.SetNumber("initialSize2", (double)initialSize2);
+//}
+//
+//void ParticleSize::Load(ParsonNode& node)
+//{
+//	SizeOverTime = node.GetBool("SizeOverTime");
+//
+//	initialSize1 = (float)node.GetNumber("initialSize1");
+//	initialSize2 = (float)node.GetNumber("initialSize2");
+//}
+//
+//void ParticleSize::Spawn(EmitterInstance* emitter, Particle* particle)
+//{
+//	if (!SizeOverTime)
+//		particle->size = math::Lerp(initialSize1, initialSize2, randomGenerator.Float());
+//	else
+//		particle->size = initialSize1;
+//}
+//
+//void ParticleSize::Update(float dt, EmitterInstance* emitter)
+//{
+//	if (SizeOverTime)
+//	{
+//		for (unsigned int i = 0; i < emitter->activeParticles; ++i)
+//		{
+//			unsigned int particleIndex = emitter->particleIndices[i];
+//			Particle* particle = &emitter->particles[particleIndex];
+//
+//			float sizeDifference = initialSize2 - initialSize1;
+//			particle->size = initialSize1 + (sizeDifference * particle->normalizedLifetime);
+//		}
+//	}
+//}

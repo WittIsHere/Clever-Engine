@@ -35,6 +35,8 @@ void EmitterInstance::Init(Emitter* emitter, c_ParticleSystem* component)
 {
 	this->emitter = emitter;
 	this->component = component;
+	emitterTime = 0.0f;
+	activeParticles = 0;
 
 	particles.resize(emitter->maxParticleCount);
 
@@ -77,6 +79,7 @@ void EmitterInstance::ResetEmitter()
 {
 	emitterTime = 0.0f;
 	activeParticles = 0; //kill all
+	RELEASE_ARRAY(particleIndices);
 }
 
 void EmitterInstance::UpdateModules(float dt)

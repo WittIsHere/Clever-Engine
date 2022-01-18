@@ -38,8 +38,8 @@ public:
 	std::vector<MeshData*> meshPool;
 	std::vector<TextureData*> texturePool;
 
-	EmitterInstance* ourEmitter = nullptr;
-	
+	Emitter* ourEmitter = nullptr;
+	EmitterInstance* ourEmitterInstance = nullptr;
 
 private:
 
