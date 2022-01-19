@@ -24,6 +24,7 @@ public:
 	float* GetProjectionMatrix();
 	void CalculateViewMatrix();
 	void RecalculateProjection();
+	float3 GetCameraPosition() { return Position; }
 
 	bool test = false;
 

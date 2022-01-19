@@ -28,6 +28,8 @@ public:
 	const float GetViewportX() { return viewPortX; }
 	const float GetViewportY() { return viewPortY; }
 
+	void PickedGO(uint32 id);
+
 private:
 	void DrawConsoleSpace(bool* active);
 	void DrawConfigurationSpace(bool* active);

@@ -4,6 +4,8 @@
 #include "GameObject.h"
 #include "ModuleScene.h"
 
+#include <math.h>
+
 ModuleScene::ModuleScene(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
@@ -250,7 +252,7 @@ bool ModuleScene::DeleteFromMeshPool(MeshData* mesh)
 	return true;
 }
 
-void  ModuleScene::MousePicking(const LineSegment &picking)
+void ModuleScene::MousePicking(const LineSegment &picking)
 {
 	std::vector<GameObject*> possible;
 
@@ -263,21 +265,7 @@ void  ModuleScene::MousePicking(const LineSegment &picking)
 			c_Mesh* mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
 
 			// Intersect the ray drawed before with the AABB box of the meshes
-
-			bool hit = picking.Intersects(mesh->GetAABB());
-			bool hit2 = picking.Intersects(mesh->GetOBB());
-
-			if (hit == true)
-			{
-				int a = 0;
-			}
-			else if(hit2 == true)
-			{
-				int a = 0;
-			}
-
-
-			/*if (picking.Intersects(mesh->GetAABB()))
+			if (picking.Intersects(mesh->GetAABB()))
 			{
 				float hitNear;
 				float hitFar;
@@ -286,15 +274,21 @@ void  ModuleScene::MousePicking(const LineSegment &picking)
 				{
 					possible.push_back(App->scene->gameObjects[i]);
 				}
-			}*/
+			}
 		}
 	}
-
-	GameObject* pickedObject = nullptr;
-	float finalDistance = picking.Length();
-
-	/*for (int i = 0; i < possible.size(); i++)
+	if (possible.empty() == false)
 	{
-
-	}*/
+		App->ui->PickedGO(possible[0]->UUID);
+		possible.clear();
+	}
+	//if (possible.empty() == false)
+	//{
+	//	for (int i = 0; possible.size(); i++)
+	//	{
+	//		math::float3 cameraPos = App->camera->GetCameraPosition();
+	//		math::float3 originGO = possible[i]->GetComponentTransform()->GetWorldTransform().TranslatePart();
+	//		int a = 20; 
+	//	}
+	//}
 }

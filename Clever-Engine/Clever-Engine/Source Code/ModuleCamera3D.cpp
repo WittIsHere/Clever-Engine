@@ -131,30 +131,18 @@ update_status ModuleCamera3D::Update(float dt)
 			App->camera->test = false;
 		}
 
-		float x1 = App->ui->GetViewportX();
-		float y1 = App->ui->GetViewportY();
-
-		float mousex2 = App->input->GetMouseX();
-		float mousey2 = App->input->GetMouseY();
-
-		float screenW = SCREEN_WIDTH;
-		float screenH = SCREEN_HEIGHT;
-
-		float subX = screenW - x1;
-		float subY = screenH - y1;
-
+		// Some operations to get the mouse position relative to the viewport and not the screen
+		float subX = SCREEN_WIDTH - App->ui->GetViewportX();
 		float mouseViewportX = App->input->GetMouseX() - subX;
-		//float mouseViewportY = App->input->GetMouseY() - subY;
 
-
+		// We need to normalize it
 		float mouseNormX = (mouseViewportX / App->ui->GetViewportX());
-		float mouseNormY = (mousey2 / App->ui->GetViewportY());
+		float mouseNormY = (App->input->GetMouseY() / App->ui->GetViewportY());
 
 		mouseNormX = (mouseNormX - 0.5f) * 2.0f;
 		mouseNormY = -(mouseNormY - 0.5f) * 2.0f;
 
 		LineSegment ray = App->camera->GenerateRaycast(mouseNormX, mouseNormY);
-
 		App->scene->MousePicking(ray);
 	}
 

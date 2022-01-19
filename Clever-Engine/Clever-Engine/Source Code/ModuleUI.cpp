@@ -294,6 +294,13 @@ bool ModuleUI::CleanUp()
 	return true;
 }
 
+void ModuleUI::PickedGO(uint32 id)
+{
+    nodeClicked = id;
+    if (activeInspector == false)
+        activeInspector = true;
+}
+
 void ModuleUI::DrawConsoleSpace(bool* active)
 {
     if (*active == false)
@@ -534,6 +541,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          ImGui::End();
          return;
      }
+
      {   //configuration space
          if (nodeClicked != -1 && nodeClicked != App->scene->rootNode->UUID)
          {
