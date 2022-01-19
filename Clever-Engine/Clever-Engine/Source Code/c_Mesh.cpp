@@ -137,13 +137,6 @@ void c_Mesh::CreateBox()
 		aabbox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(1.0f, 1.0f, 1.0f));
 	}
 
-	Sphere sphere;
-	sphere.r = 0.0f;
-	sphere.pos = aabbox.CenterPoint();
-	sphere.Enclose(aabbox);
-	radius = sphere.r;
-	centerPoint = sphere.pos;
-
 	obb.SetFrom(aabbox);
 	obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
 	aabbox.SetNegativeInfinity();

@@ -27,9 +27,16 @@ public:
 	bool LoadState(ParsonNode& root) override;
 
 	bool Update();
+	void Draw();
 	void DrawFrustum();
+
+	void CreateCameraIcon();
+	void DrawCameraIcon();
+	void UpdateCameraIcon();
 	//void Inspector(Application* App);
 	
+	const AABB& GetAABB() const;
+	const OBB& GetOBB() const;
 
 	bool ContainBOX(const AABB& referenceBox) const;
 
@@ -37,6 +44,12 @@ private:
 	Frustum frustum;
 	float horizontalFOV = 60.0f;
 	float aspectRatio = 1.5f;
+
+	AABB aabbox, drawingBox;
+	OBB obb;
+
+	float radius;
+	float3 centerPoint;
 
 };
 

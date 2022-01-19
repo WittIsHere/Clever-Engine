@@ -428,5 +428,17 @@ void GameObject::Draw()
 			App->renderer3D->DrawMesh(cmp, this->transform);
 			myComponents[i]->Draw();
 		}
+		else if (myComponents[i]->type == COMPONENT_TYPE::CAMERA)
+		{
+			myComponents[i]->Draw();
+		}
 	}
+}
+
+bool GameObject::IsCamera()
+{
+	if (this->isCamera)
+		return true;
+	else
+		return false;
 }

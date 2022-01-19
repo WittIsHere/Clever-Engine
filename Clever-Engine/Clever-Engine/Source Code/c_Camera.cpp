@@ -6,7 +6,8 @@
 
 c_Camera::c_Camera(GameObject* parent, COMPONENT_TYPE type) : Component(parent, type)
 {
-
+	CreateCameraIcon();
+	GetOwner()->isCamera = true;
 }
 
 c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, data->type)
@@ -19,6 +20,8 @@ c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, 
 	////This function calculates the verticalFOV using the given horizontal FOV and aspect ratio. Also sets type to PerspectiveFrustum.
 	//frustum.SetHorizontalFovAndAspectRatio(horizontalFOV * DEGTORAD, aspectRatio);
 	//frustum.SetViewPlaneDistances(5.0f, 100.0f);
+	GetOwner()->isCamera = true;
+	CreateCameraIcon();
 }
 
 c_Camera::~c_Camera() {}
@@ -35,7 +38,7 @@ bool c_Camera::Disable()
 
 bool c_Camera::Update()
 {
-
+	UpdateCameraIcon();
 	//c_Transform* trs = (c_Transform*)COMPONENT_TYPE::TRANSFORM;
 	//trs = App->scene->mainCamera->GetComponentTransform();
 	//
@@ -43,6 +46,11 @@ bool c_Camera::Update()
 	//DrawFrustum();
 	//App->renderer3D->PollErrors();
 	return true;
+}
+
+void c_Camera::Draw()
+{
+	DrawCameraIcon();
 }
 
 void c_Camera::DrawFrustum()
@@ -94,6 +102,83 @@ void c_Camera::DrawFrustum()
 	glEnd();
 }
 
+// Methods related to creating the icon of the camera:
+
+void c_Camera::CreateCameraIcon()
+{
+	//Sphere sphere;
+	//sphere.r = 0.0f;
+	//sphere.pos = aabbox.CenterPoint();
+	//sphere.Enclose(aabbox);
+	//radius = sphere.r;
+	//centerPoint = sphere.pos;
+	aabbox.SetNegativeInfinity();
+	aabbox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
+	obb.SetFrom(aabbox);
+	obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
+	aabbox.SetNegativeInfinity();
+	aabbox.Enclose(obb);
+}
+
+void c_Camera::DrawCameraIcon()
+{
+	glPushMatrix();
+	glMultMatrixf(owner->GetComponentTransform()->GetWorldTransformPtr());
+	float3 cornerPoints[8];
+	aabbox.GetCornerPoints(cornerPoints);
+
+	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+	glLineWidth(5.0f);
+	glBegin(GL_LINES);
+
+	glVertex3f(cornerPoints[0].x, cornerPoints[0].y, cornerPoints[0].z);
+	glVertex3f(cornerPoints[1].x, cornerPoints[1].y, cornerPoints[1].z);
+
+	glVertex3f(cornerPoints[0].x, cornerPoints[0].y, cornerPoints[0].z);
+	glVertex3f(cornerPoints[2].x, cornerPoints[2].y, cornerPoints[2].z);
+
+	glVertex3f(cornerPoints[2].x, cornerPoints[2].y, cornerPoints[2].z);
+	glVertex3f(cornerPoints[3].x, cornerPoints[3].y, cornerPoints[3].z);
+
+	glVertex3f(cornerPoints[1].x, cornerPoints[1].y, cornerPoints[1].z);
+	glVertex3f(cornerPoints[3].x, cornerPoints[3].y, cornerPoints[3].z);
+
+	glVertex3f(cornerPoints[0].x, cornerPoints[0].y, cornerPoints[0].z);
+	glVertex3f(cornerPoints[4].x, cornerPoints[4].y, cornerPoints[4].z);
+
+	glVertex3f(cornerPoints[5].x, cornerPoints[5].y, cornerPoints[5].z);
+	glVertex3f(cornerPoints[4].x, cornerPoints[4].y, cornerPoints[4].z);
+
+	glVertex3f(cornerPoints[5].x, cornerPoints[5].y, cornerPoints[5].z);
+	glVertex3f(cornerPoints[1].x, cornerPoints[1].y, cornerPoints[1].z);
+
+	glVertex3f(cornerPoints[5].x, cornerPoints[5].y, cornerPoints[5].z);
+	glVertex3f(cornerPoints[7].x, cornerPoints[7].y, cornerPoints[7].z);
+
+	glVertex3f(cornerPoints[7].x, cornerPoints[7].y, cornerPoints[7].z);
+	glVertex3f(cornerPoints[6].x, cornerPoints[6].y, cornerPoints[6].z);
+
+	glVertex3f(cornerPoints[6].x, cornerPoints[6].y, cornerPoints[6].z);
+	glVertex3f(cornerPoints[2].x, cornerPoints[2].y, cornerPoints[2].z);
+
+	glVertex3f(cornerPoints[6].x, cornerPoints[6].y, cornerPoints[6].z);
+	glVertex3f(cornerPoints[4].x, cornerPoints[4].y, cornerPoints[4].z);
+
+	glVertex3f(cornerPoints[7].x, cornerPoints[7].y, cornerPoints[7].z);
+	glVertex3f(cornerPoints[3].x, cornerPoints[3].y, cornerPoints[3].z);
+
+	glEnd();
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glLineWidth(1.0f);
+	glPopMatrix();
+}
+
+void c_Camera::UpdateCameraIcon()
+{
+	aabbox.Transform(owner->GetComponentTransform()->GetWorldTransform());
+}
+
 bool c_Camera::SaveState(ParsonNode& root) const
 {
 	root.SetNumber("Type", (uint)type);
@@ -104,6 +189,16 @@ bool c_Camera::SaveState(ParsonNode& root) const
 bool c_Camera::LoadState(ParsonNode& root)
 {
 	return true;
+}
+
+const AABB& c_Camera::GetAABB() const
+{
+	return aabbox;
+}
+
+const OBB& c_Camera::GetOBB() const
+{
+	return obb;
 }
 
 bool c_Camera::ContainBOX(const AABB& referenceBox) const
