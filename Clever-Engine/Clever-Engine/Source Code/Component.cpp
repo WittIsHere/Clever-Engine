@@ -21,6 +21,11 @@ bool Component::Update(float dt)
 	return false;
 }
 
+void Component::Draw()
+{
+
+}
+
 bool Component::Disable()
 {
 	return false;

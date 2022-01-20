@@ -6,7 +6,18 @@
 
 c_Camera::c_Camera(GameObject* parent, COMPONENT_TYPE type) : Component(parent, type)
 {
+	type = COMPONENT_TYPE::CAMERA;
+	frustum.SetPos(float3(0.0f, 0.0f, -5.0f));
+	frustum.SetUp(float3(0.0f, 1.0f, 0.0f));
+	frustum.SetFront(float3(0.0f, 0.0f, 1.0f));
 
+	//This function calculates the verticalFOV using the given horizontal FOV and aspect ratio. Also sets type to PerspectiveFrustum.
+	frustum.SetHorizontalFovAndAspectRatio(horizontalFOV * DEGTORAD, aspectRatio);
+	frustum.SetViewPlaneDistances(1.0f, 100.0f);
+	GetOwner()->isCamera = true;
+
+	frustumActive = true;
+	drawingBox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
 }
 
 c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, data->type)
@@ -18,7 +29,11 @@ c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, 
 
 	//This function calculates the verticalFOV using the given horizontal FOV and aspect ratio. Also sets type to PerspectiveFrustum.
 	frustum.SetHorizontalFovAndAspectRatio(horizontalFOV * DEGTORAD, aspectRatio);
-	frustum.SetViewPlaneDistances(5.0f, 100.0f);
+	frustum.SetViewPlaneDistances(1.0f, 100.0f);
+	GetOwner()->isCamera = true;
+
+	frustumActive = true;
+	drawingBox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
 }
 
 c_Camera::~c_Camera() {}
@@ -35,15 +50,23 @@ bool c_Camera::Disable()
 
 bool c_Camera::Update(float dt)
 {
+	frustum.SetPos(owner->GetComponentTransform()->GetLocalPosition());
+	frustum.SetUp(owner->GetComponentTransform()->GetWorldTransform().WorldY());
+	frustum.SetFront(owner->GetComponentTransform()->GetWorldTransform().WorldZ());
 
-	c_Transform* trs = (c_Transform*)COMPONENT_TYPE::TRANSFORM;
-	trs = App->scene->mainCamera->GetComponentTransform();
-	App->renderer3D->PollErrors();
+	aabbox.SetFromCenterAndSize(owner->GetComponentTransform()->GetLocalPosition(), vec(0.2f, 0.2f, 0.2f));
 
-	DrawFrustum();
-	App->renderer3D->PollErrors();
-
+	if (frustumActive == true)
+	{
+		DrawFrustum();
+	}
 	return true;
+}
+
+void c_Camera::Draw()
+{
+	DrawCameraIcon();
+
 }
 
 void c_Camera::DrawFrustum()
@@ -54,7 +77,7 @@ void c_Camera::DrawFrustum()
 	float3 cornerpoints[8];
 	frustum.GetCornerPoints(cornerpoints);
 
-	glColor3f(1.0f, 0.0f, 1.0f);
+	glColor3f(0.0f, 0.0f, 0.0f);
 
 	glVertex3f(cornerpoints[0].x, cornerpoints[0].y, cornerpoints[0].z);
 	glVertex3f(cornerpoints[1].x, cornerpoints[1].y, cornerpoints[1].z);
@@ -95,6 +118,62 @@ void c_Camera::DrawFrustum()
 	glEnd();
 }
 
+// Methods related to creating the icon of the camera:
+
+void c_Camera::DrawCameraIcon()
+{
+	glPushMatrix();
+	glMultMatrixf(owner->GetComponentTransform()->GetWorldTransformPtr());
+	float3 cornerPoints[8];
+	drawingBox.GetCornerPoints(cornerPoints);
+
+	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+	glLineWidth(5.0f);
+	glBegin(GL_LINES);
+
+	glVertex3f(cornerPoints[0].x, cornerPoints[0].y, cornerPoints[0].z);
+	glVertex3f(cornerPoints[1].x, cornerPoints[1].y, cornerPoints[1].z);
+
+	glVertex3f(cornerPoints[0].x, cornerPoints[0].y, cornerPoints[0].z);
+	glVertex3f(cornerPoints[2].x, cornerPoints[2].y, cornerPoints[2].z);
+
+	glVertex3f(cornerPoints[2].x, cornerPoints[2].y, cornerPoints[2].z);
+	glVertex3f(cornerPoints[3].x, cornerPoints[3].y, cornerPoints[3].z);
+
+	glVertex3f(cornerPoints[1].x, cornerPoints[1].y, cornerPoints[1].z);
+	glVertex3f(cornerPoints[3].x, cornerPoints[3].y, cornerPoints[3].z);
+
+	glVertex3f(cornerPoints[0].x, cornerPoints[0].y, cornerPoints[0].z);
+	glVertex3f(cornerPoints[4].x, cornerPoints[4].y, cornerPoints[4].z);
+
+	glVertex3f(cornerPoints[5].x, cornerPoints[5].y, cornerPoints[5].z);
+	glVertex3f(cornerPoints[4].x, cornerPoints[4].y, cornerPoints[4].z);
+
+	glVertex3f(cornerPoints[5].x, cornerPoints[5].y, cornerPoints[5].z);
+	glVertex3f(cornerPoints[1].x, cornerPoints[1].y, cornerPoints[1].z);
+
+	glVertex3f(cornerPoints[5].x, cornerPoints[5].y, cornerPoints[5].z);
+	glVertex3f(cornerPoints[7].x, cornerPoints[7].y, cornerPoints[7].z);
+
+	glVertex3f(cornerPoints[7].x, cornerPoints[7].y, cornerPoints[7].z);
+	glVertex3f(cornerPoints[6].x, cornerPoints[6].y, cornerPoints[6].z);
+
+	glVertex3f(cornerPoints[6].x, cornerPoints[6].y, cornerPoints[6].z);
+	glVertex3f(cornerPoints[2].x, cornerPoints[2].y, cornerPoints[2].z);
+
+	glVertex3f(cornerPoints[6].x, cornerPoints[6].y, cornerPoints[6].z);
+	glVertex3f(cornerPoints[4].x, cornerPoints[4].y, cornerPoints[4].z);
+
+	glVertex3f(cornerPoints[7].x, cornerPoints[7].y, cornerPoints[7].z);
+	glVertex3f(cornerPoints[3].x, cornerPoints[3].y, cornerPoints[3].z);
+
+	glEnd();
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glLineWidth(1.0f);
+	glPopMatrix();
+}
+
 bool c_Camera::SaveState(ParsonNode& root) const
 {
 	root.SetNumber("Type", (uint)type);
@@ -105,6 +184,11 @@ bool c_Camera::SaveState(ParsonNode& root) const
 bool c_Camera::LoadState(ParsonNode& root)
 {
 	return true;
+}
+
+const AABB& c_Camera::GetAABB() const
+{
+	return aabbox;
 }
 
 bool c_Camera::ContainBOX(const AABB& referenceBox) const

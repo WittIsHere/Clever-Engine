@@ -126,11 +126,30 @@ update_status ModuleCamera3D::Update(float dt)
 
 	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
-		GameObject* picked = MousePicking();
+		if (App->camera->test == true)
+		{
+			App->camera->test = false;
+		}
+
+		// Some operations to get the mouse position relative to the viewport and not the screen
+		float subX = SCREEN_WIDTH - App->ui->GetViewportX();
+		float mouseViewportX = App->input->GetMouseX() - subX;
+
+		// We need to normalize it
+		float mouseNormX = (mouseViewportX / App->ui->GetViewportX());
+		float mouseNormY = (App->input->GetMouseY() / App->ui->GetViewportY());
+
+		mouseNormX = (mouseNormX - 0.5f) * 2.0f;
+		mouseNormY = -(mouseNormY - 0.5f) * 2.0f;
+
+		LineSegment ray = App->camera->GenerateRaycast(mouseNormX, mouseNormY);
+		App->scene->MousePicking(ray);
 	}
 
-	// Recalculate matrix -------------
-	//CalculateViewMatrix();
+	if (App->input->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_DOWN)
+	{
+		test = true;
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -147,17 +166,6 @@ void ModuleCamera3D::LookAt( const float3 &Spot)
 
 	CalculateViewMatrix();
 }
-
-
-// -----------------------------------------------------------------
-//void ModuleCamera3D::Move(const float3&Movement)
-//{
-//	Position += Movement;
-//	Reference += Movement;
-//
-//	CalculateViewMatrix();
-//}
-
 
 float* ModuleCamera3D::GetViewMatrix()
 {
@@ -180,10 +188,6 @@ float* ModuleCamera3D::GetProjectionMatrix()
 
 void ModuleCamera3D::CalculateViewMatrix()
 {
-	if (projectionIsDirty)
-	{
-		RecalculateProjection();
-	}
 
 	cameraFrustum.SetPos(Position);
 	cameraFrustum.SetFront(Z.Normalized());
@@ -192,6 +196,7 @@ void ModuleCamera3D::CalculateViewMatrix()
 	X = Y.Cross(Z);
 	cameraFrustum.ComputeViewMatrix();
 	viewMatrix = cameraFrustum.ViewMatrix();
+
 }
 
 void ModuleCamera3D::RecalculateProjection()
@@ -200,49 +205,8 @@ void ModuleCamera3D::RecalculateProjection()
 	cameraFrustum.SetVerticalFovAndAspectRatio(verticalFOV * DEGTORAD, aspectRatio);
 }
 
-GameObject* ModuleCamera3D::MousePicking()
+
+LineSegment ModuleCamera3D::GenerateRaycast(float normalizedX, float normalizedY)
 {
-	std::vector<GameObject*> possible;
-	float normX = -(1.0f - (float(App->input->GetMouseY()) * 2.0f) / (float)App->window->GetWidth());
-	float normY = -(1.0f - (float(App->input->GetMouseX()) * 2.0f) / (float)App->window->GetHeight());
-
-	// Draw a Line to intersect with the Game Objects
-	LineSegment picking = cameraFrustum.UnProjectLineSegment(normX, normY);
-	float distance;
-
-	// Iterate all Game Objects to get the list of them on screen
-	for (int i = 0; i < App->scene->gameObjects.size(); i++)
-	{
-		if (App->scene->gameObjects[i]->hasMesh == true)
-		{
-			// Get the component mesh
-			c_Mesh* mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
-
-			// Intersect the ray drawed before with the AABB box of the meshes
-			if (picking.Intersects(mesh->aabbox))
-			{
-				float hitNear;
-				float hitFar;
-
-				if (picking.Intersects(mesh->obb, hitNear, hitFar))
-				{
-					possible.push_back(App->scene->gameObjects[i]);
-				}
-			}
-		}
-		else
-		{
-			i++;
-		}
-	}
-
-	GameObject* pickedObject = nullptr;
-	float finalDistance = picking.Length();
-	
-	/*for (int i = 0; i < possible.size(); i++)
-	{
-
-	}*/
-
-	return nullptr;
+	return lastRay = cameraFrustum.UnProjectLineSegment(normalizedX, normalizedY);
 }

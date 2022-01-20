@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "c_Mesh.h"
 #include "c_Transform.h"
+#include "c_Camera.h"
 #include "JSONParser.h"
 
 #include <vector>
@@ -58,8 +59,11 @@ public:
 	void ForceUID(uint32 id);
 	void Draw(); 
 
+	bool IsCamera();
+
 public:
 	bool hasMesh;
+	bool isCamera = false;
 	std::string name;
 	bool isRoot = false;
 	bool isActive = true;

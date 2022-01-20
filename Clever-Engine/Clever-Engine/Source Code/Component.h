@@ -15,6 +15,7 @@ public:
 
 	virtual bool Enable();
 	virtual bool Update(float dt);
+	virtual void Draw();
 	virtual bool Disable();
 
 	virtual bool SaveState(ParsonNode& root) const;

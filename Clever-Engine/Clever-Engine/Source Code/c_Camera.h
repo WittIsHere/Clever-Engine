@@ -4,13 +4,15 @@
 // IMPORTANT macro
 #define NOMINMAX 1
 #include "Globals.h"
-#include <string>
-#include "MathGeoLib/include/MathGeoLib.h"
 #include "Component.h"
 #include "TransformData.h"
-#include "Application.h"
-#include "SDL/include/SDL_opengl.h"
+
+#include "MathGeoLib/include/Geometry/AABB.h"
+#include "MathGeoLib/include/Geometry/OBB.h"
+#include "MathGeoLib/include/Geometry/Sphere.h"
+#include "MathGeoLib/include/Math/float3.h"
 #include "MathGeoLib/include/Geometry/Frustum.h"
+#include "MathGeoLib//include/Geometry/Plane.h"
 
 class GameObject;
 
@@ -27,16 +29,29 @@ public:
 	bool LoadState(ParsonNode& root) override;
 
 	bool Update(float dt);
+	void Draw();
 	void DrawFrustum();
+
+	void DrawCameraIcon();
+
 	//void Inspector(Application* App);
 	
+	const AABB& GetAABB() const;
 
 	bool ContainBOX(const AABB& referenceBox) const;
 
-public:
+	bool frustumActive;
+
+private:
 	Frustum frustum;
 	float horizontalFOV = 60.0f;
 	float aspectRatio = 1.5f;
+
+	AABB aabbox, drawingBox;
+
+
+	float radius;
+	float3 centerPoint;
 
 };
 

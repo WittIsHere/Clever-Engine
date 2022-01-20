@@ -11,7 +11,6 @@ c_Mesh::c_Mesh(GameObject * parent, COMPONENT_TYPE type) : Component(parent, typ
 	//is empty by default
 	resource = nullptr;
 	drawBBox = true;
-
 	CreateBox();
 }
 
@@ -20,7 +19,6 @@ c_Mesh::c_Mesh(GameObject* parent, Resource* data) : Component(parent, COMPONENT
 	this->isEmpty = false;
 	resource = (ResourceMesh*)data;
 	drawBBox = true;
-
 	CreateBox();
 }
 
@@ -35,10 +33,14 @@ bool c_Mesh::Enable()
 
 bool c_Mesh::Update(float dt)
 {
-	if (drawBBox) 
-		DrawBox();
-
+	aabbox.SetFromCenterAndSize(owner->GetComponentTransform()->GetLocalPosition(), obb.Size());
 	return true;
+}
+
+void c_Mesh::Draw()
+{
+	if (drawBBox)
+		DrawBox();
 }
 
 bool c_Mesh::Disable()
@@ -133,43 +135,6 @@ void c_Mesh::CreateBox()
 		aabbox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(1.0f, 1.0f, 1.0f));
 	}
 
-	Sphere sphere;
-	sphere.r = 0.0f;
-	sphere.pos = aabbox.CenterPoint();
-	sphere.Enclose(aabbox);
-	radius = sphere.r;
-	centerPoint = sphere.pos;
-
-	obb.SetFrom(aabbox);
-	obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
-	aabbox.SetNegativeInfinity();
-	aabbox.Enclose(obb);
-}
-
-void c_Mesh::UpdateBox()
-{
-	if (resource != nullptr)
-	{
-		std::vector<float3> vertices;
-		for (int i = 0; i < resource->vertexCount; i++)
-		{
-			float3 vertex;
-			vertex.x = resource->vPosData[(i * 3) + 0];
-			vertex.y = resource->vPosData[(i * 3) + 1];
-			vertex.z = resource->vPosData[(i * 3) + 2];
-
-			vertices.push_back(vertex);
-		}
-
-		aabbox.SetNegativeInfinity();
-		aabbox.Enclose(&vertices[0], vertices.size());
-	}
-	else
-	{
-		aabbox.SetNegativeInfinity();
-		aabbox.SetFromCenterAndSize(owner->GetComponentTransform()->GetLocalPosition(), vec(1.0f, 1.0f, 1.0f));
-	}
-
 	obb.SetFrom(aabbox);
 	obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
 	aabbox.SetNegativeInfinity();
@@ -228,4 +193,9 @@ void c_Mesh::DrawBox() const
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glLineWidth(1.0f);
 	glPopMatrix();
+}
+
+const AABB& c_Mesh::GetAABB() const
+{
+	return aabbox;
 }

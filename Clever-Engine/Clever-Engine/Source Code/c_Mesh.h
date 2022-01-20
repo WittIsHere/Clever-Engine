@@ -21,6 +21,7 @@ public:
 
 	bool Enable();
 	bool Update(float dt);
+	void Draw();
 	bool Disable();
 
 	bool SaveState(ParsonNode& root) const override;
@@ -30,7 +31,8 @@ public:
 	ResourceMesh* GetMeshData();
 	void CreateBox();
 	void DrawBox() const;
-	void UpdateBox();
+
+	const AABB& GetAABB() const;
 
 	bool AssignNewData(ResourceMesh* meshData);
 

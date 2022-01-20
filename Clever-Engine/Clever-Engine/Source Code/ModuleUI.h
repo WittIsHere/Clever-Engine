@@ -28,6 +28,11 @@ public:
 	void ConsoleLog(const char* text);
 	void AddLogFPS(float fps, float ms);
 
+	const float GetViewportX() { return viewPortX; }
+	const float GetViewportY() { return viewPortY; }
+
+	void PickedGO(uint32 id);
+
 private:
 	void DrawConsoleSpace(bool* active);
 	void DrawConfigurationSpace(bool* active);
@@ -93,4 +98,7 @@ private:
 	// Content Broswer variables
 	std::string currentFolder;
 	std::vector<std::string> content_files;
+
+	float viewPortY = 0;
+	float viewPortX = 0;
 };

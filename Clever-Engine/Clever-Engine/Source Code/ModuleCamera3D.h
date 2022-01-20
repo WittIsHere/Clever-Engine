@@ -16,26 +16,31 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
-	GameObject* MousePicking();
+	LineSegment GenerateRaycast(float normalizedX, float normalizedY);
+
 	void LookAt(const float3&Spot);
 	//void Move(const float3&Movement);
 	float* GetViewMatrix();
 	float* GetProjectionMatrix();
 	void CalculateViewMatrix();
 	void RecalculateProjection();
+	float3 GetCameraPosition() { return Position; }
 
-public:
+	bool test = false;
+
+private:
 	Frustum cameraFrustum;
+	LineSegment lastRay;
+
 	float3 X, Y, Z, Position, Reference;
 	float Distance;
 	float4x4 viewMatrix;
-	bool projectionIsDirty = false;
+
 	float aspectRatio = 1.f;
 	float verticalFOV = 0.1f;
 	float nearPlaneDistance = 0.1f;
 	float farPlaneDistance = 5000.f;
 	
-private:
 	float lastDeltaX = 0.f, lastDeltaY = 0.f;
 	mat4x4 ViewMatrixInverse;
 };

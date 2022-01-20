@@ -31,10 +31,12 @@ public:
 
 	bool DeleteFromMeshPool(MeshData* mesh);
 
+	void MousePicking(const LineSegment& picking);
+
 public:
 	GameObject* rootNode;
 	std::vector<GameObject*> gameObjects;
-	GameObject* mainCamera = nullptr;
+	GameObject* cameraGO = nullptr;
 	//std::vector<MeshData*> meshPool;
 	std::vector<MeshData*> meshPool;
 	std::vector<TextureData*> texturePool;

@@ -305,6 +305,13 @@ bool ModuleUI::CleanUp()
 	return true;
 }
 
+void ModuleUI::PickedGO(uint32 id)
+{
+    nodeClicked = id;
+    if (activeInspector == false)
+        activeInspector = true;
+}
+
 void ModuleUI::DrawConsoleSpace(bool* active)
 {
     if (*active == false)
@@ -545,6 +552,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          ImGui::End();
          return;
      }
+
      {   //configuration space
          if (nodeClicked != -1 && nodeClicked != App->scene->rootNode->UUID)
          {
@@ -571,6 +579,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                         case (COMPONENT_TYPE::TRANSFORM):
                         {
                             c_Transform* transform = (c_Transform*)cmp;
+                            c_Camera* camera = (c_Camera*)cmp;
                             if (ImGui::CollapsingHeader("Transform"))
                             {
                                 if (!transform->isEmpty)
@@ -1126,9 +1135,14 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          ImGui::Begin("Scene", &activeScene, ImGuiWindowFlags_NoScrollbar);
 
          ImVec2 viewportSize = ImGui::GetCurrentWindow()->Size;
+
+
+         viewPortX = viewportSize.x;
+         viewPortY = viewportSize.y;
+
          if (viewportSize.x != lastViewportSize.x || viewportSize.y != lastViewportSize.y)
          {
-             App->camera->aspectRatio = viewportSize.x / viewportSize.y;
+             //App->camera->aspectRatio = viewportSize.x / viewportSize.y;
              App->camera->RecalculateProjection();
          }
          lastViewportSize = viewportSize;
