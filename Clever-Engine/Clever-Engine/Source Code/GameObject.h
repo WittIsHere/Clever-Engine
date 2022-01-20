@@ -67,6 +67,7 @@ public:
 	std::string name;
 	bool isRoot = false;
 	bool isActive = true;
+	bool insideFrustum = false;
 	bool toDestroy = false;
 	uint32 parentID = 0;
 	uint32 UUID = 0;

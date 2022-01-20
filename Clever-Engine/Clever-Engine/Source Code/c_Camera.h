@@ -31,6 +31,7 @@ public:
 	bool Update(float dt);
 	void Draw();
 	void DrawFrustum();
+	void CheckFrustum();
 
 	void DrawCameraIcon();
 
