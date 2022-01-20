@@ -4,7 +4,7 @@
 #include "Component.h"
 #include "c_Mesh.h"
 #include "c_Transform.h"
-//#include "c_Camera.h"
+#include "c_Camera.h"
 #include "JSONParser.h"
 
 #include <vector>

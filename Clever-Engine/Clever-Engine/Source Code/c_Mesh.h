@@ -31,7 +31,6 @@ public:
 	ResourceMesh* GetMeshData();
 	void CreateBox();
 	void DrawBox() const;
-	void UpdateBox();
 
 	const AABB& GetAABB() const;
 	const OBB& GetOBB() const;

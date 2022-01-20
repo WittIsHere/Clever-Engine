@@ -143,36 +143,6 @@ void c_Mesh::CreateBox()
 	aabbox.Enclose(obb);
 }
 
-void c_Mesh::UpdateBox()
-{
-	if (resource != nullptr)
-	{
-		std::vector<float3> vertices;
-		for (int i = 0; i < resource->vertexCount; i++)
-		{
-			float3 vertex;
-			vertex.x = resource->vPosData[(i * 3) + 0];
-			vertex.y = resource->vPosData[(i * 3) + 1];
-			vertex.z = resource->vPosData[(i * 3) + 2];
-
-			vertices.push_back(vertex);
-		}
-
-		aabbox.SetNegativeInfinity();
-		aabbox.Enclose(&vertices[0], vertices.size());
-	}
-	else
-	{
-		aabbox.SetNegativeInfinity();
-		aabbox.SetFromCenterAndSize(owner->GetComponentTransform()->GetLocalPosition(), vec(1.0f, 1.0f, 1.0f));
-	}
-
-	obb.SetFrom(aabbox);
-	obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
-	aabbox.SetNegativeInfinity();
-	aabbox.Enclose(obb);
-}
-
 void c_Mesh::DrawBox() const
 {
 	glPushMatrix();

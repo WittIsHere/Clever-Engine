@@ -568,6 +568,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                         case (COMPONENT_TYPE::TRANSFORM):
                         {
                             c_Transform* transform = (c_Transform*)cmp;
+                            c_Camera* camera = (c_Camera*)cmp;
                             if (ImGui::CollapsingHeader("Transform"))
                             {
                                 if (!transform->isEmpty)
@@ -581,6 +582,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                                     if (ImGui::DragFloat3("T", (float*)&translation, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
                                     {
                                         transform->SetLocalPosition(translation);
+                                        camera->SetAABB(translation);
                                     }
 
                                     // --- ROTATION ---

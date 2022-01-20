@@ -4,13 +4,15 @@
 // IMPORTANT macro
 #define NOMINMAX 1
 #include "Globals.h"
-#include <string>
-#include "MathGeoLib/include/MathGeoLib.h"
 #include "Component.h"
 #include "TransformData.h"
-#include "Application.h"
-#include "SDL/include/SDL_opengl.h"
+
+#include "MathGeoLib/include/Geometry/AABB.h"
+#include "MathGeoLib/include/Geometry/OBB.h"
+#include "MathGeoLib/include/Geometry/Sphere.h"
+#include "MathGeoLib/include/Math/float3.h"
 #include "MathGeoLib/include/Geometry/Frustum.h"
+#include "MathGeoLib//include/Geometry/Plane.h"
 
 class GameObject;
 
@@ -32,7 +34,9 @@ public:
 
 	void CreateCameraIcon();
 	void DrawCameraIcon();
-	void UpdateCameraIcon();
+
+	void SetAABB(vec transform);
+
 	//void Inspector(Application* App);
 	
 	const AABB& GetAABB() const;

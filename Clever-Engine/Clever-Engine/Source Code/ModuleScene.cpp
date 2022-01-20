@@ -276,7 +276,7 @@ void ModuleScene::MousePicking(const LineSegment &picking)
 				}
 			}
 		}
-		/*else if (App->scene->gameObjects[i]->IsCamera() == true)
+		else if (App->scene->gameObjects[i]->IsCamera() == true)
 		{
 			c_Camera* camera = (c_Camera*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::CAMERA);
 			if (picking.Intersects(camera->GetAABB()))
@@ -289,7 +289,7 @@ void ModuleScene::MousePicking(const LineSegment &picking)
 					possible.push_back(App->scene->gameObjects[i]);
 				}
 			}
-		}*/
+		}
 	}
 	if (possible.empty() == false)
 	{

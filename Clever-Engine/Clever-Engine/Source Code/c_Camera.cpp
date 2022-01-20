@@ -6,20 +6,28 @@
 
 c_Camera::c_Camera(GameObject* parent, COMPONENT_TYPE type) : Component(parent, type)
 {
+	type = COMPONENT_TYPE::CAMERA;
+	frustum.SetPos(float3(0.0f, 0.0f, -5.0f));
+	frustum.SetUp(float3(0.0f, 1.0f, 0.0f));
+	frustum.SetFront(float3(0.0f, 0.0f, 1.0f));
+
+	//This function calculates the verticalFOV using the given horizontal FOV and aspect ratio. Also sets type to PerspectiveFrustum.
+	frustum.SetHorizontalFovAndAspectRatio(horizontalFOV * DEGTORAD, aspectRatio);
+	frustum.SetViewPlaneDistances(1.0f, 100.0f);
 	CreateCameraIcon();
 	GetOwner()->isCamera = true;
 }
 
 c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, data->type)
 {
-	//type = COMPONENT_TYPE::CAMERA;
-	//frustum.SetPos(float3(0.0f, 0.0f, -5.0f));
-	//frustum.SetUp(float3(0.0f, 1.0f, 0.0f));
-	//frustum.SetFront(float3(0.0f, 0.0f, 1.0f));
+	type = COMPONENT_TYPE::CAMERA;
+	frustum.SetPos(float3(0.0f, 0.0f, -5.0f));
+	frustum.SetUp(float3(0.0f, 1.0f, 0.0f));
+	frustum.SetFront(float3(0.0f, 0.0f, 1.0f));
 
-	////This function calculates the verticalFOV using the given horizontal FOV and aspect ratio. Also sets type to PerspectiveFrustum.
-	//frustum.SetHorizontalFovAndAspectRatio(horizontalFOV * DEGTORAD, aspectRatio);
-	//frustum.SetViewPlaneDistances(5.0f, 100.0f);
+	//This function calculates the verticalFOV using the given horizontal FOV and aspect ratio. Also sets type to PerspectiveFrustum.
+	frustum.SetHorizontalFovAndAspectRatio(horizontalFOV * DEGTORAD, aspectRatio);
+	frustum.SetViewPlaneDistances(1.0f, 100.0f);
 	GetOwner()->isCamera = true;
 	CreateCameraIcon();
 }
@@ -38,19 +46,18 @@ bool c_Camera::Disable()
 
 bool c_Camera::Update()
 {
-	UpdateCameraIcon();
-	//c_Transform* trs = (c_Transform*)COMPONENT_TYPE::TRANSFORM;
-	//trs = App->scene->mainCamera->GetComponentTransform();
-	//
+	frustum.SetPos(owner->GetComponentTransform()->GetLocalPosition());
+	frustum.SetUp(owner->GetComponentTransform()->GetWorldTransform().WorldY());
+	frustum.SetFront(owner->GetComponentTransform()->GetWorldTransform().WorldZ());
 
-	//DrawFrustum();
-	//App->renderer3D->PollErrors();
+	//aabbox.SetFromCenterAndSize(owner->GetComponentTransform()->GetLocalPosition(), vec(0.2, 0.2, 0.2));
 	return true;
 }
 
 void c_Camera::Draw()
 {
 	DrawCameraIcon();
+	DrawFrustum();
 }
 
 void c_Camera::DrawFrustum()
@@ -61,7 +68,7 @@ void c_Camera::DrawFrustum()
 	float3 cornerpoints[8];
 	frustum.GetCornerPoints(cornerpoints);
 
-	glColor3f(1.0f, 0.0f, 1.0f);
+	glColor3f(0.0f, 0.0f, 0.0f);
 
 	glVertex3f(cornerpoints[0].x, cornerpoints[0].y, cornerpoints[0].z);
 	glVertex3f(cornerpoints[1].x, cornerpoints[1].y, cornerpoints[1].z);
@@ -106,12 +113,6 @@ void c_Camera::DrawFrustum()
 
 void c_Camera::CreateCameraIcon()
 {
-	//Sphere sphere;
-	//sphere.r = 0.0f;
-	//sphere.pos = aabbox.CenterPoint();
-	//sphere.Enclose(aabbox);
-	//radius = sphere.r;
-	//centerPoint = sphere.pos;
 	aabbox.SetNegativeInfinity();
 	aabbox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
 	obb.SetFrom(aabbox);
@@ -122,6 +123,12 @@ void c_Camera::CreateCameraIcon()
 
 void c_Camera::DrawCameraIcon()
 {
+
+	//obb.SetFrom(aabbox);
+	//obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
+	//aabbox.SetNegativeInfinity();
+	//aabbox.Enclose(obb);
+
 	glPushMatrix();
 	glMultMatrixf(owner->GetComponentTransform()->GetWorldTransformPtr());
 	float3 cornerPoints[8];
@@ -174,9 +181,19 @@ void c_Camera::DrawCameraIcon()
 	glPopMatrix();
 }
 
-void c_Camera::UpdateCameraIcon()
+void c_Camera::SetAABB(vec transform)
 {
-	aabbox.Transform(owner->GetComponentTransform()->GetWorldTransform());
+	//aabbox.SetNegativeInfinity();
+	//aabbox.SetFromCenterAndSize(vec(-5.2f, 3.2f,  2.2f), vec(0.2f, 0.2f, 0.2f));
+	//obb.SetFrom(aabbox);
+	//obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
+	//aabbox.SetNegativeInfinity();
+	//aabbox.Enclose(obb);
+
+	//aabbox.Translate(owner->GetComponentTransform()->GetWorldTransform().TranslatePart());
+	//obb.SetFrom(aabbox);
+	//aabbox.Enclose(obb);
+	int a = 0;
 }
 
 bool c_Camera::SaveState(ParsonNode& root) const
