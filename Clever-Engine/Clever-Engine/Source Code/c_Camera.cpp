@@ -17,6 +17,7 @@ c_Camera::c_Camera(GameObject* parent, COMPONENT_TYPE type) : Component(parent, 
 	CreateCameraIcon();
 	GetOwner()->isCamera = true;
 
+	frustumActive = true;
 	drawingBox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
 }
 
@@ -33,6 +34,7 @@ c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, 
 	GetOwner()->isCamera = true;
 	CreateCameraIcon();
 
+	frustumActive = true;
 	drawingBox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
 }
 
@@ -62,7 +64,10 @@ bool c_Camera::Update()
 void c_Camera::Draw()
 {
 	DrawCameraIcon();
-	//DrawFrustum();
+	if (frustumActive == true)
+	{
+		DrawFrustum();
+	}
 }
 
 void c_Camera::DrawFrustum()

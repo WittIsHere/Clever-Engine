@@ -44,6 +44,8 @@ public:
 
 	bool ContainBOX(const AABB& referenceBox) const;
 
+	bool frustumActive;
+
 private:
 	Frustum frustum;
 	float horizontalFOV = 60.0f;
