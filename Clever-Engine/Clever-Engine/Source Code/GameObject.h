@@ -27,6 +27,7 @@ public:
 	bool Update(float dt);
 	bool CleanUp();
 
+
 	bool SaveState(ParsonNode& root) const;
 	bool LoadState(ParsonNode& root);
 
