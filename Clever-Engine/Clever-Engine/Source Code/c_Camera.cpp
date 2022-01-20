@@ -16,6 +16,8 @@ c_Camera::c_Camera(GameObject* parent, COMPONENT_TYPE type) : Component(parent, 
 	frustum.SetViewPlaneDistances(1.0f, 100.0f);
 	CreateCameraIcon();
 	GetOwner()->isCamera = true;
+
+	drawingBox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
 }
 
 c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, data->type)
@@ -30,6 +32,8 @@ c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, 
 	frustum.SetViewPlaneDistances(1.0f, 100.0f);
 	GetOwner()->isCamera = true;
 	CreateCameraIcon();
+
+	drawingBox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
 }
 
 c_Camera::~c_Camera() {}
@@ -50,14 +54,15 @@ bool c_Camera::Update()
 	frustum.SetUp(owner->GetComponentTransform()->GetWorldTransform().WorldY());
 	frustum.SetFront(owner->GetComponentTransform()->GetWorldTransform().WorldZ());
 
-	//aabbox.SetFromCenterAndSize(owner->GetComponentTransform()->GetLocalPosition(), vec(0.2, 0.2, 0.2));
+	aabbox.SetFromCenterAndSize(owner->GetComponentTransform()->GetLocalPosition(), vec(0.2f, 0.2f, 0.2f));
+
 	return true;
 }
 
 void c_Camera::Draw()
 {
 	DrawCameraIcon();
-	DrawFrustum();
+	//DrawFrustum();
 }
 
 void c_Camera::DrawFrustum()
@@ -113,12 +118,12 @@ void c_Camera::DrawFrustum()
 
 void c_Camera::CreateCameraIcon()
 {
-	aabbox.SetNegativeInfinity();
-	aabbox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
-	obb.SetFrom(aabbox);
-	obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
-	aabbox.SetNegativeInfinity();
-	aabbox.Enclose(obb);
+	//aabbox.SetNegativeInfinity();
+	//aabbox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
+	//obb.SetFrom(aabbox);
+	//obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
+	//aabbox.SetNegativeInfinity();
+	//aabbox.Enclose(obb);
 }
 
 void c_Camera::DrawCameraIcon()
@@ -132,7 +137,7 @@ void c_Camera::DrawCameraIcon()
 	glPushMatrix();
 	glMultMatrixf(owner->GetComponentTransform()->GetWorldTransformPtr());
 	float3 cornerPoints[8];
-	aabbox.GetCornerPoints(cornerPoints);
+	drawingBox.GetCornerPoints(cornerPoints);
 
 	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 	glLineWidth(5.0f);
@@ -213,10 +218,10 @@ const AABB& c_Camera::GetAABB() const
 	return aabbox;
 }
 
-const OBB& c_Camera::GetOBB() const
-{
-	return obb;
-}
+//const OBB& c_Camera::GetOBB() const
+//{
+//	return obb;
+//}
 
 bool c_Camera::ContainBOX(const AABB& referenceBox) const
 {

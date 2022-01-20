@@ -40,7 +40,7 @@ public:
 	//void Inspector(Application* App);
 	
 	const AABB& GetAABB() const;
-	const OBB& GetOBB() const;
+	//const OBB& GetOBB() const;
 
 	bool ContainBOX(const AABB& referenceBox) const;
 
@@ -50,7 +50,7 @@ private:
 	float aspectRatio = 1.5f;
 
 	AABB aabbox, drawingBox;
-	OBB obb;
+
 
 	float radius;
 	float3 centerPoint;
