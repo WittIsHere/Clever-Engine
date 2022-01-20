@@ -70,7 +70,7 @@ bool ModuleScene::Draw()
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		if (gameObjects[i]->isActive == true)
+		if (gameObjects[i]->isActive == true && gameObjects[i]->insideFrustum == true)
 			gameObjects[i]->Draw();
 	}
 	return true;

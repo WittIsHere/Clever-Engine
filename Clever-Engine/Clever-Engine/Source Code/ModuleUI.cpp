@@ -563,13 +563,52 @@ void ModuleUI::DrawHierarchySpace(bool* active)
              {  
                 //-----------NODE PROPERTIES-------
                     bool gameObjectIsActive = GO->isActive;
+
+                    if (GO->hasMesh)
+                    {
+                        c_Mesh* cmp = nullptr;
+                        static bool boundingBoxVisible = true;
+                        if (ImGui::Checkbox("Draw Bounding Box", &boundingBoxVisible))
+                        {
+                            for (int i = 0; i < GO->GetComponentsVector().size(); i++)
+                            {
+                                if (GO->GetComponentsVector()[i]->type == COMPONENT_TYPE::MESH)
+                                {
+                                    cmp = (c_Mesh*)GO->GetComponentsVector()[i];
+                                    cmp->drawBBox = boundingBoxVisible;
+                                }
+                            }
+                          
+                        }
+                    }
+                    if (GO->isCamera)
+                    {
+                        c_Camera* cmp = nullptr;
+                        static bool showFrustumArea = true;
+                        if (ImGui::Checkbox("Show Frustum Area", &showFrustumArea))
+                        {
+                            for (int i = 0; i < GO->GetComponentsVector().size(); i++)
+                            {
+                                if (GO->GetComponentsVector()[i]->type == COMPONENT_TYPE::CAMERA)
+                                {
+                                    cmp = (c_Camera*)GO->GetComponentsVector()[i];
+                                    cmp->frustumActive = showFrustumArea;
+                                }
+                            }
+
+                        }
+                    }
+
+                    if (ImGui::Checkbox("Is Active", &gameObjectIsActive))
+                    {
+                        GO->isActive = gameObjectIsActive;
+                    }
+
+
                 if (ImGui::Button("Delete Game Object"))
                      GO->toDestroy = true;
 
-                if (ImGui::Checkbox("Is Active", &gameObjectIsActive))
-                {
-                    GO->isActive = gameObjectIsActive;
-                }
+               
                 //-----------Components--------------
                 for (int i = 0; i < GO->GetComponentCount(); i++)
                 {

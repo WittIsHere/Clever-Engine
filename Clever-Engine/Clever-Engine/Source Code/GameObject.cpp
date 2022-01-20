@@ -21,6 +21,7 @@ GameObject::GameObject(const char* name)
 	isRoot = false;
 	toDestroy = false;
 	hasMesh = false;
+	insideFrustum = false;
 	UUID = Random::GetRandomUint();
 
 	//Every game object has to have a transform, so we create the compnent at the constructor
@@ -42,6 +43,7 @@ GameObject::GameObject(const char* name, GameObject* parent)
 	toDestroy = false;
 	hasMesh = false;
 	UUID = Random::GetRandomUint();
+	insideFrustum = false;
 
 	//Every game object has to have a transform, so we create the compnent at the constructor
 	//First initialize the data

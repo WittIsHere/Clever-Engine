@@ -1,6 +1,7 @@
 #include "c_Camera.h"
 #include "Application.h"
 #include "GameObject.h"
+#include "c_Mesh.h"
 #include "SDL/include/SDL_opengl.h"
 #include "MathGeoLib/include/Geometry/Frustum.h"
 
@@ -14,7 +15,9 @@ c_Camera::c_Camera(GameObject* parent, COMPONENT_TYPE type) : Component(parent, 
 	//This function calculates the verticalFOV using the given horizontal FOV and aspect ratio. Also sets type to PerspectiveFrustum.
 	frustum.SetHorizontalFovAndAspectRatio(horizontalFOV * DEGTORAD, aspectRatio);
 	frustum.SetViewPlaneDistances(1.0f, 100.0f);
+	frustum.SetKind(FrustumProjectiveSpace::FrustumSpaceGL, FrustumHandedness::FrustumRightHanded);
 	GetOwner()->isCamera = true;
+	GetOwner()->insideFrustum = true;
 
 	frustumActive = true;
 	drawingBox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
@@ -30,7 +33,9 @@ c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, 
 	//This function calculates the verticalFOV using the given horizontal FOV and aspect ratio. Also sets type to PerspectiveFrustum.
 	frustum.SetHorizontalFovAndAspectRatio(horizontalFOV * DEGTORAD, aspectRatio);
 	frustum.SetViewPlaneDistances(1.0f, 100.0f);
+	frustum.SetKind(FrustumProjectiveSpace::FrustumSpaceGL, FrustumHandedness::FrustumRightHanded);
 	GetOwner()->isCamera = true;
+	GetOwner()->insideFrustum = true;
 
 	frustumActive = true;
 	drawingBox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
@@ -60,6 +65,9 @@ bool c_Camera::Update(float dt)
 	{
 		DrawFrustum();
 	}
+
+	CheckFrustum();
+
 	return true;
 }
 
@@ -116,6 +124,28 @@ void c_Camera::DrawFrustum()
 	glVertex3f(cornerpoints[3].x, cornerpoints[3].y, cornerpoints[3].z);
 
 	glEnd();
+}
+
+void c_Camera::CheckFrustum()
+{
+	for (int i = 0; i < App->scene->gameObjects.size(); i++)
+	{
+		if (App->scene->gameObjects[i]->isRoot == false && App->scene->gameObjects[i]->isCamera == false)
+		{
+			if (App->scene->gameObjects[i]->hasMesh)
+			{
+				c_Mesh* mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
+				if (frustum.Contains(mesh->GetAABB()))
+				{
+					mesh->GetOwner()->insideFrustum = true;
+				}
+				else
+				{
+					mesh->GetOwner()->insideFrustum = false;
+				}
+			}
+		}
+	}
 }
 
 // Methods related to creating the icon of the camera:

@@ -62,12 +62,15 @@ public:
 
 	bool IsCamera();
 
+	std::vector<Component*>GetComponentsVector() { return myComponents; };
+
 public:
 	bool hasMesh;
 	bool isCamera = false;
 	std::string name;
 	bool isRoot = false;
 	bool isActive = true;
+	bool insideFrustum = false;
 	bool toDestroy = false;
 	uint32 parentID = 0;
 	uint32 UUID = 0;
