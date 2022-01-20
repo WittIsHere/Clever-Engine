@@ -4,6 +4,7 @@
 #include "Globals.h"
 #include "glmath.h"
 #include "MathGeoLib/include/Geometry/Frustum.h"
+#include "MathGeoLib/include/Geometry/LineSegment.h"
 
 
 class ModuleCamera3D : public Module
@@ -28,7 +29,7 @@ public:
 
 	bool test = false;
 
-private:
+public:
 	Frustum cameraFrustum;
 	LineSegment lastRay;
 
