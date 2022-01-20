@@ -59,9 +59,7 @@ update_status ModuleCamera3D::Update(float dt)
 
 	float3 newPos(0,0,0);
 	float speed = 10.0f * dt;
-	if(App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
-		speed = 20.0f * dt;
-
+	
 	// Mouse motion ----------------
 
 	bool hasRotated = false;
@@ -96,9 +94,6 @@ update_status ModuleCamera3D::Update(float dt)
 			CalculateViewMatrix();
 			hasRotated = true;
 		}
-	}
-	!hasRotated ? lastDeltaX = lastDeltaY = 0.f : 0.f;
-
 
 		if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) newPos.y += speed;
 		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) newPos.y -= speed;
@@ -109,6 +104,13 @@ update_status ModuleCamera3D::Update(float dt)
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos -= X * speed;
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos += X * speed;
+
+		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
+			speed = 20.0f * dt;
+
+	}
+
+	!hasRotated ? lastDeltaX = lastDeltaY = 0.f : 0.f;
 
 		Position += newPos;
 		Reference += newPos;
@@ -146,10 +148,6 @@ update_status ModuleCamera3D::Update(float dt)
 		App->scene->MousePicking(ray);
 	}
 
-	if (App->input->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_DOWN)
-	{
-		test = true;
-	}
 
 	return UPDATE_CONTINUE;
 }

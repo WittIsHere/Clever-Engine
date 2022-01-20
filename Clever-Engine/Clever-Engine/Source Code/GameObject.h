@@ -61,6 +61,8 @@ public:
 
 	bool IsCamera();
 
+	std::vector<Component*>GetComponentsVector() { return myComponents; };
+
 public:
 	bool hasMesh;
 	bool isCamera = false;
