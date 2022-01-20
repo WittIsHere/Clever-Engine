@@ -33,7 +33,7 @@ bool c_Camera::Disable()
 	return true;
 }
 
-bool c_Camera::Update()
+bool c_Camera::Update(float dt)
 {
 
 	c_Transform* trs = (c_Transform*)COMPONENT_TYPE::TRANSFORM;

@@ -61,8 +61,11 @@ void ResourceParticleSystem::AddNewEmitter(const char* name)
 
 	emitters.back().modules.push_back(new EmitterBase());
 	emitters.back().modules.push_back(new EmitterSpawn());
-	//emitters.back().modules.push_back(new ParticleColor());
+	emitters.back().modules.push_back(new ParticleColor());
 	emitters.back().modules.push_back(new ParticleLifetime());
+	emitters.back().modules.push_back(new EmitterArea());
+	emitters.back().modules.push_back(new ParticleSize());
+	emitters.back().modules.push_back(new ParticleBillboarding());
 }
 
 //void R_ParticleSystem::DeleteEmitter()

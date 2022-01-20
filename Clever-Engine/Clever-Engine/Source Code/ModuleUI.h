@@ -7,7 +7,10 @@
 
 #define FILE_MAX 250
 
+class Emitter;
 class GameObject;
+class ParticleModule;
+class c_ParticleSystem;
 
 class ModuleUI : public Module
 {
@@ -36,7 +39,18 @@ private:
 
 	void ShowChildData(GameObject* GO);
 	void ShowDockingDisabledMessage();
+	void ShowParticleSystemComponent(c_ParticleSystem* cParticleSystem);
+	void DisplayEmitterInstances(c_ParticleSystem* cParticleSystem);
 
+	void DisplayParticleModules(Emitter* emitter);
+	void DisplayEmitterBase(ParticleModule* pModule);
+	void DisplayEmitterSpawn(ParticleModule* pModule);
+	void DisplayEmitterArea(ParticleModule* pModule);
+	void DisplayParticleMovement(ParticleModule* pModule);
+	void DisplayParticleColor(ParticleModule* pModule);
+	void DisplayParticleLifetime(ParticleModule* pModule);
+	void DisplayParticleSize(ParticleModule* pModule);
+	void DisplayParticleBillboarding(ParticleModule* pModule);
 
 public:
 	bool showDemoWindow;
@@ -71,6 +85,10 @@ private:
 	bool scrollToBottom;
 
 	char selected_file[FILE_MAX];
+	//Inspector variables
+	int	componentType;
+	int moduleType;
+	int billboardingType;
 
 	// Content Broswer variables
 	std::string currentFolder;

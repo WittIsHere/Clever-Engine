@@ -1,3 +1,4 @@
+
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleCamera3D.h"
@@ -18,8 +19,6 @@ bool ModuleScene::Init()
 	bool ret = true;
 	
 	CreateRootNode();
-	ourEmitter = new Emitter("testEmitter");
-	ourEmitterInstance = new EmitterInstance();
 
 	return ret;
 }
@@ -31,8 +30,6 @@ bool ModuleScene::Start()
 	mainCamera = CreateGameObject("Camera", rootNode);
 	mainCamera->CreateComponent(COMPONENT_TYPE::CAMERA);
 
-	ourEmitter->SetAsDefault();
-	ourEmitterInstance->Init(ourEmitter, nullptr);
 	LOG("Importing scene test");
 	//const char* fbxPath = ("Assets/Models/Street_environment.FBX");
 	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
@@ -194,6 +191,15 @@ GameObject* ModuleScene::CreateGameObject(const char* name, GameObject* parent)
 {
 	GameObject* ret = new GameObject(name, parent);
 	parent->AddChild(ret);
+	gameObjects.push_back(ret);
+
+	return ret;
+}
+
+GameObject* ModuleScene::CreateEmptyGameObject()
+{
+	GameObject* ret = new GameObject("Empty GameObject", rootNode);
+	rootNode->AddChild(ret);
 	gameObjects.push_back(ret);
 
 	return ret;

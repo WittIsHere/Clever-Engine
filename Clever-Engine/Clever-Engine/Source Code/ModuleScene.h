@@ -25,6 +25,7 @@ public:
 	bool LoadScene(const char* path);						// For now asks for full path 
 
 	GameObject* CreateGameObject(const char* name, GameObject* parent);
+	GameObject* CreateEmptyGameObject();
 	void DeleteGameObject(GameObject* GO, int index = -1);
 	GameObject* GetGO(uint32 uuid);
 

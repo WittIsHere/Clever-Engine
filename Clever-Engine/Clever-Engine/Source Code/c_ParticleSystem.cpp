@@ -108,6 +108,7 @@ void c_ParticleSystem::SetParticleSystem(ResourceParticleSystem* newParticleSyst
 void c_ParticleSystem::SetParticleSystem(ResourceBase newParticleSystem)
 {
 	ResourceParticleSystem* a = (ResourceParticleSystem*)App->resources->GetResource(newParticleSystem.GetUID());
+	 
 
 	if (a != nullptr)
 	{
@@ -151,7 +152,7 @@ void c_ParticleSystem::GenerateResourcePS(const char* name)
 
 void c_ParticleSystem::SaveParticleSystem() const
 {
-	//App->resources->SaveResourceToLibrary(resource);
+	//App->resources->SaveResourceToLibrary(resource); TODO: SAVE RESOURCE
 	
 	//char* buffer = nullptr;
 	//Importer::Particles::Save(resource,&buffer);

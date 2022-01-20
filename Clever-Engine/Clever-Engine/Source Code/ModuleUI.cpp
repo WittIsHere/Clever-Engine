@@ -5,10 +5,15 @@
 #include "ModuleWindow.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleInput.h"
+#include "Emitter.h"
+#include "Color.h"
 
 #include "c_Transform.h"
 #include "c_Material.h"
 #include "c_Mesh.h"
+#include "c_ParticleSystem.h"
+
+#include "ResourceParticleSystem.h"
 
 #include <vector>
 #include <string.h>
@@ -145,6 +150,12 @@ update_status ModuleUI::Update(float dt)
             {
                 if (ImGui::BeginMenu("GameObject"))
                 {
+                    if (ImGui::MenuItem("Empty GameObject"))
+                    {
+                        LOG("Creating Empty GO");
+                        App->scene->CreateEmptyGameObject();
+                    }
+
                     if (ImGui::MenuItem("Cube"))
                     {
                         LOG("Loading Basic Shape Cube");
@@ -646,10 +657,26 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                             }
                             break;
                         }
+                        case (COMPONENT_TYPE::PARTICLE_SYSTEM):
+                        {
+                            if (ImGui::CollapsingHeader("Particle System"))
+                            {
+                                c_ParticleSystem* ps = (c_ParticleSystem*)cmp;
+                                ShowParticleSystemComponent(ps);
+                            }
+                            break;
+                        }
                      }
-                 }
-                
+                }    
 
+                ImGui::Combo("##", &componentType, "Add Component\0Transform\0Mesh\0Material\0Camera\0Particle System");
+
+                ImGui::SameLine();
+
+                if ((ImGui::Button("ADD")))
+                {
+                    GO->CreateComponent((COMPONENT_TYPE)componentType);                        
+                }
              }
          }
          else
@@ -658,6 +685,438 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          }  
      }
      ImGui::End();
+ }
+
+ void ModuleUI::ShowParticleSystemComponent(c_ParticleSystem* ps)
+ {
+
+     static char buffer[64];
+
+     //TODO PARTICLE SYSTEM
+     if (ImGui::Button("New Particle System"))
+     {
+         ps->GenerateResourcePS(buffer); 
+     }
+
+     ImGui::SameLine();
+
+     // save system
+     if (ImGui::Button("Save Particle System"))
+     {
+         ps->SaveParticleSystem(); //TODO save/load
+     }
+
+     if (ImGui::BeginCombo("##Particle Systems", ps->resource->name.c_str()))
+     {
+         std::vector<ResourceBase> particleSystems;
+         App->resources->GetResourceBases<ResourceParticleSystem>(particleSystems);
+
+
+
+         for (auto it = particleSystems.begin(); it != particleSystems.end(); ++it)
+         {
+             bool isSelected = (strcmp(ps->resource->GetAssetsPath(), (*it).assetsPath.c_str()) == 0);
+
+             if (ImGui::Selectable((*it).assetsPath.c_str(), isSelected))
+             {
+                 ps->SetParticleSystem((*it));
+             }
+             if (isSelected)
+                 ImGui::SetItemDefaultFocus();
+         }
+         ImGui::EndCombo();
+     }
+
+     // --- Particle System NAME ---
+     ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.33f);
+     //static char buffer[64];
+     strcpy_s(buffer, ps->resource->name.c_str());
+     if (ImGui::InputText("PS Name", buffer, IM_ARRAYSIZE(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+     {
+         std::string path = ASSETS_PARTICLESYSTEMS_PATH;
+         path += buffer;
+         path += PARTICLESYSTEMS_AST_EXTENSION;
+         ps->resource->assetsPath = path.c_str();
+         ps->resource->name = buffer;
+     }
+
+     ImGui::SameLine();
+
+     bool preview = ps->previewEnabled;
+     if (ImGui::Checkbox("Preview", &preview))
+     {
+         ps->EnginePreview(preview);
+     }
+
+     bool stop = ps->stopSpawn;
+     if (ImGui::Checkbox("Stop Spawn", &stop))
+     {
+         ps->stopSpawn = stop;
+         if (stop == true)
+         {
+             ps->StopSpawn();
+         }
+         else
+         {
+             ps->ResumeSpawn();
+         }
+     }
+
+     bool stopDelete = ps->tempDelete;
+     if (ImGui::Checkbox("Stop and Delete", &stopDelete))
+     {
+         ps->tempDelete = stopDelete;
+         ps->StopAndDelete();
+     }     
+     
+     DisplayEmitterInstances(ps);
+
+ }
+
+ void ModuleUI::DisplayEmitterInstances(c_ParticleSystem* ps)
+ {
+     std::string inputTextName;
+
+     static char buffer[32];
+     if (ImGui::InputText("Name a new emitter", buffer, IM_ARRAYSIZE(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+     {
+         ps->resource->AddNewEmitter(buffer);
+         ps->RefreshEmitterInstances();
+     }
+
+     for (uint i = 0; i < ps->emitterInstances.size(); i++) //loop emitters
+     {
+         Emitter* emitter = ps->emitterInstances[i]->emitter;
+
+         bool show = true;
+         if (ImGui::CollapsingHeader(ps->emitterInstances[i]->emitter->name.c_str(), &show, ImGuiTreeNodeFlags_DefaultOpen))
+         {
+             ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.33f);
+             static char buffer[64];
+             strcpy_s(buffer, emitter->name.c_str());
+             inputTextName = "Emitter Name ##" + std::to_string(i);
+             if (ImGui::InputText(inputTextName.c_str(), buffer, IM_ARRAYSIZE(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+             {
+                 emitter->name = buffer;
+             }
+
+             inputTextName = "Particle Number - " + emitter->name;
+             int particleNumber = emitter->maxParticleCount;
+             if (ImGui::InputInt(inputTextName.c_str(), &particleNumber, 1, 10, ImGuiInputTextFlags_EnterReturnsTrue))
+             {
+                 emitter->SetParticleCount(particleNumber);
+                 ps->RefreshEmitterInstances();
+             }
+
+             //R_Texture* current = emitter->emitterTexture;
+             ////combo showing all resources Already exists App->resourceManager->GetAllParticleSystems()
+             //inputTextName = "Particle Texture - " + emitter->name;
+             //if (ImGui::BeginCombo(inputTextName.c_str(), emitter->emitterTexture == nullptr ? "No Texture" : emitter->emitterTexture->GetAssetsFile()))
+             //{
+             //    std::vector<ResourceBase> textures;
+             //    App->resourceManager->GetResourceBases<R_Texture>(textures);
+             //
+             //    //Sort by name
+             //    struct {
+             //        bool operator()(ResourceBase a, ResourceBase b) const {
+             //            return App->fileSystem->GetLastDirectory(a.assetsPath.c_str()) > App->fileSystem->GetLastDirectory(b.assetsPath.c_str());
+             //        }
+             //    } customTextureSort;
+             //
+             //    std::sort(textures.begin(), textures.end(), customTextureSort);
+             //
+             //    for (auto it = textures.begin(); it != textures.end(); ++it)
+             //    {
+             //
+             //        if (strstr((*it).assetsPath.c_str(), "Particles") == nullptr)
+             //            continue;
+             //
+             //        bool isSelected = true;
+             //
+             //        if (emitter->emitterTexture != nullptr)
+             //            isSelected = (strcmp(emitter->emitterTexture->GetAssetsPath(), (*it).assetsPath.c_str()) == 0);
+             //
+             //        if (ImGui::Selectable(App->fileSystem->GetLastDirectoryAndFile((*it).assetsPath.c_str()).c_str(), isSelected))
+             //        {
+             //            emitter->SetTexture((*it));
+             //        }
+             //        if (isSelected)
+             //            ImGui::SetItemDefaultFocus();
+             //
+             //    }
+             //    ImGui::EndCombo();
+             //}
+
+             inputTextName = "Add Module - " + emitter->name;
+             ImGui::Combo(inputTextName.c_str(), &moduleType, "Add Module\0ParticleMovement\0ParticleColor\0ParticleLifetime\0ParticleRotation\0ParticleSize\0ParticleBillboarding\0EmitterArea");
+
+             inputTextName = "Add Module to " + emitter->name;
+             if ((ImGui::Button(inputTextName.c_str())))
+             {
+                 if (moduleType != (int)ParticleModule::Type::NONE)
+                 {
+                     emitter->AddModuleFromType((ParticleModule::Type)moduleType);
+                 }
+             }
+
+             ImGui::Separator();
+
+             DisplayParticleModules(emitter);
+
+             inputTextName = "DELETE - " + emitter->name;
+             bool toDelete = emitter->toDelete;
+             if (ImGui::Checkbox(inputTextName.c_str(), &toDelete))
+             {             
+                 emitter->toDelete = toDelete;
+
+             }
+         }
+
+         ImGui::Separator();
+     }
+ }
+
+
+ void ModuleUI::DisplayParticleModules(Emitter* emitter)
+ {
+     ImGui::TextColored(ImVec4(Cyan.r, Cyan.g, Cyan.b, Cyan.a), "Particle Modules:");
+
+     std::string inputTextName = emitter->name + " Modules";
+     ImGui::BeginChild(inputTextName.c_str(), ImVec2(0.0f, 269.0f), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+     for (auto pModule = emitter->modules.cbegin(); pModule != emitter->modules.cend(); ++pModule)
+     {
+         if ((*pModule) == nullptr)
+             continue;
+
+         switch ((*pModule)->type)
+         {
+         case ParticleModule::Type::EMITTER_BASE: { DisplayEmitterBase((*pModule)); }				break;
+         case ParticleModule::Type::EMITTER_SPAWN: { DisplayEmitterSpawn((*pModule)); }			break;
+         case ParticleModule::Type::EMITTER_AREA: { DisplayEmitterArea((*pModule)); }				break;
+         case ParticleModule::Type::PARTICLE_MOVEMENT: { DisplayParticleMovement((*pModule)); }		break;
+         case ParticleModule::Type::PARTICLE_COLOR: { DisplayParticleColor((*pModule)); }			break;
+         case ParticleModule::Type::PARTICLE_LIFETIME: { DisplayParticleLifetime((*pModule)); }		break;
+         case ParticleModule::Type::PARTICLE_SIZE: { DisplayParticleSize((*pModule)); }			break;
+         case ParticleModule::Type::PARTICLE_BILLBOARDING: { DisplayParticleBillboarding((*pModule)); }	break;
+         case ParticleModule::Type::NONE: {  }											break;
+         }
+     }
+
+     ImGui::EndChild();
+ }
+
+ void ModuleUI::DisplayEmitterBase(ParticleModule* pModule)
+ {
+     /*bool show = true;
+     if (ImGui::CollapsingHeader("Emitter Base", &show, ImGuiTreeNodeFlags_DefaultOpen))*/
+     if (ImGui::TreeNodeEx("Emitter Base"/*, ImGuiTreeNodeFlags_DefaultOpen*/))
+     {
+         EmitterBase* emitterBase = (EmitterBase*)pModule;
+
+         float3 originPos = emitterBase->origin;
+         if (ImGui::InputFloat3("OriginPosition", (float*)&originPos, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { emitterBase->origin = originPos; }
+
+         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 0.25f));
+         if (ImGui::Button("Delete")) { /*Have access to Owner Emitter through Particle Module*/ }
+         ImGui::PopStyleColor();
+
+         ImGui::TreePop();
+     }
+ }
+
+ void ModuleUI::DisplayEmitterSpawn(ParticleModule* pModule)
+ {
+     /*bool show = true;
+     if (ImGui::CollapsingHeader("Emitter Spawn", &show, ImGuiTreeNodeFlags_DefaultOpen))*/
+     if (ImGui::TreeNodeEx("Emitter Spawn"/*, ImGuiTreeNodeFlags_DefaultOpen*/))
+     {
+         EmitterSpawn* emitterSpawn = (EmitterSpawn*)pModule;
+
+         float ratio = emitterSpawn->spawnRatio;
+         if (ImGui::InputFloat("SpawnRatio", &ratio, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { emitterSpawn->spawnRatio = ratio; }
+
+         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 0.25f));
+         if (ImGui::Button("Delete")) { /*Have access to Owner Emitter through Particle Module*/ }
+         ImGui::PopStyleColor();
+
+         ImGui::TreePop();
+     }
+ }
+
+ void ModuleUI::DisplayEmitterArea(ParticleModule* pModule)
+ {
+     if (ImGui::TreeNodeEx("EmitterArea"/*, ImGuiTreeNodeFlags_DefaultOpen*/))
+     {
+         EmitterArea* emitterArea = (EmitterArea*)pModule;
+
+         float x1 = emitterArea->areaX1;
+         float x2 = emitterArea->areaX2;
+         float y1 = emitterArea->areaY1;
+         float y2 = emitterArea->areaY2;
+         float z1 = emitterArea->areaZ1;
+         float z2 = emitterArea->areaZ2;
+
+         bool hide = emitterArea->hideArea;
+         bool deleteModule = emitterArea->eraseArea;
+
+         if (ImGui::InputFloat("MinX", &x1, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { emitterArea->areaX1 = x1; }
+         if (ImGui::InputFloat("MaxX", &x2, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { emitterArea->areaX2 = x2; }
+         if (ImGui::InputFloat("MinY", &y1, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { emitterArea->areaY1 = y1; }
+         if (ImGui::InputFloat("MaxY", &y2, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { emitterArea->areaY2 = y2; }
+         if (ImGui::InputFloat("MinZ", &z1, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { emitterArea->areaZ1 = z1; }
+         if (ImGui::InputFloat("MaxZ", &z2, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { emitterArea->areaZ2 = z2; }
+
+         if (ImGui::Checkbox("Hide Area", &hide)) { emitterArea->hideArea = hide; }
+         if (ImGui::Checkbox("Delete Area", &deleteModule)) { emitterArea->eraseArea = deleteModule; }
+
+         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 0.25f));
+         if (ImGui::Button("Delete")) { /*Have access to Owner Emitter through Particle Module*/ }
+         ImGui::PopStyleColor();
+
+         ImGui::TreePop();
+     }
+ }
+
+ void ModuleUI::DisplayParticleMovement(ParticleModule* pModule)
+ {
+     /*bool show = true;
+     if (ImGui::CollapsingHeader("Particle Movement", &show, ImGuiTreeNodeFlags_DefaultOpen))*/
+     if (ImGui::TreeNodeEx("ParticleMovement"/*, ImGuiTreeNodeFlags_DefaultOpen*/))
+     {
+         ParticleMovement* particleMovement = (ParticleMovement*)pModule;
+
+         float intensity1 = particleMovement->initialIntensity1;
+         float intensity2 = particleMovement->initialIntensity2;
+         float3 direction1 = particleMovement->initialDirection1;
+         float3 direction2 = particleMovement->initialDirection2;
+         float3 acceleration1 = particleMovement->initialAcceleration1;
+         float3 acceleration2 = particleMovement->initialAcceleration2;
+
+         bool hide = particleMovement->hideMovement;
+         bool deleteModule = particleMovement->eraseMovement;
+
+         if (ImGui::InputFloat("InitialIntensity_A", &intensity1, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { particleMovement->initialIntensity1 = intensity1; }
+         if (ImGui::InputFloat("InitialIntensity_B", &intensity2, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { particleMovement->initialIntensity2 = intensity2; }
+         if (ImGui::InputFloat3("InitialDirection_A", (float*)&direction1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { particleMovement->initialDirection1 = direction1; }
+         if (ImGui::InputFloat3("InitialDirection_B", (float*)&direction2, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { particleMovement->initialDirection2 = direction2; }
+         if (ImGui::InputFloat3("InitialAcceleration_A", (float*)&acceleration1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { particleMovement->initialAcceleration1 = acceleration1; }
+         if (ImGui::InputFloat3("InitialAcceleration_B", (float*)&acceleration2, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { particleMovement->initialAcceleration2 = acceleration2; }
+
+         if (ImGui::Checkbox("Hide Movement", &hide)) { particleMovement->hideMovement = hide; }
+         if (ImGui::Checkbox("Delete Movement", &deleteModule)) { particleMovement->eraseMovement = deleteModule; }
+
+         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 0.25f));
+         if (ImGui::Button("Delete")) { /*Have access to Owner Emitter through Particle Module*/ }
+         ImGui::PopStyleColor();
+
+         ImGui::TreePop();
+     }
+ }
+
+ void ModuleUI::DisplayParticleColor(ParticleModule* pModule)
+ {
+     /*bool show = true;
+     if (ImGui::CollapsingHeader("Particle Color", &show, ImGuiTreeNodeFlags_DefaultOpen))*/
+     if (ImGui::TreeNodeEx("Particle Color"/*, ImGuiTreeNodeFlags_DefaultOpen*/))
+     {
+         ParticleColor* particleColor = (ParticleColor*)pModule;
+
+         Color color1 = particleColor->initialColor1;
+         Color color2 = particleColor->initialColor2;
+         if (ImGui::InputFloat4("InitialColor1", &color1.r, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { particleColor->initialColor1 = color1; }
+         if (ImGui::InputFloat4("InitialColor2", &color2.r, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { particleColor->initialColor2 = color2; }
+
+         bool overLifetime = particleColor->colorOverLifetime;
+         bool hide = particleColor->hideColor;
+         bool deleteModule = particleColor->eraseColor;
+         if (ImGui::Checkbox("Color Over Lifetime", &overLifetime)) { particleColor->colorOverLifetime = overLifetime; }
+         if (ImGui::Checkbox("Hide Color", &hide)) { particleColor->hideColor = hide; }
+         if (ImGui::Checkbox("Delete Color", &deleteModule)) { particleColor->eraseColor = deleteModule; }
+
+         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 0.25f));
+         if (ImGui::Button("Delete")) { /*Have access to Owner Emitter through Particle Module*/ }
+         ImGui::PopStyleColor();
+
+         ImGui::TreePop();
+     }
+ }
+
+ void ModuleUI::DisplayParticleLifetime(ParticleModule* pModule)
+ {
+     /*bool show = true;
+     if (ImGui::CollapsingHeader("Particle Lifetime", &show, ImGuiTreeNodeFlags_DefaultOpen))*/
+     if (ImGui::TreeNodeEx("Particle Lifetime"/*, ImGuiTreeNodeFlags_DefaultOpen*/))
+     {
+         ParticleLifetime* particleLifetime = (ParticleLifetime*)pModule;
+
+         float originLifetime = particleLifetime->initialLifetime;
+         if (ImGui::InputFloat("InitialLifetime", &originLifetime, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { particleLifetime->initialLifetime = originLifetime; }
+
+         bool hide = particleLifetime->hideLifetime;
+         bool deleteModule = particleLifetime->eraseLifetime;
+         if (ImGui::Checkbox("Hide Lifetime", &hide)) { particleLifetime->hideLifetime = hide; }
+         if (ImGui::Checkbox("Delete Lifetime", &deleteModule)) { particleLifetime->eraseLifetime = deleteModule; }
+
+         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 0.25f));
+         if (ImGui::Button("Delete")) { /*Have access to Owner Emitter through Particle Module*/ }
+         ImGui::PopStyleColor();
+
+         ImGui::TreePop();
+     }
+ }
+
+ void ModuleUI::DisplayParticleSize(ParticleModule* pModule)
+ {
+     if (ImGui::TreeNodeEx("Particle Size"/*, ImGuiTreeNodeFlags_DefaultOpen*/))
+     {
+         ParticleSize* particleSize = (ParticleSize*)pModule;
+
+         float size1 = particleSize->initialSize1;
+         if (ImGui::InputFloat("InitialSize_1", &size1, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { particleSize->initialSize1 = size1; }
+
+         float size2 = particleSize->initialSize2;
+         if (ImGui::InputFloat("InitialSize_2", &size2, 1, 1, 4, ImGuiInputTextFlags_EnterReturnsTrue)) { particleSize->initialSize2 = size2; }
+
+         bool changeSizeOverTime = particleSize->SizeOverTime;
+         if (ImGui::Checkbox("Size Over Time", &changeSizeOverTime)) { particleSize->SizeOverTime = changeSizeOverTime; }
+
+         bool hide = particleSize->hideSize;
+         bool deleteModule = particleSize->eraseSize;
+         if (ImGui::Checkbox("Hide Size", &hide)) { particleSize->hideSize = hide; }
+         if (ImGui::Checkbox("Delete Size", &deleteModule)) { particleSize->eraseSize = deleteModule; }
+
+         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 0.25f));
+         if (ImGui::Button("Delete")) { /*Have access to Owner Emitter through Particle Module*/ }
+         ImGui::PopStyleColor();
+
+         ImGui::TreePop();
+     }
+ }
+
+ void ModuleUI::DisplayParticleBillboarding(ParticleModule* pModule)
+ {
+     /*bool show = true;
+     if (ImGui::CollapsingHeader("Particle Billboarding", &show, ImGuiTreeNodeFlags_DefaultOpen))*/
+     if (ImGui::TreeNodeEx("Particle Billboarding", ImGuiTreeNodeFlags_DefaultOpen))
+     {
+         ParticleBillboarding* particleBillboarding = (ParticleBillboarding*)pModule;
+
+         ImGui::Combo("Billboarding##", &billboardingType, "Screen Aligned\0World Aligned\0X-Axis Aligned\0Y-Axis Aligned\0Z-Axis Aligned");
+         ImGui::SameLine();
+         if ((ImGui::Button("SELECT"))) { particleBillboarding->billboardingType = (ParticleBillboarding::BillboardingType)billboardingType; }
+
+         bool hideModule = particleBillboarding->hideBillboarding;
+         bool deleteModule = particleBillboarding->eraseBillboarding;
+         if (ImGui::Checkbox("Hide Billboarding", &hideModule)) { particleBillboarding->hideBillboarding = hideModule; }
+         if (ImGui::Checkbox("Delete Billboarding", &deleteModule)) { particleBillboarding->eraseBillboarding = deleteModule; }
+
+         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 0.25f));
+         if (ImGui::Button("Delete")) { /*Have access to Owner Emitter through Particle Module*/ }
+         ImGui::PopStyleColor();
+
+         ImGui::TreePop();
+     }
  }
 
  void ModuleUI::DrawSceneSpace(bool* active)

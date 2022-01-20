@@ -33,6 +33,21 @@ public:
 	bool AllocateResource(uint32 id, ResourceBase base);
 	bool DeleteResource(uint32 UID);
 
+	template <typename T>
+	bool GetResourceBases(std::vector<ResourceBase>& resourceBases)
+	{
+		if (library.empty())
+			return false;
+
+		for (auto libItem = library.cbegin(); libItem != library.cend(); ++libItem)
+		{
+			if (libItem->second.type == T::GetType())
+			{
+				resourceBases.push_back(libItem->second);
+			}
+		}
+	}
+
 public:
 
 	std::map<uint32, Resource*>		resources;
