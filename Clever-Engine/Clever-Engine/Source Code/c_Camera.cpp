@@ -56,16 +56,17 @@ bool c_Camera::Update()
 
 	aabbox.SetFromCenterAndSize(owner->GetComponentTransform()->GetLocalPosition(), vec(0.2f, 0.2f, 0.2f));
 
+	if (frustumActive == true)
+	{
+		DrawFrustum();
+	}
 	return true;
 }
 
 void c_Camera::Draw()
 {
 	DrawCameraIcon();
-	if (frustumActive == true)
-	{
-		DrawFrustum();
-	}
+
 }
 
 void c_Camera::DrawFrustum()
