@@ -14,7 +14,6 @@ c_Camera::c_Camera(GameObject* parent, COMPONENT_TYPE type) : Component(parent, 
 	//This function calculates the verticalFOV using the given horizontal FOV and aspect ratio. Also sets type to PerspectiveFrustum.
 	frustum.SetHorizontalFovAndAspectRatio(horizontalFOV * DEGTORAD, aspectRatio);
 	frustum.SetViewPlaneDistances(1.0f, 100.0f);
-	CreateCameraIcon();
 	GetOwner()->isCamera = true;
 
 	frustumActive = true;
@@ -32,7 +31,6 @@ c_Camera::c_Camera(GameObject* parent, ComponentData* data) : Component(parent, 
 	frustum.SetHorizontalFovAndAspectRatio(horizontalFOV * DEGTORAD, aspectRatio);
 	frustum.SetViewPlaneDistances(1.0f, 100.0f);
 	GetOwner()->isCamera = true;
-	CreateCameraIcon();
 
 	frustumActive = true;
 	drawingBox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));

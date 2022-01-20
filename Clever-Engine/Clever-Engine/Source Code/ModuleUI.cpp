@@ -582,7 +582,6 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                                     if (ImGui::DragFloat3("T", (float*)&translation, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
                                     {
                                         transform->SetLocalPosition(translation);
-                                        camera->SetAABB(translation);
                                     }
 
                                     // --- ROTATION ---
