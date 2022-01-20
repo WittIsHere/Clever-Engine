@@ -32,15 +32,11 @@ public:
 	void Draw();
 	void DrawFrustum();
 
-	void CreateCameraIcon();
 	void DrawCameraIcon();
-
-	void SetAABB(vec transform);
 
 	//void Inspector(Application* App);
 	
 	const AABB& GetAABB() const;
-	//const OBB& GetOBB() const;
 
 	bool ContainBOX(const AABB& referenceBox) const;
 

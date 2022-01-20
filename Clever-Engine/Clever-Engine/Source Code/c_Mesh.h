@@ -33,7 +33,6 @@ public:
 	void DrawBox() const;
 
 	const AABB& GetAABB() const;
-	const OBB& GetOBB() const;
 
 	bool AssignNewData(ResourceMesh* meshData);
 

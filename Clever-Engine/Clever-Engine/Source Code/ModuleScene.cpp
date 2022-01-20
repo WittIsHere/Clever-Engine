@@ -270,10 +270,11 @@ void ModuleScene::MousePicking(const LineSegment &picking)
 				float hitNear;
 				float hitFar;
 
-				if (picking.Intersects(mesh->GetOBB(), hitNear, hitFar))
+				possible.push_back(App->scene->gameObjects[i]);
+				/*if (picking.Intersects(mesh->GetOBB(), hitNear, hitFar))
 				{
 					possible.push_back(App->scene->gameObjects[i]);
-				}
+				}*/
 			}
 		}
 		else if (App->scene->gameObjects[i]->IsCamera() == true)

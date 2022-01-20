@@ -11,7 +11,6 @@ c_Mesh::c_Mesh(GameObject * parent, COMPONENT_TYPE type) : Component(parent, typ
 	//is empty by default
 	resource = nullptr;
 	drawBBox = true;
-
 	CreateBox();
 }
 
@@ -20,7 +19,6 @@ c_Mesh::c_Mesh(GameObject* parent, Resource* data) : Component(parent, COMPONENT
 	this->isEmpty = false;
 	resource = (ResourceMesh*)data;
 	drawBBox = true;
-
 	CreateBox();
 }
 
@@ -35,7 +33,7 @@ bool c_Mesh::Enable()
 
 bool c_Mesh::Update()
 {
-
+	aabbox.SetFromCenterAndSize(owner->GetComponentTransform()->GetLocalPosition(), obb.Size());
 	return true;
 }
 
@@ -200,9 +198,4 @@ void c_Mesh::DrawBox() const
 const AABB& c_Mesh::GetAABB() const
 {
 	return aabbox;
-}
-
-const OBB& c_Mesh::GetOBB() const
-{
-	return obb;
 }

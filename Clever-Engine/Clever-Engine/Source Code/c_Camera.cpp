@@ -121,24 +121,8 @@ void c_Camera::DrawFrustum()
 
 // Methods related to creating the icon of the camera:
 
-void c_Camera::CreateCameraIcon()
-{
-	//aabbox.SetNegativeInfinity();
-	//aabbox.SetFromCenterAndSize(vec(0.0f, 0.0f, 0.0f), vec(0.2f, 0.2f, 0.2f));
-	//obb.SetFrom(aabbox);
-	//obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
-	//aabbox.SetNegativeInfinity();
-	//aabbox.Enclose(obb);
-}
-
 void c_Camera::DrawCameraIcon()
 {
-
-	//obb.SetFrom(aabbox);
-	//obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
-	//aabbox.SetNegativeInfinity();
-	//aabbox.Enclose(obb);
-
 	glPushMatrix();
 	glMultMatrixf(owner->GetComponentTransform()->GetWorldTransformPtr());
 	float3 cornerPoints[8];
@@ -191,21 +175,6 @@ void c_Camera::DrawCameraIcon()
 	glPopMatrix();
 }
 
-void c_Camera::SetAABB(vec transform)
-{
-	//aabbox.SetNegativeInfinity();
-	//aabbox.SetFromCenterAndSize(vec(-5.2f, 3.2f,  2.2f), vec(0.2f, 0.2f, 0.2f));
-	//obb.SetFrom(aabbox);
-	//obb.Transform(owner->GetComponentTransform()->GetWorldTransform());
-	//aabbox.SetNegativeInfinity();
-	//aabbox.Enclose(obb);
-
-	//aabbox.Translate(owner->GetComponentTransform()->GetWorldTransform().TranslatePart());
-	//obb.SetFrom(aabbox);
-	//aabbox.Enclose(obb);
-	int a = 0;
-}
-
 bool c_Camera::SaveState(ParsonNode& root) const
 {
 	root.SetNumber("Type", (uint)type);
@@ -222,11 +191,6 @@ const AABB& c_Camera::GetAABB() const
 {
 	return aabbox;
 }
-
-//const OBB& c_Camera::GetOBB() const
-//{
-//	return obb;
-//}
 
 bool c_Camera::ContainBOX(const AABB& referenceBox) const
 {
