@@ -637,7 +637,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                                     ImGui::SameLine(80.0f);
 
                                     float3 translation = transform->GetLocalPosition();
-                                    if (ImGui::DragFloat3("", (float*)&translation, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+                                    if (ImGui::DragFloat3("T", (float*)&translation, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
                                     {
                                         transform->SetLocalPosition(translation);
                                     }
@@ -648,7 +648,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                                     ImGui::SameLine(80.0f);
 
                                     float3 rotation = transform->GetLocalEulerRotation() * RADTODEG;
-                                    if (ImGui::DragFloat3("", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+                                    if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
                                     {
                                         transform->SetLocalRotation(rotation * DEGTORAD);
                                     }
@@ -659,7 +659,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                                     ImGui::SameLine(80.0f);
 
                                     float3 scale = transform->GetLocalScale();
-                                    if (ImGui::DragFloat3("", (float*)&scale, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+                                    if (ImGui::DragFloat3("S", (float*)&scale, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
                                     {
                                         transform->SetLocalScale(scale);
                                     }
