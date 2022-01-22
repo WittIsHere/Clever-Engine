@@ -25,6 +25,13 @@ GameObject::GameObject(const char* name)
 	UUID = Random::GetRandomUint();
 
 	//Every game object has to have a transform, so we create the compnent at the constructor
+	
+	//First initialize the data
+	TransformData* data = new TransformData;
+	data->position = float3::zero;
+	data->rotation = Quat::identity;
+	data->scale = float3(1.0f, 1.0f, 1.0f);
+
 	this->transform = (c_Transform*)this->CreateComponent(COMPONENT_TYPE::TRANSFORM);
 }
 

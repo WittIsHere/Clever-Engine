@@ -513,7 +513,6 @@ TMYMODEL* ModuleImporter::CreateCustomMesh(const aiMesh* m)
 		*(mymodel->textCoords + i * 2 + 1) = 1.0 - m->mTextureCoords[0][i].y; //this coord image is inverted
 	}
 
-
 	mymodel->indiceSizeBytes = m->mNumFaces * sizeof(unsigned) * 3; //3==indices/face
 	mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
 	for (int i = 0; i < m->mNumFaces; i++)

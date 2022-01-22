@@ -7,11 +7,13 @@
 c_Material::c_Material(GameObject* parent, COMPONENT_TYPE type) : Component(parent, type)
 {
 	textureData = nullptr;
+	isEmpty = true;
 }
 
 c_Material::c_Material(GameObject* parent, ResourceTexture* data) : Component(parent, COMPONENT_TYPE::MATERIAL)
 {
 	textureData = data;
+	isEmpty = false;
 }
 
 c_Material::~c_Material()
@@ -83,6 +85,7 @@ void c_Material::setPath(const char* path)
 void c_Material::setTextureID(uint id) //does this method make any sense? shouldn't we just change the texturedata instead of the id?
 {
 	textureData->SetTextureID(id);
+
 }
 
 bool c_Material::AssignNewData(ResourceTexture* data)
@@ -92,6 +95,7 @@ bool c_Material::AssignNewData(ResourceTexture* data)
 	if (this->isEmpty == true && this->textureData == nullptr)
 	{
 		textureData = data;
+		isEmpty = false;
 	}
 	else
 	{

@@ -321,8 +321,11 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform, c_Material
 	
 	if (material != nullptr)
 	{
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glBindTexture(GL_TEXTURE_2D, material->getTextureID());
+		if (!material->isEmpty)
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
+			glBindTexture(GL_TEXTURE_2D, material->getTextureID());
+		}
 	}
 	else
 		BindCheckerTex();
@@ -467,8 +470,6 @@ void ParticleRenderer::Render()
 
 	glPushMatrix();
 	glMultMatrixf(transform.ptr());
-
-	glColor4f(color.r, color.g, color.b, color.a);
 
 	//Drawing to tris in direct mode
 	glBegin(GL_TRIANGLES);

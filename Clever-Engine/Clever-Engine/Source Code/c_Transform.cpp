@@ -11,12 +11,16 @@ c_Transform::c_Transform(GameObject* parent, COMPONENT_TYPE type) : Component(pa
 	data->scale = float3(1.0f, 1.0f, 1.0f);
 
 	transformData = data;
+
+	UpdateLocalTransform();
 }
 
 c_Transform::c_Transform(GameObject* parent, ComponentData* data) : Component(parent, data->type)
 {
 	this->isEmpty = false;
 	transformData = (TransformData*)data;
+
+	UpdateLocalTransform();
 }
 
 c_Transform::~c_Transform()

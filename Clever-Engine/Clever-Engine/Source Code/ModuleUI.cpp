@@ -628,42 +628,40 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                             c_Transform* transform = (c_Transform*)cmp;
                             c_Camera* camera = (c_Camera*)cmp;
                             if (ImGui::CollapsingHeader("Transform"))
-                            {
-                                if (!transform->isEmpty)
+                            {                                
+                                // --- POSITION ---
+                                ImGui::Text("Position");
+
+                                ImGui::SameLine(80.0f);
+
+                                float3 translation = transform->GetLocalPosition();
+                                if (ImGui::DragFloat3("T", (float*)&translation, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
                                 {
-                                    // --- POSITION ---
-                                    ImGui::Text("Position");
-
-                                    ImGui::SameLine(80.0f);
-
-                                    float3 translation = transform->GetLocalPosition();
-                                    if (ImGui::DragFloat3("T", (float*)&translation, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
-                                    {
-                                        transform->SetLocalPosition(translation);
-                                    }
-
-                                    // --- ROTATION ---
-                                    ImGui::Text("Rotation");
-
-                                    ImGui::SameLine(80.0f);
-
-                                    float3 rotation = transform->GetLocalEulerRotation() * RADTODEG;
-                                    if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
-                                    {
-                                        transform->SetLocalRotation(rotation * DEGTORAD);
-                                    }
-
-                                    // --- SCALE ---
-                                    ImGui::Text("Scale");
-
-                                    ImGui::SameLine(80.0f);
-
-                                    float3 scale = transform->GetLocalScale();
-                                    if (ImGui::DragFloat3("S", (float*)&scale, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
-                                    {
-                                        transform->SetLocalScale(scale);
-                                    }
+                                    transform->SetLocalPosition(translation);
                                 }
+
+                                // --- ROTATION ---
+                                ImGui::Text("Rotation");
+
+                                ImGui::SameLine(80.0f);
+
+                                float3 rotation = transform->GetLocalEulerRotation() * RADTODEG;
+                                if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+                                {
+                                    transform->SetLocalRotation(rotation * DEGTORAD);
+                                }
+
+                                // --- SCALE ---
+                                ImGui::Text("Scale");
+
+                                ImGui::SameLine(80.0f);
+
+                                float3 scale = transform->GetLocalScale();
+                                if (ImGui::DragFloat3("S", (float*)&scale, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+                                {
+                                    transform->SetLocalScale(scale);
+                                }
+                                
                             }
                             break;
                         }
