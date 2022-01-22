@@ -1,15 +1,17 @@
 #include "c_Material.h"
 #include "ModuleScene.h"
 #include "JSONParser.h"
+#include "ResourceTexture.h"
+
 
 c_Material::c_Material(GameObject* parent, COMPONENT_TYPE type) : Component(parent, type)
 {
 	textureData = nullptr;
 }
 
-c_Material::c_Material(GameObject* parent, ComponentData* data) : Component(parent, data->type)
+c_Material::c_Material(GameObject* parent, ResourceTexture* data) : Component(parent, COMPONENT_TYPE::MATERIAL)
 {
-	textureData = (TextureData*)data;
+	textureData = data;
 }
 
 c_Material::~c_Material()
@@ -35,30 +37,29 @@ bool c_Material::SaveState(ParsonNode& root) const
 {
 	root.SetNumber("Type", (uint)type);
 
-	if (isEmpty == false && textureData != nullptr)
+	if (textureData != nullptr)
 	{
-		ParsonNode material = root.SetNode("TextureData");
-
-		material.SetString("Path", textureData->path.c_str());
-		material.SetInteger("TextureID", textureData->textureID); 
+		root.SetNumber("UID", textureData->GetUID());
+		root.SetString("assetsPath", textureData->GetAssetsPath());
+		root.SetString("libraryPath", textureData->GetLibraryPath());
 	}
 	return true;
 }
 
 bool c_Material::LoadState(ParsonNode& root)
 {
+	bool ret = true;
+
 	textureData = nullptr;
 
-	ParsonNode textureNode = root.GetNode("TextureData", false);
+	std::string assetsPath = std::string(root.GetString("assetsPath"));
 
-	if (textureNode.NodeIsValid()) //load data
+	//get the corresponding resorce and allocate it into memory
+	textureData = (ResourceTexture*)App->resources->GetResource((uint32)root.GetNumber("UID"));
+
+	if (textureData == nullptr)
 	{
-		TextureData* data = new TextureData;
-		data->path = textureNode.GetString("Path");
-		data->textureID = textureNode.GetInteger("TextureID");
-
-		//assign data
-		this->AssignNewData(data);
+		LOG("[ERROR] Loading Scene: Could not find Mesh %s with UID: %u! Try reimporting the model.", root.GetString("File"), (uint32)root.GetNumber("UID"));
 	}
 
 	return true;
@@ -66,25 +67,25 @@ bool c_Material::LoadState(ParsonNode& root)
 
 const char* c_Material::getPath()
 {
-	return textureData->path.c_str();
+	return textureData->GetAssetsPath();
 }
 
 const uint c_Material::getTextureID()
 {
-	return textureData->textureID;
+	return textureData->GetTextureID();
 }
 
 void c_Material::setPath(const char* path)
 {
-	textureData->path = path;
+	textureData->assetsPath = path;
 }
 
 void c_Material::setTextureID(uint id) //does this method make any sense? shouldn't we just change the texturedata instead of the id?
 {
-	textureData->textureID = id;
+	textureData->SetTextureID(id);
 }
 
-bool c_Material::AssignNewData(TextureData* data)
+bool c_Material::AssignNewData(ResourceTexture* data)
 {
 	bool ret = true;
 

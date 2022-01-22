@@ -35,7 +35,7 @@ bool ModuleScene::Start()
 	LOG("Importing scene test");
 	//const char* fbxPath = ("Assets/Models/Street_environment.FBX");
 	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
-	App->importer->ImportAndLoadScene(fbxPath);
+	App->importer->LoadModelToScene(fbxPath);
 
 	return ret;                        
 }
@@ -260,18 +260,18 @@ GameObject* ModuleScene::GetGO(uint32 uuid)
 	return ret;
 }
 
-bool ModuleScene::DeleteFromMeshPool(MeshData* mesh)
-{
-	for (int i = 0; i < meshPool.size(); i++)
-	{
-		if (meshPool[i] == mesh) 
-		{
-			meshPool.erase(meshPool.begin() + i);  //begin returns an iterator so just add it the number of steps to get to the desired mesh
-		}
-	}
-
-	return true;
-}
+//bool ModuleScene::DeleteFromMeshPool(MeshData* mesh)
+//{
+//	for (int i = 0; i < meshPool.size(); i++)
+//	{
+//		if (meshPool[i] == mesh) 
+//		{
+//			meshPool.erase(meshPool.begin() + i);  //begin returns an iterator so just add it the number of steps to get to the desired mesh
+//		}
+//	}
+//
+//	return true;
+//}
 
 void ModuleScene::MousePicking(const LineSegment &picking)
 {

@@ -25,7 +25,7 @@ public:
 	void ImportOurAssets(PathNode node);
 
 	bool SaveMetaFile(ResourceBase res, const char* name = nullptr);
-	Resource* CreateResource(ResourceType type, const char* assetsPath, uint32 forcedUID);
+	Resource* CreateResource(ResourceType type, const char* assetsPath, uint32 forcedUID = 0);
 	ParsonNode LoadMetaFile(const char* assetsPath, char** buffer);
 	
 public:

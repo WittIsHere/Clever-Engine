@@ -17,6 +17,7 @@ struct SceneData;
 struct MeshData;
 class c_Transform;
 class c_Mesh;
+class c_Material;
 class GameObject;
 
 struct ParticleRenderer
@@ -56,7 +57,7 @@ public:
 	void PrepareMesh(MeshData* mesh);
 	void PrepareMesh(ResourceMesh* mesh);
 	void PrepareDrawScene(SceneData* scene);
-	void DrawMesh(c_Mesh* mesh, c_Transform* transform);
+	void DrawMesh(c_Mesh* mesh, c_Transform* transform, c_Material* material);
 
 	bool GetVSync() const;
 	void SetVSync(bool vsync);

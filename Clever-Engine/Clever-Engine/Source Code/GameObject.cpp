@@ -25,14 +25,7 @@ GameObject::GameObject(const char* name)
 	UUID = Random::GetRandomUint();
 
 	//Every game object has to have a transform, so we create the compnent at the constructor
-	//First initialize the data
-	TransformData* data = new TransformData;
-	data->position = float3::zero;
-	data->rotation = Quat::identity;
-	data->scale = float3(1.0f, 1.0f, 1.0f);
-
-	//Then create the component
-	this->transform = (c_Transform*)this->CreateComponent(data);
+	this->transform = (c_Transform*)this->CreateComponent(COMPONENT_TYPE::TRANSFORM);
 }
 
 GameObject::GameObject(const char* name, GameObject* parent)
@@ -46,14 +39,7 @@ GameObject::GameObject(const char* name, GameObject* parent)
 	insideFrustum = false;
 
 	//Every game object has to have a transform, so we create the compnent at the constructor
-	//First initialize the data
-	TransformData* data = new TransformData;
-	data->position = float3::zero;
-	data->rotation = Quat::identity;
-	data->scale = float3(1.0f, 1.0f, 1.0f);
-
-	//Then create the component
-	this->transform = (c_Transform*)this->CreateComponent(data);
+	this->transform = (c_Transform*)this->CreateComponent(COMPONENT_TYPE::TRANSFORM);
 }
 
 GameObject::~GameObject()
@@ -176,48 +162,6 @@ bool GameObject::LoadState(ParsonNode& root) //load from the node all the variab
 	return true;
 }
 
-Component* GameObject::CreateComponent(ComponentData* CD)
-{
-	Component* ret = nullptr;
-	switch (CD->type)
-	{
-	case(COMPONENT_TYPE::TRANSFORM):
-	{
-		c_Transform* cmp = new c_Transform(this, CD);	//create component of the corresponding type
-		myComponents.push_back((Component*)cmp);		//add it to the components array
-		cmp->Enable();
-		ret = cmp;										//return it in case it needs to be modfied right away
-		break;
-	}
-	case(COMPONENT_TYPE::MATERIAL):
-	{
-		c_Material* cmp = new c_Material(this, CD);
-		myComponents.push_back((Component*)cmp);
-		cmp->Enable();
-		ret = cmp;
-		break;
-	}
-	//case(COMPONENT_TYPE::MESH):
-	//{
-	//	c_Mesh* cmp = new c_Mesh(this, CD);
-	//	myComponents.push_back((Component*)cmp);
-	//	cmp->Enable();
-	//	ret = cmp;
-	//	break;
-	//}
-	case(COMPONENT_TYPE::CAMERA):
-	{
-		c_Camera* cmp = new c_Camera(this, CD);
-		myComponents.push_back((Component*)cmp);
-		cmp->Enable();
-		ret = cmp;
-		hasMesh = true;
-		break;
-	}
-	}
-	return ret;
-}
-
 Component* GameObject::CreateComponent(Resource* CD)
 {
 	Component* ret = nullptr;
@@ -256,6 +200,7 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	{
 		c_Material* cmp = new c_Material(this, type);
 		myComponents.push_back((Component*)cmp);
+		material = cmp;
 		ret = cmp;
 		break;
 	}
@@ -351,6 +296,8 @@ void GameObject::DeleteAllComponents()
 
 	if (!myComponents.empty()) 
 		myComponents.clear();
+
+	hasMesh = false;
 }
 
 void GameObject::AddChild(GameObject* child)
@@ -432,10 +379,11 @@ void GameObject::Draw()
 {
 	for (int i = 0; i < myComponents.size(); i++)
 	{
+		
 		if (myComponents[i]->type == COMPONENT_TYPE::MESH)
 		{
 			c_Mesh* cmp = (c_Mesh*)myComponents[i];
-			App->renderer3D->DrawMesh(cmp, this->transform);
+			App->renderer3D->DrawMesh(cmp, this->transform, material);
 			myComponents[i]->Draw();
 		}
 		else if (myComponents[i]->type == COMPONENT_TYPE::CAMERA)

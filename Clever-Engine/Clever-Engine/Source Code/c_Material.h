@@ -5,12 +5,13 @@
 
 class TextureData;
 class ParsonNode;
+class ResourceTexture;
 
 class c_Material : public Component
 {
 public:
 	c_Material(GameObject* parent, COMPONENT_TYPE type);
-	c_Material(GameObject* parent, ComponentData* data);
+	c_Material(GameObject* parent, ResourceTexture* data);
 	~c_Material();
 
 	bool Enable();
@@ -27,9 +28,9 @@ public:
 	void setPath(const char* path);
 	void setTextureID(uint id);
 
-	bool AssignNewData(TextureData* data);
+	bool AssignNewData(ResourceTexture* data);
 
 private:
-	TextureData* textureData = nullptr;
+	ResourceTexture* textureData = nullptr;
 	
 };

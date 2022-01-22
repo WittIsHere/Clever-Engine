@@ -281,7 +281,7 @@ void ModuleRenderer3D::DrawScene()
 	App->scene->Draw();
 }
 
-void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform)
+void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform, c_Material* material)
 {
 
 	if (mesh == nullptr)
@@ -299,7 +299,6 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform)
 
 	glPushMatrix();
 	glMultMatrixf(transform->GetWorldTransformPtr());
-
 	
 	// We start drawing the mesh
 
@@ -320,7 +319,13 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform)
 		LOG("INFO: indices buffer ID not found");
 	}	
 	
-	BindCheckerTex();
+	if (material != nullptr)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, material->getTextureID());
+	}
+	else
+		BindCheckerTex();
 
 	if (render) glDrawElements(GL_TRIANGLES, mesh->GetMeshData()->indicesCount, GL_UNSIGNED_INT, 0);
 
@@ -458,6 +463,8 @@ void ParticleRenderer::LoadBuffers()
 
 void ParticleRenderer::Render()
 {
+	App->renderer3D->BindCheckerTex();
+
 	glPushMatrix();
 	glMultMatrixf(transform.ptr());
 

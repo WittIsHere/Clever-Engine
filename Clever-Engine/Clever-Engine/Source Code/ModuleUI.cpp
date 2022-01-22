@@ -159,37 +159,37 @@ update_status ModuleUI::Update(float dt)
                     if (ImGui::MenuItem("Cube"))
                     {
                         LOG("Loading Basic Shape Cube");
-                        App->importer->ImportAndLoadScene("Assets/Basic Shapes/Cube.FBX");
+                        App->importer->LoadModelToScene("Assets/Basic Shapes/Cube.FBX");
                     }
 
                     if (ImGui::MenuItem("Cone"))
                     {
                         LOG("Loading Basic Shape Cone");
-                        App->importer->ImportAndLoadScene("Assets/Basic Shapes/Cone.FBX");
+                        App->importer->LoadModelToScene("Assets/Basic Shapes/Cone.FBX");
                     }
 
                     if (ImGui::MenuItem("Sphere"))
                     {
                         LOG("Loading Basic Shape Sphere");
-                        App->importer->ImportAndLoadScene("Assets/Basic Shapes/Sphere.FBX");
+                        App->importer->LoadModelToScene("Assets/Basic Shapes/Sphere.FBX");
                     }
 
                     if (ImGui::MenuItem("Cylinder"))
                     {
                         LOG("Loading Basic Shape Cylinder");
-                        App->importer->ImportAndLoadScene("Assets/Basic Shapes/Cylinder.FBX");
+                        App->importer->LoadModelToScene("Assets/Basic Shapes/Cylinder.FBX");
                     }
 
                     if (ImGui::MenuItem("Pyramid"))
                     {
                         LOG("Loading Basic Shape Pyramid");
-                        App->importer->ImportAndLoadScene("Assets/Basic Shapes/Pyramid.FBX");
+                        App->importer->LoadModelToScene("Assets/Basic Shapes/Pyramid.FBX");
                     }
 
                     if (ImGui::MenuItem("Torus"))
                     {
                         LOG("Loading Basic Shape Torus");
-                        App->importer->ImportAndLoadScene("Assets/Basic Shapes/Torus.FBX");
+                        App->importer->LoadModelToScene("Assets/Basic Shapes/Torus.FBX");
                     }
                     ImGui::EndMenu();
                 }
@@ -1193,7 +1193,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
              {
                  const char* path = (const char*)payload->Data;
                  std::string full = BROWSER_PATH + currentFolder + '/' + path;
-                 App->importer->ImportAndLoadScene(full.c_str());
+                 App->importer->LoadModelToScene(full.c_str());
              }
              ImGui::EndDragDropTarget();
          }

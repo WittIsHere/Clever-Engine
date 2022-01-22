@@ -7,6 +7,7 @@
 #include "PathNode.h"
 #include "ResourceBase.h"
 #include "ResourceMesh.h"
+#include "ResourceTexture.h"
 
 #include "c_Mesh.h"
 #include "MeshData.h"
@@ -96,21 +97,59 @@ bool ModuleImporter::CleanUp()
 	return true;
 }
 
-//TODO: make this method be of type myScene and return the loaded scene
-void ModuleImporter::ImportScene(const char* file_path)
+/////////////////////////////////////////////////////////////////
+//////////////MODEL IMPORTER (.FBX)/////////////////////////////
+
+//Loads and imports the model into the engine but does not create it at the scene
+ void ModuleImporter::LoadModel(const char* file_path)
 {
 	const aiScene* aiScene = aiImportFile(file_path, 0);
 	if (aiScene != nullptr)
 	{
 		if (aiScene->mRootNode != nullptr)
 		{
-			LoadRoot2(aiScene->mRootNode, aiScene, file_path);
+			ImportModelToLibrary(aiScene->mRootNode, aiScene, file_path);
+		}
+	}
+}
+
+void ModuleImporter::ImportModelToLibrary(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
+{
+	if (sceneRoot->mNumChildren > 0)
+	{
+		for (int i = 0; i < sceneRoot->mNumChildren; i++)
+		{
+			NodeToResource(sceneRoot->mChildren[i], currentScene, fileName);
+		}
+	}
+	else LOG("ERROR: Trying to load empty scene!");
+}
+
+void ModuleImporter::NodeToResource(aiNode* currentNode, const aiScene* currentScene, const char* filePath)
+{
+	if (currentNode->mNumMeshes > 0)
+	{
+		for (int i = 0; i < currentNode->mNumMeshes; i++)
+		{
+			uint currentAiMeshIndex = currentNode->mMeshes[i];
+			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
+
+			TMYMODEL* myModel = new TMYMODEL();
+			CreateAndSaveResourceMesh(currentAiMesh, myModel, filePath);
+			RELEASE(myModel);
+		}
+	}
+	if (currentNode->mNumChildren > 0)
+	{
+		for (int i = 0; i < currentNode->mNumChildren; i++)
+		{
+			NodeToResource(currentNode->mChildren[i], currentScene, filePath);
 		}
 	}
 }
 
 //Take the path to a .FBX, import it to our custom format and load it into scene
-void ModuleImporter::ImportAndLoadScene(const char* file_path)
+void ModuleImporter::LoadModelToScene(const char* file_path)
 {
 	// For each file, check if a .meta exists
 	std::string path;
@@ -168,13 +207,13 @@ void ModuleImporter::ImportAndLoadScene(const char* file_path)
 		{
 			if (aiScene->mRootNode != nullptr)
 			{
-				LoadRoot(aiScene->mRootNode, aiScene, file_path);
+				ImportModelToScene(aiScene->mRootNode, aiScene, file_path);
 			}
 		}
 	}
 }
 
-void ModuleImporter::LoadRoot(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
+void ModuleImporter::ImportModelToScene(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
 {
 	if (sceneRoot->mNumChildren > 0)
 	{
@@ -245,21 +284,13 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 					std::string fullPath = ASSETS_PATH;
 					fullPath += texPath.C_Str();
 
-					uint tempTextureID = LoadTextureFromPath(fullPath.c_str());
+					Resource* texData = App->resources->CreateResource(ResourceType::TEXTURE, fullPath.c_str());
+					
+					
+					GO->CreateComponent(texData);
 
-					if (tempTextureID > 0)
-					{
-						TextureData* texData = new TextureData();
-						texData->type = COMPONENT_TYPE::MATERIAL;
-						App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
-
-						texData->path = texPath.C_Str();	//assign the new texture its path
-						texData->textureID = tempTextureID;	//assign the new texture its ID
-
-						GO->CreateComponent((ComponentData*)texData);
-
-						//tempMesh->texture = texData;	//TODO assign the texture to the current mesh
-					}
+					//tempMesh->texture = texData;	//TODO assign the texture to the current mesh
+					
 				}
 			}
 		}
@@ -273,40 +304,6 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 	}
 }
 
-void ModuleImporter::LoadRoot2(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName)
-{
-	if (sceneRoot->mNumChildren > 0)
-	{
-		for (int i = 0; i < sceneRoot->mNumChildren; i++)
-		{
-			LoadNode2(sceneRoot->mChildren[i], currentScene, fileName);
-		}
-	}
-	else LOG("ERROR: Trying to load empty scene!");
-}
-
-void ModuleImporter::LoadNode2(aiNode* currentNode, const aiScene* currentScene, const char* filePath)
-{
-	if (currentNode->mNumMeshes > 0)
-	{
-		for (int i = 0; i < currentNode->mNumMeshes; i++)
-		{
-			uint currentAiMeshIndex = currentNode->mMeshes[i];
-			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
-
-			TMYMODEL* myModel = new TMYMODEL();
-			CreateAndSaveResourceMesh(currentAiMesh, myModel, filePath);
-			RELEASE(myModel);
-		}
-	}
-	if (currentNode->mNumChildren > 0)
-	{
-		for (int i = 0; i < currentNode->mNumChildren; i++)
-		{
-			LoadNode2(currentNode->mChildren[i], currentScene, filePath);
-		}
-	}
-}
 
 void ModuleImporter::ImportMesh(aiMesh* mesh, ResourceMesh* myMesh)
 {
@@ -373,45 +370,45 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, ResourceMesh* myMesh)
 	}
 }
 
-void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMesh)
-{
-	uint textureBuffer = 0;
-	ILuint id_img = 0;
-	ILenum error;
-
-	if (path != nullptr)
-	{
-		ilGenImages(1, (ILuint*)&id_img);
-		ilBindImage(id_img);
-
-		error = ilGetError();
-		if (error)
-			LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
-
-		if (ilLoad(IL_PNG, path)) //or ilLoadImage(path) which behaves the same
-		{
-			uint tempTextureID = ilutGLBindTexImage();	//bind texture to openGL and get the ID
-		
-			error = ilGetError();
-			if (error)
-				LOG("ERROR: Failed binding the DevIL Texture with OpenGl: %s", iluErrorString(error));
-
-			//TODO: check for duplicates?
-
-			TextureData* texData = new TextureData();
-			App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
-
-			texData->path = path;	//assign the new texture its path
-			texData->textureID = tempTextureID;	//assign the new texture its ID
-
-			myMesh->texture = texData;	//assign the texture to the current mesh
-		}
-		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
-
-		ilDeleteImages(1, &id_img); // Because we have already copied image data into texture data we can release memory used by image.
-	}
-	else LOG("ERROR: Failed loading image from path: %s", path);
-}
+//void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMesh)
+//{
+//	uint textureBuffer = 0;
+//	ILuint id_img = 0;
+//	ILenum error;
+//
+//	if (path != nullptr)
+//	{
+//		ilGenImages(1, (ILuint*)&id_img);
+//		ilBindImage(id_img);
+//
+//		error = ilGetError();
+//		if (error)
+//			LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
+//
+//		if (ilLoad(IL_PNG, path)) //or ilLoadImage(path) which behaves the same
+//		{
+//			uint tempTextureID = ilutGLBindTexImage();	//bind texture to openGL and get the ID
+//		
+//			error = ilGetError();
+//			if (error)
+//				LOG("ERROR: Failed binding the DevIL Texture with OpenGl: %s", iluErrorString(error));
+//
+//			//TODO: check for duplicates?
+//
+//			TextureData* texData = new TextureData();
+//			App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
+//
+//			texData->path = path;	//assign the new texture its path
+//			texData->textureID = tempTextureID;	//assign the new texture its ID
+//
+//			myMesh->texture = texData;	//assign the texture to the current mesh
+//		}
+//		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
+//
+//		ilDeleteImages(1, &id_img); // Because we have already copied image data into texture data we can release memory used by image.
+//	}
+//	else LOG("ERROR: Failed loading image from path: %s", path);
+//}
 
 uint ModuleImporter::LoadTextureFromPath(const char* path)
 {
@@ -437,7 +434,13 @@ uint ModuleImporter::LoadTextureFromPath(const char* path)
 				iluFlipImage();
 
 			textureBuffer = ilutGLBindTexImage();
+			error = ilGetError();
 
+			if (error)
+			{
+				LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
+				textureBuffer = 0;
+			}
 		}
 		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
 
@@ -455,7 +458,7 @@ void ModuleImporter::ImportToCustomFF(const char* libPath) //this is actually me
 		if (aiScene->mRootNode != nullptr)
 		{
 			//TODO: separate filename from path and extension
-			LoadRoot2(aiScene->mRootNode, aiScene, libPath);
+			ImportModelToLibrary(aiScene->mRootNode, aiScene, libPath);
 		}
 	}
 
@@ -464,14 +467,14 @@ void ModuleImporter::ImportToCustomFF(const char* libPath) //this is actually me
 uint32 ModuleImporter::CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* myModel, const char* assetsPath)
 {
 	//create custom file format inside TMYMODEL class
-	myModel = CreateMyModel(mesh);
+	myModel = CreateCustomMesh(mesh);
 
 	//generate a UUID for the resource. It will also be the name of the file
 	uint32 uuid = Random::GetRandomUint();
 	std::string path = MESHES_PATH + std::to_string(uuid) + CUSTOM_FF_EXTENSION;
 
 	//save the TMYMODEL into a file
-	if (SaveModel(myModel, path.c_str()) == true)
+	if (SaveCustomMeshFile(myModel, path.c_str()) == true)
 	{
 		LOG("%s Saved correctly", path);
 	}
@@ -490,7 +493,7 @@ uint32 ModuleImporter::CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* m
 	return uuid;
 }
 
-TMYMODEL* ModuleImporter::CreateMyModel(const aiMesh* m)
+TMYMODEL* ModuleImporter::CreateCustomMesh(const aiMesh* m)
 {
 	TMYMODEL* mymodel = (TMYMODEL*)malloc(sizeof(TMYMODEL));
 
@@ -531,7 +534,7 @@ TMYMODEL* ModuleImporter::CreateMyModel(const aiMesh* m)
 
 }
 
-bool ModuleImporter::SaveModel(const TMYMODEL* m, const char* path)
+bool ModuleImporter::SaveCustomMeshFile(const TMYMODEL* m, const char* path)
 {
 	//My format
 	//Header
@@ -603,7 +606,7 @@ bool ModuleImporter::SaveModel(const TMYMODEL* m, const char* path)
 //	}
 //}
 
-bool ModuleImporter::LoadModel(const char* path, ResourceMesh* mesh)
+bool ModuleImporter::CustomMeshToScene(const char* path, ResourceMesh* mesh)
 {
 	std::ifstream myfile;
 	myfile.open(path, std::ios::binary);
@@ -653,7 +656,7 @@ bool ModuleImporter::LoadModel(const char* path, ResourceMesh* mesh)
 	}
 }
 
-MeshData* ModuleImporter::LoadModel(const char* path)
+MeshData* ModuleImporter::CustomMeshToScene(const char* path)
 {
 	MeshData* loadedMesh = new MeshData();
 

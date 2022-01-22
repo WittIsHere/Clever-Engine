@@ -28,28 +28,34 @@ public:
 	update_status PreUpdate(float dt);
 	bool CleanUp();
 
-	void ImportScene(const char* file_path);
-	void ImportAndLoadScene(const char* file_path);
-	void ImportMesh(aiMesh* mesh, ResourceMesh* myMesh);
+	//model importer
+	void LoadModel(const char* file_path);
+	void LoadModelToScene(const char* file_path);
+	
+	//mesh importer
+	void ImportMesh(aiMesh* mesh, ResourceMesh* myMesh); //not used
 
-	void LoadRoot(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName);
-	void LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene, const char* path);
-
-	void LoadRoot2(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName);
-
-	void LoadNode2(aiNode* currentNode, const aiScene* currentScene, const char* fileName);
-
-	void LoadTextureFromPathAndFill(const char* path, MeshData* myMesh);
+	//texture importer
+	//void LoadTextureFromPathAndFill(const char* path, MeshData* myMesh);
 	uint LoadTextureFromPath(const char* path);
 
 	void ImportToCustomFF(const char* libPath);
 
 	uint32 CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* myModel, const char* assetsPath);
 
-	TMYMODEL* CreateMyModel(const aiMesh* m);
-	bool SaveModel(const TMYMODEL* m, const char* path);
-	MeshData* LoadModel(const char* path);
-	bool LoadModel(const char* path, ResourceMesh* mesh);
+
+	TMYMODEL* CreateCustomMesh(const aiMesh* m);
+	bool SaveCustomMeshFile(const TMYMODEL* m, const char* path);
+
+	MeshData* CustomMeshToScene(const char* path);
+	bool CustomMeshToScene(const char* path, ResourceMesh* mesh);
+
+private:
+	void ImportModelToLibrary(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName);
+	void NodeToResource(aiNode* currentNode, const aiScene* currentScene, const char* fileName);
+
+	void ImportModelToScene(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName);
+	void LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene, const char* path);
 
 private:
 	const char* textPath;

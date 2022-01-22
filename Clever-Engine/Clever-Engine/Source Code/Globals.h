@@ -64,6 +64,7 @@ enum update_status
 #define CUSTOM_FF_EXTENSION ".MYMESH"
 #define JSON_EXTENSION ".json"
 #define META_EXTENSION ".meta"
+#define TEXTURES_EXTENSION ".png"
 #define PARTICLESYSTEMS_AST_EXTENSION ".PS"
 
 // Deletes a buffer

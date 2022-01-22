@@ -6,6 +6,7 @@
 #include "Resource.h"
 #include "ResourceMesh.h"
 #include "ResourceParticleSystem.h"
+#include "ResourceTexture.h"
 
 #include "PathNode.h"
 
@@ -190,6 +191,7 @@ ParsonNode ModuleResources::LoadMetaFile(const char* finalPath, char** buffer)
 	return ParsonNode(*buffer);
 }
 
+//Create and 
 Resource* ModuleResources::CreateResource(ResourceType type, const char* assetsPath, uint32 forcedUID)
 {
 	Resource* resource = nullptr;
@@ -197,7 +199,18 @@ Resource* ModuleResources::CreateResource(ResourceType type, const char* assetsP
 	{
 	case ResourceType::MESH: { resource = new ResourceMesh(); }			break;
 	//case ResourceType::MATERIAL: { resource = new R_Material(); }		break;
-	//case ResourceType::TEXTURE: { resource = new R_Texture(); }		break;
+	case ResourceType::TEXTURE: 
+	{ 
+		ResourceTexture* resourceTex = new ResourceTexture();
+		uint id = App->importer->LoadTextureFromPath(assetsPath);
+		if (id != 0)
+		{
+			resourceTex->SetTextureID(id);
+		}
+
+		resource = (Resource*)resourceTex;
+
+	}	break;
 	//case ResourceType::MODEL: { resource = new R_Model(); }			break;
 	case ResourceType::PARTICLE_SYSTEM: { resource = new ResourceParticleSystem(); }	break;
 	case ResourceType::NONE: { /*resource = nullptr;*/ }				break;			// In case NONE is a trigger and a method needs to be called.
@@ -211,7 +224,25 @@ Resource* ModuleResources::CreateResource(ResourceType type, const char* assetsP
 		}
 
 		if (forcedUID != 0) resource->ForceUID(forcedUID);
-		resource->libraryPath = PARTICLESYSTEMS_PATH + std::to_string(resource->GetUID()) + PARTICLESYSTEMS_AST_EXTENSION;
+
+		switch (type)
+		{
+		case (ResourceType::MESH):
+		{
+			resource->libraryPath = MESHES_PATH + std::to_string(resource->GetUID()) + CUSTOM_FF_EXTENSION;
+			break;
+		}
+		case (ResourceType::TEXTURE):
+		{
+			resource->libraryPath = TEXTURES_PATH + std::to_string(resource->GetUID()) + TEXTURES_EXTENSION;
+			break;
+		}
+		case (ResourceType::PARTICLE_SYSTEM):
+		{
+			resource->libraryPath = PARTICLESYSTEMS_PATH + std::to_string(resource->GetUID()) + PARTICLESYSTEMS_AST_EXTENSION;
+			break;
+		}
+		}
 	}
 
 	return resource;
@@ -306,7 +337,7 @@ bool ModuleResources::AllocateResource(uint32 id, ResourceBase base)
 	resource->ForceUID(id);
 
 	bool success = false;
-	success = App->importer->LoadModel(resource->libraryPath.c_str(), resource);
+	success = App->importer->CustomMeshToScene(resource->libraryPath.c_str(), resource);
 	//switch (type)
 	//{
 	//case ResourceType::MODEL: { success = Importer::Scenes::Load(buffer, (R_Model*)resource); }				break;

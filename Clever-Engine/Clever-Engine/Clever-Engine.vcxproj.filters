@@ -262,6 +262,9 @@
     <ClCompile Include="Source Code\ResourceParticleSystem.cpp">
       <Filter>Source Code\GameObjects\Resources\resourceTypes</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\ResourceTexture.cpp">
+      <Filter>Source Code\GameObjects\Resources\resourceTypes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Application.h">
@@ -661,6 +664,9 @@
       <Filter>Source Code\Containers\Particle System</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\ResourceParticleSystem.h">
+      <Filter>Source Code\GameObjects\Resources\resourceTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\ResourceTexture.h">
       <Filter>Source Code\GameObjects\Resources\resourceTypes</Filter>
     </ClInclude>
   </ItemGroup>

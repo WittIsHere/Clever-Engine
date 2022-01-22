@@ -29,7 +29,7 @@ public:
 	void DeleteGameObject(GameObject* GO, int index = -1);
 	GameObject* GetGO(uint32 uuid);
 
-	bool DeleteFromMeshPool(MeshData* mesh);
+	//bool DeleteFromMeshPool(MeshData* mesh);
 
 	void MousePicking(const LineSegment& picking);
 
@@ -37,9 +37,6 @@ public:
 	GameObject* rootNode;
 	std::vector<GameObject*> gameObjects;
 	GameObject* cameraGO = nullptr;
-	//std::vector<MeshData*> meshPool;
-	std::vector<MeshData*> meshPool;
-	std::vector<TextureData*> texturePool;
 
 	Emitter* ourEmitter = nullptr;
 	EmitterInstance* ourEmitterInstance = nullptr;

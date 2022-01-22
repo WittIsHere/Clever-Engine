@@ -12,6 +12,7 @@
 
 class MeshData;
 class ComponentData;
+class c_Material;
 
 class GameObject
 {
@@ -33,7 +34,6 @@ public:
 
 public:
 	//components
-	Component* CreateComponent(ComponentData* CD);
 	Component* CreateComponent(Resource* CD);
 	Component* CreateComponent(COMPONENT_TYPE type);
 
@@ -81,4 +81,5 @@ private:
 	GameObject* parent;
 	std::vector<Component*> myComponents;
 	c_Transform* transform; //direct access to the component transform.
+	c_Material* material; //direct access to the component material
 };

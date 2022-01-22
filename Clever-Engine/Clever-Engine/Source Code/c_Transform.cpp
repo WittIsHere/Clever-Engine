@@ -4,8 +4,13 @@
 
 c_Transform::c_Transform(GameObject* parent, COMPONENT_TYPE type) : Component(parent, type)
 {
-	//comes as empty by default
-	transformData = nullptr;
+	//First initialize the data
+	TransformData* data = new TransformData;
+	data->position = float3::zero;
+	data->rotation = Quat::identity;
+	data->scale = float3(1.0f, 1.0f, 1.0f);
+
+	transformData = data;
 }
 
 c_Transform::c_Transform(GameObject* parent, ComponentData* data) : Component(parent, data->type)
