@@ -59,6 +59,7 @@ bool ModuleUI::Start()
 
     // Our state
     showDemoWindow = false;
+    inspectorOpen = false;
 
     // Setup Platform/Renderer bindings
     ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
@@ -231,12 +232,12 @@ update_status ModuleUI::Update(float dt)
             {
                 ImGui::TextWrapped("Clever Engine\n\n");
                 ImGui::Text("Open 3D Game Engine developed during the 3rd course of Design and Development of Videogames at CITM (UPC-Barcelona)\n\n");
-                ImGui::Text("By Aram Galarza & Albert Espinosa\n");
+                ImGui::Text("By Aram Galarza, Albert Espinosa & Carles Lopez\n");
                 ImGui::Text("3rd party libraries used:\n\n");
                 ImGui::Text("- SDL\n\n- Glew\n\n- OpenGL\n\n- ImGui\n\n- MathGeoLib\n\n- Assimp\n\n");
                 ImGui::Text("License:\n");
                 ImGui::Text("MIT License\n");
-                ImGui::Text("Copyright (c) 2021 Albert Espinosa & Aram Galarza\n");
+                ImGui::Text("Copyright (c) 2021 Albert Espinosa, Aram Galarza & Carles Lopez\n");
                 ImGui::Text("Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files(the 'Software'),"); 
                 ImGui::Text("to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,");
                 ImGui::Text("and /or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: \n\n");
@@ -545,7 +546,10 @@ void ModuleUI::DrawHierarchySpace(bool* active)
  void ModuleUI::DrawInspectorSpace(bool* active)
  {
      if (*active == false)
+     {
+         inspectorOpen = false;
          return;
+     }
 
      if (!ImGui::Begin("Inspector", active))
      {
@@ -557,7 +561,11 @@ void ModuleUI::DrawHierarchySpace(bool* active)
          if (nodeClicked != -1 && nodeClicked != App->scene->rootNode->UUID)
          {
              GameObject* GO = App->scene->GetGO(nodeClicked);
-            
+             ImVec2 inspectorSize = ImGui::GetCurrentWindow()->Size;
+             inspectorWidth = inspectorSize.x;
+             inspectorHeight = inspectorSize.y;
+             inspectorOpen = true;
+
 
              if (ImGui::CollapsingHeader(GO->name.c_str()))
              {  
@@ -626,7 +634,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                                     // --- POSITION ---
                                     ImGui::Text("Position");
 
-                                    ImGui::SameLine(100.0f);
+                                    ImGui::SameLine(80.0f);
 
                                     float3 translation = transform->GetLocalPosition();
                                     if (ImGui::DragFloat3("T", (float*)&translation, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
@@ -637,7 +645,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                                     // --- ROTATION ---
                                     ImGui::Text("Rotation");
 
-                                    ImGui::SameLine(100.0f);
+                                    ImGui::SameLine(80.0f);
 
                                     float3 rotation = transform->GetLocalEulerRotation() * RADTODEG;
                                     if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
@@ -648,7 +656,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                                     // --- SCALE ---
                                     ImGui::Text("Scale");
 
-                                    ImGui::SameLine(100.0f);
+                                    ImGui::SameLine(80.0f);
 
                                     float3 scale = transform->GetLocalScale();
                                     if (ImGui::DragFloat3("S", (float*)&scale, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
@@ -924,7 +932,6 @@ void ModuleUI::DrawHierarchySpace(bool* active)
      }
  }
 
-
  void ModuleUI::DisplayParticleModules(Emitter* emitter)
  {
      ImGui::TextColored(ImVec4(Cyan.r, Cyan.g, Cyan.b, Cyan.a), "Particle Modules:");
@@ -1167,6 +1174,62 @@ void ModuleUI::DrawHierarchySpace(bool* active)
      }
  }
 
+ bool ModuleUI::IsInspectorOpen()
+ {
+     if (inspectorOpen == true)
+     {
+         return true;
+     }
+     else
+     {
+         return false;
+     }
+ }
+
+ bool ModuleUI::IsMouseInsideScene()
+ {
+     bool inspecOpen = IsInspectorOpen();
+     float mousePosX = App->input->GetMouseX();
+     float mousePosY = App->input->GetMouseY();
+
+     bool xTrue = false;
+     bool yTrue = false;
+
+     if (inspecOpen)
+     {
+         float subX = SCREEN_WIDTH - GetViewportX() - GetInspectorX();
+         if ((mousePosX > subX) && (mousePosX < (SCREEN_WIDTH - GetInspectorX())))
+         {
+             xTrue = true;
+         }
+         if (mousePosY < GetViewportY())
+         {
+             yTrue = true;
+         }
+     }
+     else
+     {
+         float subX = SCREEN_WIDTH - GetViewportX();
+         if ((mousePosX > subX) && (mousePosX < (SCREEN_WIDTH - GetInspectorX())))
+         {
+             xTrue = true;
+         }
+         if (mousePosY < GetViewportY())
+         {
+             yTrue = true;
+         }
+     }
+
+     if (xTrue == true && yTrue == true)
+     {
+         return true;
+     }
+     else
+     {
+         return false;
+     }
+ }
+
  void ModuleUI::DrawSceneSpace(bool* active)
  {
      if (*active == true)
@@ -1181,7 +1244,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
 
          if (viewportSize.x != lastViewportSize.x || viewportSize.y != lastViewportSize.y)
          {
-             //App->camera->aspectRatio = viewportSize.x / viewportSize.y;
+             App->camera->aspectRatio = viewPortX / viewPortY;
              App->camera->RecalculateProjection();
          }
          lastViewportSize = viewportSize;

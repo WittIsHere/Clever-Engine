@@ -30,8 +30,12 @@ public:
 
 	const float GetViewportX() { return viewPortX; }
 	const float GetViewportY() { return viewPortY; }
+	const float GetInspectorX() { return inspectorWidth; }
+	const float GetInspectorY() { return inspectorHeight; }
 
 	void PickedGO(uint32 id);
+	bool IsInspectorOpen();
+	bool IsMouseInsideScene();
 
 private:
 	void DrawConsoleSpace(bool* active);
@@ -101,4 +105,8 @@ private:
 
 	float viewPortY = 0;
 	float viewPortX = 0;
+
+	float inspectorWidth = 0;
+	float inspectorHeight = 0;
+	bool inspectorOpen = false;
 };

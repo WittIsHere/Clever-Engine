@@ -128,27 +128,42 @@ update_status ModuleCamera3D::Update(float dt)
 
 	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
-		if (App->camera->test == true)
+		bool inspecOpen = App->ui->IsInspectorOpen();
+
+		if (App->ui->IsMouseInsideScene())
 		{
-			App->camera->test = false;
+			if (inspecOpen == true)
+			{
+				float subX = SCREEN_WIDTH - App->ui->GetViewportX() - App->ui->GetInspectorX();
+				float mouseViewportX = App->input->GetMouseX() - subX;
+
+				// We need to normalize it
+				float mouseNormX = (mouseViewportX / App->ui->GetViewportX());
+				float mouseNormY = (App->input->GetMouseY() / App->ui->GetViewportY());
+
+				mouseNormX = (mouseNormX - 0.5f) * 2.0f;
+				mouseNormY = -(mouseNormY - 0.5f) * 2.0f;
+
+				LineSegment ray = App->camera->GenerateRaycast(mouseNormX, mouseNormY);
+				App->scene->MousePicking(ray);
+			}
+			else
+			{
+				float subX = SCREEN_WIDTH - App->ui->GetViewportX();
+				float mouseViewportX = App->input->GetMouseX() - subX;
+
+				// We need to normalize it
+				float mouseNormX = (mouseViewportX / App->ui->GetViewportX());
+				float mouseNormY = (App->input->GetMouseY() / App->ui->GetViewportY());
+
+				mouseNormX = (mouseNormX - 0.5f) * 2.0f;
+				mouseNormY = -(mouseNormY - 0.5f) * 2.0f;
+
+				LineSegment ray = App->camera->GenerateRaycast(mouseNormX, mouseNormY);
+				App->scene->MousePicking(ray);
+			}
 		}
-
-		// Some operations to get the mouse position relative to the viewport and not the screen
-		float subX = SCREEN_WIDTH - App->ui->GetViewportX();
-		float mouseViewportX = App->input->GetMouseX() - subX;
-
-		// We need to normalize it
-		float mouseNormX = (mouseViewportX / App->ui->GetViewportX());
-		float mouseNormY = (App->input->GetMouseY() / App->ui->GetViewportY());
-
-		mouseNormX = (mouseNormX - 0.5f) * 2.0f;
-		mouseNormY = -(mouseNormY - 0.5f) * 2.0f;
-
-		LineSegment ray = App->camera->GenerateRaycast(mouseNormX, mouseNormY);
-		App->scene->MousePicking(ray);
 	}
-
-
 	return UPDATE_CONTINUE;
 }
 
