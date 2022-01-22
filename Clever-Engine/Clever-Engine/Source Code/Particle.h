@@ -26,6 +26,6 @@ public:
 	float normalizedLifetime;
 	
 	float size = 1.0f;
-	Color color;
+	Color color = Color(.0f, .0f, .0f, .0f);
 	float distanceToCamera;
 };

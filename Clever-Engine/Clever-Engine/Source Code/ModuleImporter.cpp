@@ -171,9 +171,13 @@ void ModuleImporter::LoadModelToScene(const char* file_path)
 		//read the meta file and get the resource id. Then, loop every resource in the corresponding meta files and add it as childs of the GO.
 		while (App->fileSystem->Exists(fullName.c_str()))
 		{
+			GameObject* childGO = App->scene->CreateGameObject(GOname.c_str(), GO);
+
 			char* buffer = nullptr;
 			ParsonNode metaRoot = App->resources->LoadMetaFile(fullName.c_str(), &buffer);
 			uint32 resourceUid = (uint32)metaRoot.GetNumber("UID");
+			//uint32 textureuid = (uint32)metaRoot.GetNumber("TextureUID");
+
 			RELEASE_ARRAY(buffer);
 
 			if (!metaRoot.NodeIsValid())
@@ -190,8 +194,8 @@ void ModuleImporter::LoadModelToScene(const char* file_path)
 			}
 			else
 			{
-				//TODO: keep the GO hierarchy loading resource models. Also keep the names of the GO inside metas?
-				GO->CreateComponent(res);
+				
+				childGO->CreateComponent(res);
 			}
 
 			j++;
@@ -441,6 +445,12 @@ uint ModuleImporter::LoadTextureFromPath(const char* path)
 				LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
 				textureBuffer = 0;
 			}
+
+			uint32 uuid = Random::GetRandomUint();
+			std::string path = TEXTURES_PATH + std::to_string(uuid) + TEXTURES_EXTENSION;
+			ResourceBase temp = *(new ResourceBase(uuid, path, path, ResourceType::MESH));
+
+			App->resources->library.emplace(uuid, temp);
 		}
 		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
 

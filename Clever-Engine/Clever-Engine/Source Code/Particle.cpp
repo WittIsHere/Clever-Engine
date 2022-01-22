@@ -13,7 +13,7 @@ Particle::Particle()
 	currentLifetime = 0;
 
 	size = 1.0f;
-	color = Color(0,0,0); //white
+	color = Color(.0f, .0f, .0f, .0f); //transparent white
 	distanceToCamera = 0; 
 }
 

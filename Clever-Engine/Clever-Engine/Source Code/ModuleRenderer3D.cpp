@@ -467,6 +467,8 @@ void ParticleRenderer::LoadBuffers()
 void ParticleRenderer::Render()
 {
 	App->renderer3D->BindCheckerTex();
+	
+	//glColor4b(color.r, color.g, color.b, color.a);
 
 	glPushMatrix();
 	glMultMatrixf(transform.ptr());

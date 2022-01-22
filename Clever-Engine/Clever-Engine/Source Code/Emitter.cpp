@@ -153,24 +153,24 @@ bool Emitter::AddModuleFromType(ParticleModule::Type type)
 		case (ParticleModule::Type::EMITTER_SPAWN):
 			modules.push_back(new EmitterSpawn);
 			break;
-		/*case (ParticleModule::Type::EMITTER_AREA):
+		case (ParticleModule::Type::EMITTER_AREA):
 			modules.push_back(new EmitterArea);
 			break;
 		case(ParticleModule::Type::PARTICLE_COLOR):
 			modules.push_back(new ParticleColor);
-			break;	*/
+			break;	
 		case(ParticleModule::Type::PARTICLE_LIFETIME):
 			modules.push_back(new ParticleLifetime);
 			break;
 		case(ParticleModule::Type::PARTICLE_MOVEMENT):
 			modules.push_back(new ParticleMovement);
 			break;
-		/*case(ParticleModule::Type::PARTICLE_SIZE):
+		case(ParticleModule::Type::PARTICLE_SIZE):
 			modules.push_back(new ParticleSize);
 			break;
 		case(ParticleModule::Type::PARTICLE_BILLBOARDING):
 			modules.push_back(new ParticleBillboarding);
-			break;*/
+			break;
 		case(ParticleModule::Type::NONE):
 			return false;
 	}
