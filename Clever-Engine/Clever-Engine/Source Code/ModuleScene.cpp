@@ -30,8 +30,13 @@ bool ModuleScene::Start()
 {
 	LOG("ModuleScene Starting");
 	bool ret = true;
-	/*cameraGO = CreateGameObject("Camera", rootNode);
-	cameraGO->CreateComponent(COMPONENT_TYPE::CAMERA);*/
+
+	float3 startingPos = { -40,0,20 };
+	float3 startingRot = { 0,90,0 };
+	cameraGO = CreateGameObject("Camera", rootNode);
+	cameraGO->CreateComponent(COMPONENT_TYPE::CAMERA);
+	cameraGO->GetComponentTransform()->SetLocalPosition(startingPos);
+	cameraGO->GetComponentTransform()->SetLocalRotation(startingRot);
 
 	LOG("Importing scene test");
 	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
@@ -72,7 +77,7 @@ bool ModuleScene::Draw()
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		if (gameObjects[i]->isActive == true /*&& gameObjects[i]->insideFrustum == true*/)
+		if (gameObjects[i]->isActive == true && gameObjects[i]->insideFrustum == true)
 			gameObjects[i]->Draw();
 	}
 	return true;
