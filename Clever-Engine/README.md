@@ -5,9 +5,10 @@
 ## NEW Features
 All that we have added for this new assignment
 * Now Mouse picking and Frustum now properly work.
-* Added a new GameObject named camera, which uses its own component.
-* Added the creation of an empty game object.
-* Particle system properly implemented and working with the effects of fireworks and smoke.
+* Added a new GameObject named camera, which uses its own component and its own Frustum.
+* Added the creation of an empty game object, like Unity does.
+* Particle system properly implemented and working with the effects of fireworks and smoke. This system allows the user to create a particle emitter with multiple options,
+like determining the velocity and acceleretion of the particles, delimitate which area are spawned, editing their colors, among other many features.
 * Custom File Format for textures.
 * Resource management fixed and upgraded.
 * Save and load of the scene.
