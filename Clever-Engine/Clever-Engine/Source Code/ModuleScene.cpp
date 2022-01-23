@@ -279,47 +279,50 @@ void ModuleScene::MousePicking(const LineSegment &picking)
 {
 	//std::vector<GameObject*> possible;
 
-	//// Iterate all Game Objects to get the list of them on screen
-	//for (int i = 0; i < App->scene->gameObjects.size(); i++)
-	//{
-	//	if (App->scene->gameObjects[i]->hasMesh == true)
-	//	{
-	//		// Get the component mesh
-	//		c_Mesh* mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
+	// Iterate all Game Objects to get the list of them on screen
+	for (int i = 0; i < App->scene->gameObjects.size(); i++)
+	{
+		if (App->scene->gameObjects[i]->hasMesh == true)
+		{
+			 //Get the component mesh
+			c_Mesh* mesh = nullptr;
+			mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
 
-	//		// Intersect the ray drawed before with the AABB box of the meshes
-	//		if (picking.Intersects(mesh->GetAABB()))
-	//		{
-	//			float hitNear;
-	//			float hitFar;
+			 //Intersect the ray drawed before with the AABB box of the meshes
+			if (picking.Intersects(mesh->GetAABB()))
+			{
+				float hitNear;
+				float hitFar;
 
-	//			possible.push_back(App->scene->gameObjects[i]);
-	//			/*if (picking.Intersects(mesh->GetOBB(), hitNear, hitFar))
-	//			{
-	//				possible.push_back(App->scene->gameObjects[i]);
-	//			}*/
-	//		}
-	//	}
-	//	else if (App->scene->gameObjects[i]->IsCamera() == true)
-	//	{
-	//		c_Camera* camera = (c_Camera*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::CAMERA);
-	//		
-	//		bool hit = picking.Intersects(camera->GetAABB());
-	//		if (hit)
-	//		{
-	//			float dNear;
-	//			float dFar;
-	//			hit = picking.Intersects(camera->GetAABB(), dNear, dFar);
-	//			
-	//			possible.push_back(App->scene->gameObjects[i]);
-	//		}
-	//	}
-	//}
-	//if (possible.empty() == false)
-	//{
-	//	App->ui->PickedGO(possible[0]->UUID);
-	//	possible.clear();
-	//}
+				possible.push_back(App->scene->gameObjects[i]);
+				/*if (picking.Intersects(mesh->GetOBB(), hitNear, hitFar))
+				{
+					possible.push_back(App->scene->gameObjects[i]);
+				}*/
+			}
+		}
+		else if (App->scene->gameObjects[i]->IsCamera() == true)
+		{
+			c_Camera* camera = nullptr;
+			camera = (c_Camera*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::CAMERA);
+			
+			bool hit = picking.Intersects(camera->GetAABB());
+			if (hit)
+			{
+				float dNear;
+				float dFar;
+				hit = picking.Intersects(camera->GetAABB(), dNear, dFar);
+				
+				possible.push_back(App->scene->gameObjects[i]);
+			}
+		}
+	}
+	if (possible.empty() == false)
+	{
+		App->ui->PickedGO(possible[0]->UUID);
+		possible.clear();
+	}
+
 	//if (possible.empty() == false)
 	//{
 	//	for (int i = 0; possible.size(); i++)

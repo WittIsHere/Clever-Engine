@@ -284,7 +284,6 @@ void ModuleRenderer3D::DrawScene()
 
 void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform, c_Material* material)
 {
-
 	if (mesh == nullptr)
 	{
 		LOG("[error]: mesh equals nullptr");
@@ -299,8 +298,10 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform, c_Material
 	//PollErrors();
 
 	glPushMatrix();
-	glMultMatrixf(transform->GetWorldTransformPtr());
-	
+
+	float4x4 worldPos = transform->GetWorldTransform();
+	glMultMatrixf((float*)&worldPos.Transposed());
+
 	// We start drawing the mesh
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -425,7 +426,7 @@ void ModuleRenderer3D::PollErrors() //Poll and print to the console every openGl
 
 	while (error != GL_NO_ERROR)
 	{
-		//LOG("OpenGL error found! %s\n", gluErrorString(error));
+		LOG("OpenGL error found! %d\n",error);
 		error = glGetError();
 	}
 }

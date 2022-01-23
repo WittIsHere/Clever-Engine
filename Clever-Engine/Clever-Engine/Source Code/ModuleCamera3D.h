@@ -19,6 +19,9 @@ public:
 
 	LineSegment GenerateRaycast(float normalizedX, float normalizedY);
 
+	void MainCameraDrawFrustum();
+	void MainCameraCheckFrustum();
+
 	void LookAt(const float3&Spot);
 	//void Move(const float3&Movement);
 	float* GetViewMatrix();
@@ -44,4 +47,6 @@ public:
 	
 	float lastDeltaX = 0.f, lastDeltaY = 0.f;
 	mat4x4 ViewMatrixInverse;
+
+	bool showMainFrustum = true;
 };

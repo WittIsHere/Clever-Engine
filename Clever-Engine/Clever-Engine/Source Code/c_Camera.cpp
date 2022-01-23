@@ -50,6 +50,26 @@ bool c_Camera::Enable()
 
 bool c_Camera::Disable()
 {
+	c_Mesh* mesh = nullptr;
+	for (int i = 0; i < App->scene->gameObjects.size(); i++)
+	{
+		if (App->scene->gameObjects[i]->isRoot == false && App->scene->gameObjects[i]->isCamera == false)
+		{
+			if (App->scene->gameObjects[i]->hasMesh)
+			{
+				mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
+				if (frustum.Contains(mesh->GetAABB()))
+				{
+					mesh->GetOwner()->insideFrustum = true;
+				}
+				else
+				{
+					mesh->GetOwner()->insideFrustum = true;
+				}
+			}
+		}
+	}
+
 	return true;
 }
 
@@ -128,13 +148,14 @@ void c_Camera::DrawFrustum()
 
 void c_Camera::CheckFrustum()
 {
+	c_Mesh* mesh = nullptr;
 	for (int i = 0; i < App->scene->gameObjects.size(); i++)
 	{
 		if (App->scene->gameObjects[i]->isRoot == false && App->scene->gameObjects[i]->isCamera == false)
 		{
 			if (App->scene->gameObjects[i]->hasMesh)
 			{
-				c_Mesh* mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
+				mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
 				if (frustum.Contains(mesh->GetAABB()))
 				{
 					mesh->GetOwner()->insideFrustum = true;
