@@ -712,7 +712,10 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                             if (ImGui::CollapsingHeader("Particle System"))
                             {
                                 c_ParticleSystem* ps = (c_ParticleSystem*)cmp;
-                                ShowParticleSystemComponent(ps);
+                                if (ps->resource != nullptr)
+                                    ShowParticleSystemComponent(ps);
+                                else
+                                    ps->GenerateResourcePS("ps");
                             }
                             break;
                         }
@@ -754,25 +757,6 @@ void ModuleUI::DrawHierarchySpace(bool* active)
      if (ImGui::Button("Save Particle System"))
      {
          ps->SaveParticleSystem(); 
-     }
-
-     if (ImGui::BeginCombo("##Particle Systems", ps->resource->name.c_str()))
-     {
-         std::vector<ResourceBase> particleSystems;
-         App->resources->GetResourceBases<ResourceParticleSystem>(particleSystems);
-
-         for (auto it = particleSystems.begin(); it != particleSystems.end(); ++it)
-         {
-             bool isSelected = (strcmp(ps->resource->GetAssetsPath(), (*it).assetsPath.c_str()) == 0);
-
-             if (ImGui::Selectable((*it).assetsPath.c_str(), isSelected))
-             {
-                 ps->SetParticleSystem((*it));
-             }
-             if (isSelected)
-                 ImGui::SetItemDefaultFocus();
-         }
-         ImGui::EndCombo();
      }
 
      // --- Particle System NAME ---
