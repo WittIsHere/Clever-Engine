@@ -312,10 +312,10 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 					else
 					{ //--------Save Texture into Lib-------//
 						uint32 uuid = Random::GetRandomUint();
-						std::string fullPath = ASSETS_TEXTURES_PATH + fileName + TEXTURES_EXTENSION;
-						//create the resource texture and add it to library
-						fileName = TEXTURES_PATH + std::to_string(uuid) + TEXTURES_EXTENSION;
-						App->fileSystem->DuplicateFile(path, fileName.c_str());
+						std::string fullPath = ASSETS_TEXTURES_PATH + fileName + TEXTURES_EXTENSION; //Assets Path
+						//create the resource texture and add it to library		
+						fileName = TEXTURES_PATH + std::to_string(uuid) + TEXTURES_EXTENSION;		//Lib path
+						App->fileSystem->DuplicateFile(fullPath.c_str(), fileName.c_str());
 	
 						ResourceBase* temp = new ResourceBase(uuid, fullPath, fileName, ResourceType::TEXTURE);
 						App->resources->library.emplace(uuid, *temp);
@@ -336,9 +336,9 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 
 			uint32 UID = 0;
 			if(GO->GetComponentMaterial() != nullptr)
-				UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, path, currentNode->mName.C_Str(), GO->GetComponentMaterial()->GetResourceUID());
+				UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, currentNode->mName.C_Str(), path,  GO->GetComponentMaterial()->GetResourceUID());
 			else
-				UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, path, currentNode->mName.C_Str());
+				UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, currentNode->mName.C_Str(), path);
 
 			RELEASE(myModel);
 
