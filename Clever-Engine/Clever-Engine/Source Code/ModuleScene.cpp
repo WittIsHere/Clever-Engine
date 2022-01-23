@@ -277,7 +277,7 @@ GameObject* ModuleScene::GetGO(uint32 uuid)
 
 void ModuleScene::MousePicking(const LineSegment &picking)
 {
-	//std::vector<GameObject*> possible;
+	std::vector<GameObject*> possible;
 
 	// Iterate all Game Objects to get the list of them on screen
 	for (int i = 0; i < App->scene->gameObjects.size(); i++)

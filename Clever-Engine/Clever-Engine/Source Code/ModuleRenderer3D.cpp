@@ -300,7 +300,7 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform, c_Material
 	glPushMatrix();
 
 	float4x4 worldPos = transform->GetWorldTransform();
-	glMultMatrixf((float*)&worldPos.Transposed());
+	glMultMatrixf((float*)worldPos.Transposed().ptr());
 
 	// We start drawing the mesh
 
