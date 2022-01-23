@@ -134,6 +134,7 @@ void ModuleImporter::NodeToResource(aiNode* currentNode, const aiScene* currentS
 			uint currentAiMeshIndex = currentNode->mMeshes[i];
 			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
 
+
 			TMYMODEL* myModel = new TMYMODEL();
 			CreateAndSaveResourceMesh(currentAiMesh, myModel, filePath);
 			RELEASE(myModel);
@@ -171,12 +172,13 @@ void ModuleImporter::LoadModelToScene(const char* file_path)
 		//read the meta file and get the resource id. Then, loop every resource in the corresponding meta files and add it as childs of the GO.
 		while (App->fileSystem->Exists(fullName.c_str()))
 		{
-			GameObject* childGO = App->scene->CreateGameObject(GOname.c_str(), GO);
-
 			char* buffer = nullptr;
 			ParsonNode metaRoot = App->resources->LoadMetaFile(fullName.c_str(), &buffer);
 			uint32 resourceUid = (uint32)metaRoot.GetNumber("UID");
-			//uint32 textureuid = (uint32)metaRoot.GetNumber("TextureUID");
+			uint32 textureUid = (uint32)metaRoot.GetNumber("materialUID");
+			std::string name = metaRoot.GetString("Name");
+
+			GameObject* childGO = App->scene->CreateGameObject(name.c_str(), GO);
 
 			RELEASE_ARRAY(buffer);
 
@@ -185,17 +187,19 @@ void ModuleImporter::LoadModelToScene(const char* file_path)
 				LOG("Error: Could not get the Meta Root Node! error path: %s", fullName.c_str());
 				return;
 			}
-			
-			Resource* res = App->resources->GetResource(resourceUid);
-			
-			if (res == nullptr)
+			if (textureUid != 0)
 			{
-				LOG("[ERROR] invalid ID from meta, resource not found. path: %s", fullName);
+				Resource* resTexture = App->resources->GetResource(textureUid);
+				childGO->CreateComponent(resTexture); //create the componentTexture first
+			}
+			
+			if (App->resources->GetResource(resourceUid) == nullptr)
+			{
+				LOG("[ERROR] invalid ID from meta, resource mesh not found. path: %s", fullName);
 			}
 			else
 			{
-				
-				childGO->CreateComponent(res);
+				childGO->CreateComponent(App->resources->GetResource(resourceUid));
 			}
 
 			j++;
@@ -224,7 +228,8 @@ void ModuleImporter::ImportModelToScene(aiNode* sceneRoot, const aiScene* curren
 		std::string GOname;
 		App->fileSystem->SplitFilePathInverse(fileName, &GOname);
 		GameObject* GO = App->scene->CreateGameObject(GOname.c_str(), App->scene->rootNode);
-		App->scene->rootNode->AddChild(GO);
+		GOname.clear();
+
 		for (int i = 0; i < sceneRoot->mNumChildren; i++)
 		{
 			LoadNode(GO, sceneRoot->mChildren[i], currentScene, fileName);
@@ -233,22 +238,23 @@ void ModuleImporter::ImportModelToScene(aiNode* sceneRoot, const aiScene* curren
 	else LOG("ERROR: Trying to load empty scene!");
 }
 
-void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene, const char* path)
+void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiScene* currentScene, const char* path) //STACK OVERFLOW?!
 {
 	GameObject* GO = App->scene->CreateGameObject(currentNode->mName.C_Str(), parent);
-	parent->AddChild(GO); //add child to parent->myChildren to complete hierarchy
 
-	aiVector3D aiScale;
-	aiQuaternion aiRotation;
-	aiVector3D aiTranslation;
-	currentNode->mTransformation.Decompose(aiScale, aiRotation, aiTranslation);							// --- Getting the Transform stored in the node.
+	{
+		aiVector3D aiScale;
+		aiQuaternion aiRotation;
+		aiVector3D aiTranslation;
+		currentNode->mTransformation.Decompose(aiScale, aiRotation, aiTranslation);							// --- Getting the Transform stored in the node.
 
-	c_Transform* transform = GO->GetComponentTransform();
+		c_Transform* transform = GO->GetComponentTransform();
 
-	transform->SetLocalPosition({ aiTranslation.x, aiTranslation.y, aiTranslation.z });
-	transform->SetLocalRotation({ aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w });					 
+		transform->SetLocalPosition({ aiTranslation.x, aiTranslation.y, aiTranslation.z });
+		transform->SetLocalRotation({ aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w });
 
-	transform->SetLocalScale({ aiScale.x, aiScale.y, aiScale.z });
+		transform->SetLocalScale({ aiScale.x, aiScale.y, aiScale.z });
+	}
 
 	if (currentNode->mNumMeshes > 0)
 	{
@@ -256,15 +262,65 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 		{
 			uint currentAiMeshIndex = currentNode->mMeshes[i];
 			aiMesh* currentAiMesh = currentScene->mMeshes[currentAiMeshIndex]; //find the correct mesh at the scene with the index given by mMeshes array
+			
+			uint tempIndex = currentAiMesh->mMaterialIndex; //look for textures first. Import them if found
+			if (tempIndex >= 0)
+			{
+				aiMaterial* currentMaterial = currentScene->mMaterials[currentAiMesh->mMaterialIndex]; //access the mesh material using the mMaterialIndex
+				aiString texPath;
+				if (currentMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
+				{
+					std::string	fullPath = ASSETS_PATH;
+					fullPath += texPath.C_Str();
+					const char* filePath = fullPath.c_str();
+					std::string fileName = {};
+					App->fileSystem->SplitFilePath(filePath, &fullPath, &fileName);
 
+					fullPath = fullPath + fileName + META_EXTENSION;
+					filePath = {};
+
+					if (App->fileSystem->Exists(fullPath.c_str()))
+					{
+						char* buffer = nullptr;
+						ParsonNode metaRoot = App->resources->LoadMetaFile(fullPath.c_str(), &buffer); //load texture meta
+
+						Resource* resTexture = App->resources->GetResource((uint32)metaRoot.GetNumber("UID")); //get the resourceTexture
+						RELEASE_ARRAY(buffer);
+
+						GO->CreateComponent(resTexture);
+					}
+					else
+					{
+						uint32 uuid = Random::GetRandomUint();
+						fullPath = ASSETS_TEXTURES_PATH + fileName + TEXTURES_EXTENSION;
+						//create the resource texture and add it to library
+						fileName = TEXTURES_PATH + std::to_string(uuid) + TEXTURES_EXTENSION;
+						App->fileSystem->DuplicateFile(path, fileName.c_str());
+	
+						ResourceBase* temp = new ResourceBase(uuid, fullPath, fileName, ResourceType::TEXTURE);
+						App->resources->library.emplace(uuid, *temp);
+						//write the meta file to connect the assets file with the resource in lib
+						App->resources->SaveMetaFile(*temp);
+						
+						Resource* texData = App->resources->GetResource(uuid);
+						GO->CreateComponent(texData);
+					}
+					//tempMesh->texture = texData;	//TODO assign the texture to the current mesh
+
+				}
+			
+			}
 			TMYMODEL* myModel = new TMYMODEL();
-	/*		for (size_t i = 0; i < currentAiMesh->mNumVertices; i++)
+			/*for (size_t i = 0; i < currentAiMesh->mNumVertices; i++)
 			{
 				myModel->textCoords[i] = 0.0f;
 			}*/
 
 			uint32 UID = 0;
-			UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, path);
+			if(GO->GetComponentMaterial() != nullptr)
+				UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, path, GO->GetComponentMaterial()->GetResourceUID());
+			else
+				UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, path);
 
 			RELEASE(myModel);
 
@@ -276,27 +332,7 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 			//App->scene->meshPool.push_back(tempMesh);
 
 			GO->CreateComponent(myRes);
-
-			uint tempIndex = currentAiMesh->mMaterialIndex;
-			if (tempIndex >= 0)
-			{
-				//in case there is a texture add the component texture to the previous GO
-				aiMaterial* currentMaterial = currentScene->mMaterials[currentAiMesh->mMaterialIndex]; //access the mesh material using the mMaterialIndex
-				aiString texPath;
-				if (currentMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
-				{
-					std::string fullPath = ASSETS_PATH;
-					fullPath += texPath.C_Str();
-
-					Resource* texData = App->resources->CreateResource(ResourceType::TEXTURE, fullPath.c_str());
-					
-					
-					GO->CreateComponent(texData);
-
-					//tempMesh->texture = texData;	//TODO assign the texture to the current mesh
-					
-				}
-			}
+			
 		}
 	}
 	if (currentNode->mNumChildren > 0)
@@ -414,7 +450,7 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, ResourceMesh* myMesh)
 //	else LOG("ERROR: Failed loading image from path: %s", path);
 //}
 
-uint ModuleImporter::LoadTextureFromPath(const char* path)
+uint ModuleImporter::LoadTextureFromPath(const char* path, uint32 uuid)
 {
 	uint textureBuffer = 0;
 	ILuint id_img = 0;
@@ -422,39 +458,55 @@ uint ModuleImporter::LoadTextureFromPath(const char* path)
 
 	if (path != nullptr)
 	{
-		ilGenImages(1, (ILuint*)&id_img);
-		ilBindImage(id_img);
+		std::string filePath = {};
+		std::string	fileName = {};
+		App->fileSystem->SplitFilePath(path, &filePath, &fileName);
 
-		error = ilGetError();
+		filePath = filePath + fileName + META_EXTENSION;
+		fileName.clear();
 
-		if (error)
-			LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
+		//if (App->fileSystem->Exists(filePath.c_str()))
+		//{
+		//	char* buffer = nullptr;
+		//	ParsonNode metaRoot = App->resources->LoadMetaFile(filePath.c_str(), &buffer); //load texture meta
 
-		if (ilLoad(IL_TYPE_UNKNOWN, path))
+		//	uint32 resourceUid = (uint32)metaRoot.GetNumber("UID"); //get the resourceTexture UID
+		//	RELEASE_ARRAY(buffer);
+
+		//	ResourceTexture* resTexture = (ResourceTexture*)App->resources->GetResource(resourceUid); //get the resourceTexture
+
+		//	return resTexture->GetTextureID();
+		//}
+		//else
 		{
-			ILinfo ImageInfo; 
-			iluGetImageInfo(&ImageInfo);
-			if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT) 
-				iluFlipImage();
+			ilGenImages(1, (ILuint*)&id_img);
+			ilBindImage(id_img);
 
-			textureBuffer = ilutGLBindTexImage();
 			error = ilGetError();
 
 			if (error)
-			{
 				LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
-				textureBuffer = 0;
+
+			if (ilLoad(IL_TYPE_UNKNOWN, path))
+			{
+				ILinfo ImageInfo;
+				iluGetImageInfo(&ImageInfo);
+				if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+					iluFlipImage();
+
+				textureBuffer = ilutGLBindTexImage();
+				error = ilGetError();
+
+				if (error)
+				{
+					LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
+					textureBuffer = 0;
+				}
 			}
+			else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
 
-			uint32 uuid = Random::GetRandomUint();
-			std::string path = TEXTURES_PATH + std::to_string(uuid) + TEXTURES_EXTENSION;
-			ResourceBase temp = *(new ResourceBase(uuid, path, path, ResourceType::MESH));
-
-			App->resources->library.emplace(uuid, temp);
+			ilDeleteImages(1, &id_img); // Because we have already copied image data into texture data we can release memory used by image.
 		}
-		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
-
-		ilDeleteImages(1, &id_img); // Because we have already copied image data into texture data we can release memory used by image.
 	}
 
 	return textureBuffer;
@@ -467,14 +519,13 @@ void ModuleImporter::ImportToCustomFF(const char* libPath) //this is actually me
 	{
 		if (aiScene->mRootNode != nullptr)
 		{
-			//TODO: separate filename from path and extension
 			ImportModelToLibrary(aiScene->mRootNode, aiScene, libPath);
 		}
 	}
 
 }
 
-uint32 ModuleImporter::CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* myModel, const char* assetsPath)
+uint32 ModuleImporter::CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* myModel, const char* assetsPath, uint32 textureUID)
 {
 	//create custom file format inside TMYMODEL class
 	myModel = CreateCustomMesh(mesh);
@@ -498,7 +549,9 @@ uint32 ModuleImporter::CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* m
 	App->resources->library.emplace(uuid, temp);
 
 	//write the meta file to connect the assets file with the resource in lib
-	App->resources->SaveMetaFile(temp);
+	std::string name = {};
+	App->fileSystem->SplitFilePathInverse(assetsPath, &name);
+	App->resources->SaveMetaFile(temp, name.c_str(), textureUID);
 	
 	return uuid;
 }

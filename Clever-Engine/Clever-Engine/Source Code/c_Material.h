@@ -24,11 +24,13 @@ public:
 public:
 	const char* getPath();
 	const uint getTextureID();
+	uint32 GetResourceUID();
 
 	void setPath(const char* path);
 	void setTextureID(uint id);
 
 	bool AssignNewData(ResourceTexture* data);
+
 
 private:
 	ResourceTexture* textureData = nullptr;

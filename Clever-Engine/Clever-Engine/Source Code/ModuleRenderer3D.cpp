@@ -28,6 +28,7 @@ ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Modul
 ModuleRenderer3D::~ModuleRenderer3D()
 {}
 
+
 // Called before render is available
 bool ModuleRenderer3D::Init()
 {

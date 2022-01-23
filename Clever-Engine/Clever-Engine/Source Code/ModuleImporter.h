@@ -37,11 +37,11 @@ public:
 
 	//texture importer
 	//void LoadTextureFromPathAndFill(const char* path, MeshData* myMesh);
-	uint LoadTextureFromPath(const char* path);
+	uint LoadTextureFromPath(const char* path, uint32 uuid);
 
 	void ImportToCustomFF(const char* libPath);
 
-	uint32 CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* myModel, const char* assetsPath);
+	uint32 CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* myModel, const char* assetsPath, uint32 textureUID = 0);
 
 
 	TMYMODEL* CreateCustomMesh(const aiMesh* m);

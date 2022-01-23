@@ -29,6 +29,7 @@ public:
     const char* GetLibraryPath() const;
 
 public:
+    std::string name;
     uint32 UID;
 
     std::string assetsPath;

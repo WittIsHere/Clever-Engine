@@ -51,6 +51,7 @@ enum update_status
 #define ASSETS_PATH "Assets/Textures/"
 #define ASSETS_SCENES_PATH "Assets/Scenes/"
 #define ASSETS_MODELS_PATH "Assets/Models/"
+#define ASSETS_TEXTURES_PATH "Assets/Textures/"
 #define ASSETS_PARTICLESYSTEMS_PATH "Assets/ParticleSystems"
 
 // Not that dirty Library directories

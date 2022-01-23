@@ -22,7 +22,6 @@ bool ModuleResources::Init()
 	LOG("ModuleResources Init");
 	bool ret = true;
 
-	ImportAssetsFolder();
 	return ret;
 }
 
@@ -30,7 +29,8 @@ bool ModuleResources::Start()
 {
 	LOG("ModuleResources Starting");
 	bool ret = true;
-	 
+	
+	//ImportAssetsFolder();
 
 	return ret;
 }
@@ -126,12 +126,16 @@ void ModuleResources::ImportOurAssets(PathNode node)
 
 }
 
-bool ModuleResources::SaveMetaFile(ResourceBase resource, const char* name)
+bool ModuleResources::SaveMetaFile(ResourceBase resource, const char* name, uint32 textureUID)
 {
 	//Load meta file with info ------------------						
-	ParsonNode metaRoot = ParsonNode();									
+	ParsonNode metaRoot = ParsonNode();		
+	metaRoot.SetString("Name", name);
 	metaRoot.SetNumber("UID", resource.GetUID());																					
-	metaRoot.SetNumber("Type", (uint)resource.GetType());																			
+	metaRoot.SetNumber("Type", (uint)resource.GetType());			
+	if(resource.GetType() == ResourceType::MESH)
+		metaRoot.SetNumber("materialUID", textureUID);
+
 
 	//metaRoot.SetString("Name", name); 																							
 	metaRoot.SetString("AssetsPath", resource.GetAssetsPath());
@@ -201,15 +205,8 @@ Resource* ModuleResources::CreateResource(ResourceType type, const char* assetsP
 	//case ResourceType::MATERIAL: { resource = new R_Material(); }		break;
 	case ResourceType::TEXTURE: 
 	{ 
-		ResourceTexture* resourceTex = new ResourceTexture();
-		uint id = App->importer->LoadTextureFromPath(assetsPath);
-		if (id != 0)
-		{
-			resourceTex->SetTextureID(id);
-		}
-
-		resource = (Resource*)resourceTex;
-
+		resource = new ResourceTexture();
+		
 	}	break;
 	//case ResourceType::MODEL: { resource = new R_Model(); }			break;
 	case ResourceType::PARTICLE_SYSTEM: { resource = new ResourceParticleSystem(); }	break;
@@ -320,46 +317,35 @@ bool ModuleResources::AllocateResource(uint32 id, ResourceBase base)
 		return true;
 	}
 
-	//char* buffer = nullptr;
-	//const char* libraryPath = library.find(id)->second.libraryPath.c_str();
-	//uint read = App->fileSystem->Load(libraryPath, &buffer);
-	//if (read == 0)
-	//{
-	//	LOG("[ERROR] Resource Manager: File system could not read File [%s]", libraryPath);
-	//	return false;
-	//}
-
-	ResourceType type = ResourceType::MESH; //TODO solve the hardcode
-	//TODO: CreateResource(type, path, uid)
-	ResourceMesh* resource = new ResourceMesh();  
-	resource->assetsPath = base.assetsPath.c_str();
-	resource->libraryPath = base.libraryPath.c_str();
-	resource->ForceUID(id);
-
-	bool success = false;
-	success = App->importer->CustomMeshToScene(resource->libraryPath.c_str(), resource);
-	//switch (type)
-	//{
-	//case ResourceType::MODEL: { success = Importer::Scenes::Load(buffer, (R_Model*)resource); }				break;
-	//case ResourceType::MESH: { success = Importer::Meshes::Load(buffer, (R_Mesh*)resource); }				break;
-	//
-	//case ResourceType::NONE: { /*success = false;*/ }														break;	// In case NONE is a trigger and a method needs to be called.
-	//}
-
-	//RELEASE_ARRAY(buffer);
-
-	if (success)
+	if (base.GetType() == ResourceType::MESH)
 	{
-		resources.emplace(resource->GetUID(), resource);
-		LOG("[STATUS] Resource Manager: Successfully Allocated Resource in Memory!");
+		//TODO: CreateResource(type, path, uid)
+		Resource* resource = CreateResource(base.GetType(), base.GetAssetsPath(), id);
+
+		bool success = false;
+		success = App->importer->CustomMeshToScene(resource->libraryPath.c_str(), (ResourceMesh*)resource);
+
+		if (success)
+		{
+			resources.emplace(resource->GetUID(), resource);
+			LOG("[STATUS] Resource Manager: Successfully Allocated Resource in Memory!");
+		}
+		else
+		{
+			DeleteResource(resource->GetUID());	// This deletes from resources and library!.
+			LOG("[ERROR] Resource Manager: Importer could not load the Resource Data from file");
+		}
+		return success;
 	}
 	else
 	{
-		DeleteResource(resource->GetUID());	// This deletes from resources and library!.
-		LOG("[ERROR] Resource Manager: Importer could not load the Resource Data from file");
+		ResourceTexture* resource = (ResourceTexture*)CreateResource(base.GetType(), base.GetAssetsPath(), id);
+		uint texID = App->importer->LoadTextureFromPath(base.GetAssetsPath(), id);
+		resource->SetTextureID(texID);
+		resources.emplace(resource->GetUID(), resource);
 	}
 
-	return success;
+	return true;
 
 }
 

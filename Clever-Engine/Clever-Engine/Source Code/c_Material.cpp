@@ -85,7 +85,11 @@ void c_Material::setPath(const char* path)
 void c_Material::setTextureID(uint id) //does this method make any sense? shouldn't we just change the texturedata instead of the id?
 {
 	textureData->SetTextureID(id);
+}
 
+uint32 c_Material::GetResourceUID() 
+{
+	return textureData->GetUID();
 }
 
 bool c_Material::AssignNewData(ResourceTexture* data)

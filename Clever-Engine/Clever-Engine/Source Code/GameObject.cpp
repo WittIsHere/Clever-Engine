@@ -183,8 +183,16 @@ Component* GameObject::CreateComponent(Resource* CD)
 			cmp->Enable();
 			hasMesh = true;
 			ret = cmp;
-		}
-			break;
+		}break;
+
+		case(ResourceType::TEXTURE):
+		{
+			c_Material* cmp = new c_Material(this, (ResourceTexture*)CD);
+			myComponents.push_back((Component*)cmp);
+			material = cmp;
+			ret = cmp;
+			
+		}break;			
 		}
 	}
 	return ret;
@@ -261,6 +269,11 @@ Component* GameObject::GetComponentByType(COMPONENT_TYPE type)
 c_Transform* GameObject::GetComponentTransform()
 {
 	return transform;
+}
+
+c_Material* GameObject::GetComponentMaterial()
+{
+	return material;
 }
 
 bool GameObject::DeleteComponent(Component* componentToDelete)

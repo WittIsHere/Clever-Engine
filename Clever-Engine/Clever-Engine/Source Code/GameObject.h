@@ -41,6 +41,7 @@ public:
 	Component* GetComponent(uint componentIndex);
 	Component* GetComponentByType(COMPONENT_TYPE type);
 	c_Transform* GetComponentTransform();
+	c_Material* GetComponentMaterial();
 	bool DeleteComponent(Component* componentToDelete);
 	void DeleteAllComponents();
 
