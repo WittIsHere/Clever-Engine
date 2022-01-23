@@ -89,8 +89,6 @@ bool ModuleScene::CleanUp()
 	}
 
 	gameObjects.clear();	
-	ourEmitterInstance->ResetEmitter();
-	ourEmitter->CleanUp();
 
 	RELEASE(ourEmitterInstance);
 	RELEASE(ourEmitter);

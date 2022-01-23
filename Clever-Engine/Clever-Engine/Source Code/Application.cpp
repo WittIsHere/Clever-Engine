@@ -120,6 +120,7 @@ update_status Application::Update()
 		}
 	}
 
+
 	for (std::vector<Module*>::iterator e = list_modules.begin(); e != list_modules.end(); e++)
 	{
 		Module* module = *e;

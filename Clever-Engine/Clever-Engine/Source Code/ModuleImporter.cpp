@@ -146,7 +146,7 @@ void ModuleImporter::NodeToResource(aiNode* currentNode, const aiScene* currentS
 		{
 			NodeToResource(currentNode->mChildren[i], currentScene, filePath);
 		}
-	}
+	} 
 }
 
 //Take the path to a .FBX, import it to our custom format and load it into scene
@@ -290,8 +290,10 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 						GO->CreateComponent(resTexture);
 					}
 					else
+
 					{
 						uint32 uuid = Random::GetRandomUint();
+						name = fileName.c_str();
 						fullPath = ASSETS_TEXTURES_PATH + fileName + TEXTURES_EXTENSION;
 						//create the resource texture and add it to library
 						fileName = TEXTURES_PATH + std::to_string(uuid) + TEXTURES_EXTENSION;
@@ -300,7 +302,7 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 						ResourceBase* temp = new ResourceBase(uuid, fullPath, fileName, ResourceType::TEXTURE);
 						App->resources->library.emplace(uuid, *temp);
 						//write the meta file to connect the assets file with the resource in lib
-						App->resources->SaveMetaFile(*temp);
+						App->resources->SaveMetaFile(*temp, name, uuid);
 						
 						Resource* texData = App->resources->GetResource(uuid);
 						GO->CreateComponent(texData);

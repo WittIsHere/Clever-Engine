@@ -59,5 +59,6 @@ private:
 
 private:
 	const char* textPath;
+	const char* name;
 
 };
