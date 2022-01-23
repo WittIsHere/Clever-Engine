@@ -68,6 +68,8 @@ public:
 
 	void AddParticle(const float4x4& transform, ResourceTexture* mat, Color color, float distanceToCamera);
 	void DrawParticles();
+
+	void DMPlane(uint buffer);
 	
 private:
 	void DrawScene();
@@ -80,14 +82,9 @@ public:
 	OBB obb;
 	bool render = true;
 	LineSegment ray;
-	// Draw Cube vars
-	void DrawCube();
-	void DMPlane();
-	void TestPlane();
+
 	void CreateCheckerTex();
 	void BindCheckerTex();
-
-	uint FillTexture(const void* text, uint width, uint height, int format, uint format2, const char* path);
 
 	uint houseTexture_Buffer = 0;
 	uint checker_Buffer = 0;

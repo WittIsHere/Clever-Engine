@@ -428,46 +428,6 @@ void ModuleImporter::ImportMesh(aiMesh* mesh, ResourceMesh* myMesh)
 	}
 }
 
-//void ModuleImporter::LoadTextureFromPathAndFill(const char* path, MeshData* myMesh)
-//{
-//	uint textureBuffer = 0;
-//	ILuint id_img = 0;
-//	ILenum error;
-//
-//	if (path != nullptr)
-//	{
-//		ilGenImages(1, (ILuint*)&id_img);
-//		ilBindImage(id_img);
-//
-//		error = ilGetError();
-//		if (error)
-//			LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
-//
-//		if (ilLoad(IL_PNG, path)) //or ilLoadImage(path) which behaves the same
-//		{
-//			uint tempTextureID = ilutGLBindTexImage();	//bind texture to openGL and get the ID
-//		
-//			error = ilGetError();
-//			if (error)
-//				LOG("ERROR: Failed binding the DevIL Texture with OpenGl: %s", iluErrorString(error));
-//
-//			//TODO: check for duplicates?
-//
-//			TextureData* texData = new TextureData();
-//			App->scene->texturePool.push_back(texData);	//Add a new texture to the textures array
-//
-//			texData->path = path;	//assign the new texture its path
-//			texData->textureID = tempTextureID;	//assign the new texture its ID
-//
-//			myMesh->texture = texData;	//assign the texture to the current mesh
-//		}
-//		else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
-//
-//		ilDeleteImages(1, &id_img); // Because we have already copied image data into texture data we can release memory used by image.
-//	}
-//	else LOG("ERROR: Failed loading image from path: %s", path);
-//}
-
 uint ModuleImporter::LoadTextureFromPath(const char* path, uint32 uuid)
 {
 	uint textureBuffer = 0;
@@ -585,12 +545,14 @@ TMYMODEL* ModuleImporter::CreateCustomMesh(const aiMesh* m)
 
 	mymodel->textCoordSizeBytes = m->mNumVertices * sizeof(float) * 2;//3==u,v
 	mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
-	for (int i = 0; i < m->mNumVertices; i++)
+	if (m->HasTextureCoords(0))
 	{
-		*(mymodel->textCoords + i * 2) = m->mTextureCoords[0][i].x;
-		*(mymodel->textCoords + i * 2 + 1) = 1.0 - m->mTextureCoords[0][i].y; //this coord image is inverted
+		for (int i = 0; i < m->mNumVertices; i++)
+		{
+			*(mymodel->textCoords + i * 2) = m->mTextureCoords[0][i].x;
+			*(mymodel->textCoords + i * 2 + 1) = 1.0 - m->mTextureCoords[0][i].y; //this coord image is inverted
+		}
 	}
-
 	mymodel->indiceSizeBytes = m->mNumFaces * sizeof(unsigned) * 3; //3==indices/face
 	mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
 	for (int i = 0; i < m->mNumFaces; i++)
@@ -601,14 +563,7 @@ TMYMODEL* ModuleImporter::CreateCustomMesh(const aiMesh* m)
 		*(mymodel->indices + 2 + i * 3) = f->mIndices[2];
 	}
 
-	//const char* someinfo = "This is a great model for my engine. Author: Juan"; // '\0' OjO
-	//mymodel->infoSizeBytes = 128; //or str length
-	//mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
-	//memcpy(mymodel->info, someinfo, mymodel->infoSizeBytes);
-	//mymodel->info[mymodel->infoSizeBytes - 1] = '\0';
-
 	return mymodel;
-
 }
 
 bool ModuleImporter::SaveCustomMeshFile(const TMYMODEL* m, const char* path)
@@ -649,40 +604,6 @@ bool ModuleImporter::SaveCustomMeshFile(const TMYMODEL* m, const char* path)
 
 }
 
-//TMYMODEL* LoadModel(const char* path)
-//{
-//	std::ifstream myfile;
-//	myfile.open(path, std::ios::binary);
-//	if (myfile.is_open())
-//	{
-//
-//		TMYMODEL* mymodel = (TMYMODEL*)malloc(sizeof(TMYMODEL));
-//		myfile.read((char*)mymodel, 5 * sizeof(unsigned)); //READ HEADER
-//
-//		mymodel->vertices = (float*)malloc(mymodel->verticesSizeBytes);
-//		myfile.read((char*)mymodel->vertices, mymodel->verticesSizeBytes);
-//
-//		mymodel->normals = (float*)malloc(mymodel->normalsSizeBytes);
-//		myfile.read((char*)mymodel->normals, mymodel->normalsSizeBytes);
-//
-//		mymodel->textCoords = (float*)malloc(mymodel->textCoordSizeBytes);
-//		myfile.read((char*)mymodel->textCoords, mymodel->textCoordSizeBytes);
-//
-//		mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
-//		myfile.read((char*)mymodel->indices, mymodel->indiceSizeBytes);
-//
-//		mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
-//		myfile.read(mymodel->info, mymodel->infoSizeBytes);
-//
-//		myfile.close();
-//		return mymodel;
-//	}
-//	else
-//	{
-//		return NULL;
-//	}
-//}
-
 bool ModuleImporter::CustomMeshToScene(const char* path, ResourceMesh* mesh)
 {
 	std::ifstream myfile;
@@ -709,9 +630,6 @@ bool ModuleImporter::CustomMeshToScene(const char* path, ResourceMesh* mesh)
 		mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
 		myfile.read((char*)mymodel->indices, mymodel->indiceSizeBytes);
 
-		//mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
-		//myfile.read(mymodel->info, mymodel->infoSizeBytes);
-
 		myfile.close();
 
 		mesh->indicesData = mymodel->indices;
@@ -731,6 +649,96 @@ bool ModuleImporter::CustomMeshToScene(const char* path, ResourceMesh* mesh)
 		LOG("FAILED loading %s", path);
 		return NULL;
 	}
+}
+
+uint32 ModuleImporter::EmplaceTextureForParticle(const char* assPath)
+{
+	uint32 uuid = Random::GetRandomUint();
+	std::string assetsPath = assPath;
+	std::string fileName = TEXTURES_PATH + std::to_string(uuid) + TEXTURES_EXTENSION;
+	App->fileSystem->DuplicateFile(assetsPath.c_str(), fileName.c_str());
+
+	std::string name = {};
+	App->fileSystem->SplitFilePathInverse(assPath, &name);
+
+	ResourceBase* temp = new ResourceBase(uuid, assetsPath, fileName, ResourceType::TEXTURE);
+	App->resources->library.emplace(uuid, *temp);
+
+	App->resources->SaveMetaFile(*temp, name.c_str(), uuid);
+
+	return uuid;
+}
+
+void ModuleImporter::Someting(uint32 uuid)
+{
+	
+	Resource* texData = App->resources->GetResource(uuid);
+
+	textureBuffer1 = GetTextureIDForParticle(texData->assetsPath.c_str(),uuid);
+	
+}
+
+
+uint ModuleImporter::GetTextureIDForParticle(const char* path, uint32 uuid)
+{
+	uint textureBuffer = 0;
+	ILuint id_img = 0;
+	ILenum error;
+
+	if (path != nullptr)
+	{
+		std::string filePath = {};
+		std::string	fileName = {};
+		App->fileSystem->SplitFilePath(path, &filePath, &fileName);
+
+		filePath = filePath + fileName + META_EXTENSION;
+		fileName.clear();
+
+		//if (App->fileSystem->Exists(filePath.c_str()))
+		//{
+		//	char* buffer = nullptr;
+		//	ParsonNode metaRoot = App->resources->LoadMetaFile(filePath.c_str(), &buffer); //load texture meta
+
+		//	uint32 resourceUid = (uint32)metaRoot.GetNumber("UID"); //get the resourceTexture UID
+		//	RELEASE_ARRAY(buffer);
+
+		//	ResourceTexture* resTexture = (ResourceTexture*)App->resources->GetResource(resourceUid); //get the resourceTexture
+
+		//	return resTexture->GetTextureID();
+		//}
+		//else
+		{
+			ilGenImages(1, (ILuint*)&id_img);
+			ilBindImage(id_img);
+
+			error = ilGetError();
+
+			if (error)
+				LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
+
+			if (ilLoad(IL_TYPE_UNKNOWN, path))
+			{
+				ILinfo ImageInfo;
+				iluGetImageInfo(&ImageInfo);
+				if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+					iluFlipImage();
+
+				textureBuffer = ilutGLBindTexImage();
+				error = ilGetError();
+
+				if (error)
+				{
+					LOG("ERROR: Failed generating/binding image: %s", iluErrorString(error));
+					textureBuffer = 0;
+				}
+			}
+			else LOG("ERROR: Failed loading image: %s", iluErrorString(ilGetError()));
+
+			ilDeleteImages(1, &id_img); // Because we have already copied image data into texture data we can release memory used by image.
+		}
+	}
+
+	return textureBuffer;
 }
 
 MeshData* ModuleImporter::CustomMeshToScene(const char* path)
@@ -756,9 +764,6 @@ MeshData* ModuleImporter::CustomMeshToScene(const char* path)
 
 		mymodel->indices = (unsigned*)malloc(mymodel->indiceSizeBytes);
 		myfile.read((char*)mymodel->indices, mymodel->indiceSizeBytes);
-
-		//mymodel->info = (char*)malloc(mymodel->infoSizeBytes);
-		//myfile.read(mymodel->info, mymodel->infoSizeBytes);
 
 		myfile.close();
 

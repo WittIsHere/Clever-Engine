@@ -50,6 +50,10 @@ public:
 	MeshData* CustomMeshToScene(const char* path);
 	bool CustomMeshToScene(const char* path, ResourceMesh* mesh);
 
+	uint32 EmplaceTextureForParticle(const char* assPath);
+	void Someting(uint32 uuid);
+	uint GetTextureIDForParticle(const char* path, uint32 uuid);
+
 private:
 	void ImportModelToLibrary(aiNode* sceneRoot, const aiScene* currentScene, const char* fileName);
 	void NodeToResource(aiNode* currentNode, const aiScene* currentScene, const char* fileName);
@@ -62,5 +66,6 @@ private:
 
 public:
 	std::string comodínGuapissimo;
+	uint textureBuffer1 = 0;
 
 };

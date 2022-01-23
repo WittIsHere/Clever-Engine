@@ -38,7 +38,7 @@ bool ModuleCamera3D::Start()
 
 	aspectRatio = 1.f;
 	verticalFOV = 60.f; 
-	nearPlaneDistance = 3.0f;
+	nearPlaneDistance = 0.1f;
 	farPlaneDistance = 1000.f;
 	
 	return ret;
@@ -106,7 +106,6 @@ update_status ModuleCamera3D::Update(float dt)
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos -= X * speed;
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos += X * speed;
 
-		if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) showMainFrustum = !showMainFrustum;
 
 		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 			speed = 20.0f * dt;
@@ -167,11 +166,6 @@ update_status ModuleCamera3D::Update(float dt)
 			}
 		}
 	}
-	if (showMainFrustum == true)
-	{
-		MainCameraDrawFrustum();
-	}
-	MainCameraCheckFrustum();
 
 	return UPDATE_CONTINUE;
 }
@@ -233,74 +227,74 @@ LineSegment ModuleCamera3D::GenerateRaycast(float normalizedX, float normalizedY
 	return lastRay = cameraFrustum.UnProjectLineSegment(normalizedX, normalizedY);
 }
 
-void ModuleCamera3D::MainCameraDrawFrustum()
-{
-	glLineWidth(2.0f);
-	glBegin(GL_LINES);
-
-	float3 cornerpoints[8];
-	cameraFrustum.GetCornerPoints(cornerpoints);
-
-	glColor3f(0.0f, 0.0f, 0.0f);
-
-	glVertex3f(cornerpoints[0].x, cornerpoints[0].y, cornerpoints[0].z);
-	glVertex3f(cornerpoints[1].x, cornerpoints[1].y, cornerpoints[1].z);
-
-	glVertex3f(cornerpoints[0].x, cornerpoints[0].y, cornerpoints[0].z);
-	glVertex3f(cornerpoints[2].x, cornerpoints[2].y, cornerpoints[2].z);
-
-	glVertex3f(cornerpoints[2].x, cornerpoints[2].y, cornerpoints[2].z);
-	glVertex3f(cornerpoints[3].x, cornerpoints[3].y, cornerpoints[3].z);
-
-	glVertex3f(cornerpoints[1].x, cornerpoints[1].y, cornerpoints[1].z);
-	glVertex3f(cornerpoints[3].x, cornerpoints[3].y, cornerpoints[3].z);
-
-	glVertex3f(cornerpoints[0].x, cornerpoints[0].y, cornerpoints[0].z);
-	glVertex3f(cornerpoints[4].x, cornerpoints[4].y, cornerpoints[4].z);
-
-	glVertex3f(cornerpoints[5].x, cornerpoints[5].y, cornerpoints[5].z);
-	glVertex3f(cornerpoints[4].x, cornerpoints[4].y, cornerpoints[4].z);
-
-	glVertex3f(cornerpoints[5].x, cornerpoints[5].y, cornerpoints[5].z);
-	glVertex3f(cornerpoints[1].x, cornerpoints[1].y, cornerpoints[1].z);
-
-	glVertex3f(cornerpoints[5].x, cornerpoints[5].y, cornerpoints[5].z);
-	glVertex3f(cornerpoints[7].x, cornerpoints[7].y, cornerpoints[7].z);
-
-	glVertex3f(cornerpoints[7].x, cornerpoints[7].y, cornerpoints[7].z);
-	glVertex3f(cornerpoints[6].x, cornerpoints[6].y, cornerpoints[6].z);
-
-	glVertex3f(cornerpoints[6].x, cornerpoints[6].y, cornerpoints[6].z);
-	glVertex3f(cornerpoints[2].x, cornerpoints[2].y, cornerpoints[2].z);
-
-	glVertex3f(cornerpoints[6].x, cornerpoints[6].y, cornerpoints[6].z);
-	glVertex3f(cornerpoints[4].x, cornerpoints[4].y, cornerpoints[4].z);
-
-	glVertex3f(cornerpoints[7].x, cornerpoints[7].y, cornerpoints[7].z);
-	glVertex3f(cornerpoints[3].x, cornerpoints[3].y, cornerpoints[3].z);
-
-	glEnd();
-}
-
-void ModuleCamera3D::MainCameraCheckFrustum()
-{
-	for (int i = 0; i < App->scene->gameObjects.size(); i++)
-	{
-		if (App->scene->gameObjects[i]->isRoot == false && App->scene->gameObjects[i]->isCamera == false)
-		{
-			if (App->scene->gameObjects[i]->hasMesh)
-			{
-				c_Mesh* mesh = nullptr;
-				mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
-				if (cameraFrustum.Contains(mesh->GetAABB()))
-				{
-					mesh->GetOwner()->insideFrustum = true;
-				}
-				else
-				{
-					mesh->GetOwner()->insideFrustum = false;
-				}
-			}
-		}
-	}
-}
+//void ModuleCamera3D::MainCameraDrawFrustum()
+//{
+//	glLineWidth(2.0f);
+//	glBegin(GL_LINES);
+//
+//	float3 cornerpoints[8];
+//	cameraFrustum.GetCornerPoints(cornerpoints);
+//
+//	glColor3f(0.0f, 0.0f, 0.0f);
+//
+//	glVertex3f(cornerpoints[0].x, cornerpoints[0].y, cornerpoints[0].z);
+//	glVertex3f(cornerpoints[1].x, cornerpoints[1].y, cornerpoints[1].z);
+//
+//	glVertex3f(cornerpoints[0].x, cornerpoints[0].y, cornerpoints[0].z);
+//	glVertex3f(cornerpoints[2].x, cornerpoints[2].y, cornerpoints[2].z);
+//
+//	glVertex3f(cornerpoints[2].x, cornerpoints[2].y, cornerpoints[2].z);
+//	glVertex3f(cornerpoints[3].x, cornerpoints[3].y, cornerpoints[3].z);
+//
+//	glVertex3f(cornerpoints[1].x, cornerpoints[1].y, cornerpoints[1].z);
+//	glVertex3f(cornerpoints[3].x, cornerpoints[3].y, cornerpoints[3].z);
+//
+//	glVertex3f(cornerpoints[0].x, cornerpoints[0].y, cornerpoints[0].z);
+//	glVertex3f(cornerpoints[4].x, cornerpoints[4].y, cornerpoints[4].z);
+//
+//	glVertex3f(cornerpoints[5].x, cornerpoints[5].y, cornerpoints[5].z);
+//	glVertex3f(cornerpoints[4].x, cornerpoints[4].y, cornerpoints[4].z);
+//
+//	glVertex3f(cornerpoints[5].x, cornerpoints[5].y, cornerpoints[5].z);
+//	glVertex3f(cornerpoints[1].x, cornerpoints[1].y, cornerpoints[1].z);
+//
+//	glVertex3f(cornerpoints[5].x, cornerpoints[5].y, cornerpoints[5].z);
+//	glVertex3f(cornerpoints[7].x, cornerpoints[7].y, cornerpoints[7].z);
+//
+//	glVertex3f(cornerpoints[7].x, cornerpoints[7].y, cornerpoints[7].z);
+//	glVertex3f(cornerpoints[6].x, cornerpoints[6].y, cornerpoints[6].z);
+//
+//	glVertex3f(cornerpoints[6].x, cornerpoints[6].y, cornerpoints[6].z);
+//	glVertex3f(cornerpoints[2].x, cornerpoints[2].y, cornerpoints[2].z);
+//
+//	glVertex3f(cornerpoints[6].x, cornerpoints[6].y, cornerpoints[6].z);
+//	glVertex3f(cornerpoints[4].x, cornerpoints[4].y, cornerpoints[4].z);
+//
+//	glVertex3f(cornerpoints[7].x, cornerpoints[7].y, cornerpoints[7].z);
+//	glVertex3f(cornerpoints[3].x, cornerpoints[3].y, cornerpoints[3].z);
+//
+//	glEnd();
+//}
+//
+//void ModuleCamera3D::MainCameraCheckFrustum()
+//{
+//	for (int i = 0; i < App->scene->gameObjects.size(); i++)
+//	{
+//		if (App->scene->gameObjects[i]->isRoot == false && App->scene->gameObjects[i]->isCamera == false)
+//		{
+//			if (App->scene->gameObjects[i]->hasMesh)
+//			{
+//				c_Mesh* mesh = nullptr;
+//				mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
+//				if (cameraFrustum.Contains(mesh->GetAABB()))
+//				{
+//					mesh->GetOwner()->insideFrustum = true;
+//				}
+//				else
+//				{
+//					mesh->GetOwner()->insideFrustum = false;
+//				}
+//			}
+//		}
+//	}
+//}
