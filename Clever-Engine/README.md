@@ -4,42 +4,47 @@
 
 ## NEW Features
 All that we have added for this new assignment
-
-* Scene serialization: The scene is saved and loaded in a JSON file
-* Custom File Format: FBX assets are now saved on the Library folder with our custom file format.
-* Bounding Boxes displayed.
-* Game Objects now have a random UUID on creation.
-* Inspector window shows data of the components of the Game Object successfully
-* When selecting a Game Object (from the hierarchy) you can Transform, Rotate and Scale it.
-* Added a Folder window.
-* You can now Delete Game Objects
-* Our Custom File Format Meshes are now loaded on a resource mesh. This resource is then added to a component mesh. It is a first approach to the whole resources problem, but it works well. 
-
-**ISSUES**
-* We do not load textures anymore, because it is incompatible with the whole resources change and we couldn't finish a resouce texture.
-* Mouse picking and Frustum not finished.
-
+* Now Mouse picking and Frustum now properly work.
+* Added a new GameObject named camera, which uses its own component.
+* Added the creation of an empty game object.
+* Particle system properly implemented and working with the effects of fireworks and smoke.
+* Custom File Format for textures.
+* Resource management fixed and upgraded.
+* Save and load of the scene.
 
 ## OLD Features
 
+**File management**
+* Scene serialization: The scene is saved and loaded in a JSON file
+* Custom File Format: FBX assets are now saved on the Library folder with our custom file format.
+* Game Objects now have a random UUID on creation.
+* Added a Folder window.
+* Our Custom File Format Meshes are now loaded on a resource mesh. This resource is then added to a component mesh. It is a first approach to the whole resources problem, but it works well. 
+
+**Window**
+* Bounding Boxes displayed.
+* Inspector window shows data of the components of the Game Object successfully.
+* You can now Delete Game Objects.
+* When selecting a Game Object (from the hierarchy) you can Transform, Rotate and Scale it.
+
 **Console:**
-Logs real-time information about the engine's processes
-* Autoscroll
-* Clear console and last log buttons
+* Logs real-time information about the engine's processes.
+* Autoscroll.
+* Clear console and last log buttons.
 
 **Configuration:**
-Shows the properties of the engine and its rendering
-* Application, Hardware and Input information
-* Window and Rendering options
-* Camera movement 
+* Shows the properties of the engine and its rendering.
+* Application, Hardware and Input information.
+* Window and Rendering options.
+* Camera movement.
 
 **Main Tab:**
-Menus of all the functionalities of the engine
-* File
-* GameObject creation
-* Windows
-* Help
-* Hierarchy window displaying GO names
+* Menus of all the functionalities of the engine.
+* File.
+* GameObject creation.
+* Windows.
+* Help.
+* Hierarchy window displaying GO names.
 
 ### Functionalities
 
