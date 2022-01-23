@@ -136,10 +136,6 @@ update_status ModuleUI::Update(float dt)
                 {
                     App->scene->SaveScene("scene saving test");
                 }
-                if (ImGui::MenuItem("Save Scene as"))
-                {
-                    // New Scene code
-                }
                 ImGui::Separator();
                 if (ImGui::MenuItem("Exit"))
                 {
@@ -722,7 +718,7 @@ void ModuleUI::DrawHierarchySpace(bool* active)
                         }
                      }
                 }    
-
+                ImGui::Separator();
                 ImGui::Combo("##", &componentType, "Add Component\0Transform\0Mesh\0Material\0Camera\0Particle System");
 
                 ImGui::SameLine();

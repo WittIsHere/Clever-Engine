@@ -167,6 +167,8 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 
 	DrawScene();
 	DrawParticles();
+
+	DMPlane(App->importer->textureBuffer1);
 	return UPDATE_CONTINUE;
 }
 
@@ -380,26 +382,6 @@ void ModuleRenderer3D::BindCheckerTex()
 	glBindTexture(GL_TEXTURE_2D, checker_Buffer);
 }
 
-uint ModuleRenderer3D::FillTexture(const void* text, uint width, uint height, int format, uint format2, const char* path)
-{
-	uint tex = 0;
-
-	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format2, GL_UNSIGNED_BYTE, text);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	return tex;
-}
-
 bool ModuleRenderer3D::GetVSync() const
 {
 	return vsync;
@@ -474,6 +456,37 @@ void ParticleRenderer::Render()
 
 	glPushMatrix();
 	glMultMatrixf(transform.ptr());
+
+	//Drawing to tris in direct mode
+	glBegin(GL_TRIANGLES);
+
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(.5f, -.5f, .0f);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-.5f, .5f, .0f);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-.5f, -.5f, .0f);
+
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(.5f, -.5f, .0f);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(.5f, .5f, .0f);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-.5f, .5f, .0f);
+
+	glEnd();
+	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void ModuleRenderer3D::DMPlane(uint buffer)
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, buffer);
+
+	//glColor4b(color.r, color.g, color.b, color.a);
+
+	glPushMatrix();
 
 	//Drawing to tris in direct mode
 	glBegin(GL_TRIANGLES);

@@ -39,8 +39,12 @@ bool ModuleScene::Start()
 	cameraGO->GetComponentTransform()->SetLocalRotation(startingRot);
 
 	LOG("Importing scene test");
-	const char* fbxPath = ("Assets/Models/BakerHouse.FBX");
+	const char* fbxPath = ("Assets/Models/Street_environment.FBX");
 	App->importer->LoadModelToScene(fbxPath);
+
+	/*const char* das = ("Assets/Textures/Baker_house.png");
+	uint32 a = App->importer->EmplaceTextureForParticle(das);
+	App->importer->Someting(a);*/
 
 	//const char* fbxPath = ("Assets/Models/Street_environment.FBX");
 	
