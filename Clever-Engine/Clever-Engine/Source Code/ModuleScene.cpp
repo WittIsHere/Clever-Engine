@@ -282,10 +282,11 @@ void ModuleScene::MousePicking(const LineSegment &picking)
 	{
 		if (App->scene->gameObjects[i]->hasMesh == true)
 		{
-			// Get the component mesh
-			c_Mesh* mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
+			 //Get the component mesh
+			c_Mesh* mesh = nullptr;
+			mesh = (c_Mesh*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::MESH);
 
-			// Intersect the ray drawed before with the AABB box of the meshes
+			 //Intersect the ray drawed before with the AABB box of the meshes
 			if (picking.Intersects(mesh->GetAABB()))
 			{
 				float hitNear;
@@ -300,7 +301,8 @@ void ModuleScene::MousePicking(const LineSegment &picking)
 		}
 		else if (App->scene->gameObjects[i]->IsCamera() == true)
 		{
-			c_Camera* camera = (c_Camera*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::CAMERA);
+			c_Camera* camera = nullptr;
+			camera = (c_Camera*)App->scene->gameObjects[i]->GetComponentByType(COMPONENT_TYPE::CAMERA);
 			
 			bool hit = picking.Intersects(camera->GetAABB());
 			if (hit)
@@ -318,6 +320,7 @@ void ModuleScene::MousePicking(const LineSegment &picking)
 		App->ui->PickedGO(possible[0]->UUID);
 		possible.clear();
 	}
+
 	//if (possible.empty() == false)
 	//{
 	//	for (int i = 0; possible.size(); i++)

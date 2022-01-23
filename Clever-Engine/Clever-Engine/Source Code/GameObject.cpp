@@ -265,7 +265,7 @@ c_Transform* GameObject::GetComponentTransform()
 
 bool GameObject::DeleteComponent(Component* componentToDelete)
 {
-	std::string componentName = componentToDelete->getNameFromType();
+	const char* componentName = componentToDelete->getNameFromType();
 
 	if (componentToDelete != nullptr)
 	{
@@ -276,6 +276,7 @@ bool GameObject::DeleteComponent(Component* componentToDelete)
 				if (myComponents[i]->type == COMPONENT_TYPE::MESH)
 					hasMesh = false;
 
+			
 				myComponents[i]->Disable();
 
 				RELEASE(myComponents[i]);
@@ -287,7 +288,7 @@ bool GameObject::DeleteComponent(Component* componentToDelete)
 		}
 	}
 
-	LOG(" Deleted Component %s of Game Object %s", componentName.c_str(), name.c_str());
+	LOG(" Deleted Component %s of Game Object %s", componentName, name.c_str());
 
 	return false;
 }
