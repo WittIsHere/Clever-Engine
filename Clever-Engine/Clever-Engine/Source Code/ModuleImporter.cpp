@@ -136,7 +136,7 @@ void ModuleImporter::NodeToResource(aiNode* currentNode, const aiScene* currentS
 
 
 			TMYMODEL* myModel = new TMYMODEL();
-			CreateAndSaveResourceMesh(currentAiMesh, myModel, filePath);
+			CreateAndSaveResourceMesh(currentAiMesh, myModel, filePath, currentNode->mName.C_Str());
 			RELEASE(myModel);
 		}
 	}
@@ -167,39 +167,58 @@ void ModuleImporter::LoadModelToScene(const char* file_path)
 		std::string GOname;
 		App->fileSystem->SplitFilePathInverse(fullName.c_str(), &GOname);
 		GameObject* GO = App->scene->CreateGameObject(GOname.c_str(), App->scene->rootNode);
-
+		//------- Root game object created ------//
 		LOG("Trying to import file from assets that already has a meta. File name: %s", file_path);
 		//read the meta file and get the resource id. Then, loop every resource in the corresponding meta files and add it as childs of the GO.
 		while (App->fileSystem->Exists(fullName.c_str()))
 		{
 			char* buffer = nullptr;
 			ParsonNode metaRoot = App->resources->LoadMetaFile(fullName.c_str(), &buffer);
-			uint32 resourceUid = (uint32)metaRoot.GetNumber("UID");
-			uint32 textureUid = (uint32)metaRoot.GetNumber("materialUID");
-			std::string name = metaRoot.GetString("Name");
-
-			GameObject* childGO = App->scene->CreateGameObject(name.c_str(), GO);
-
-			RELEASE_ARRAY(buffer);
-
 			if (!metaRoot.NodeIsValid())
 			{
 				LOG("Error: Could not get the Meta Root Node! error path: %s", fullName.c_str());
 				return;
 			}
-			if (textureUid != 0)
+
+			uint32 resourceUid = (uint32)metaRoot.GetNumber("UID");
+			uint32 materialUid = (uint32)metaRoot.GetNumber("materialUID");
+			std::string textureName = metaRoot.GetString("texName");
+			std::string name = metaRoot.GetString("Name");
+
+			GameObject* childGO = App->scene->CreateGameObject(name.c_str(), GO);
+
+			RELEASE_ARRAY(buffer);
+			//------Meta file readed and 1st child created------//
+
+			//-----Add component phase-----//			
+			if (materialUid != 0)
 			{
-				Resource* resTexture = App->resources->GetResource(textureUid);
+				std::string libPath = TEXTURES_PATH + std::to_string(materialUid);
+				libPath += TEXTURES_EXTENSION;
+
+				std::string assPath = ASSETS_TEXTURES_PATH + textureName;
+				assPath += TEXTURES_EXTENSION;
+
+				ResourceBase* rb = new ResourceBase(materialUid, assPath, libPath, ResourceType::TEXTURE);
+				App->resources->library.emplace(materialUid, *rb);
+
+				Resource* resTexture = App->resources->GetResource(materialUid);
 				childGO->CreateComponent(resTexture); //create the componentTexture first
 			}
 			
-			if (App->resources->GetResource(resourceUid) == nullptr)
+			if (resourceUid != 0)
 			{
-				LOG("[ERROR] invalid ID from meta, resource mesh not found. path: %s", fullName);
-			}
-			else
-			{
-				childGO->CreateComponent(App->resources->GetResource(resourceUid));
+				std::string libPath = MESHES_PATH + std::to_string(resourceUid);
+				libPath += CUSTOM_FF_EXTENSION;
+
+				std::string assPath = ASSETS_MODELS_PATH + name;
+				assPath += ".fbx";
+
+				ResourceBase* rb = new ResourceBase(resourceUid, assPath, libPath, ResourceType::MESH);
+				App->resources->library.emplace(resourceUid, *rb);
+
+				Resource* resMesh = App->resources->GetResource(resourceUid);
+				childGO->CreateComponent(resMesh); //create the componentTexture first
 			}
 
 			j++;
@@ -254,7 +273,7 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 		transform->SetLocalRotation({ aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w });
 
 		transform->SetLocalScale({ aiScale.x, aiScale.y, aiScale.z });
-	}
+	}//-----Get transform-----/
 
 	if (currentNode->mNumMeshes > 0)
 	{
@@ -276,6 +295,7 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 					std::string fileName = {};
 					App->fileSystem->SplitFilePath(filePath, &fullPath, &fileName);
 
+					comodínGuapissimo = fileName;
 					fullPath = fullPath + fileName + META_EXTENSION;
 					filePath = {};
 
@@ -290,11 +310,9 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 						GO->CreateComponent(resTexture);
 					}
 					else
-
-					{
+					{ //--------Save Texture into Lib-------//
 						uint32 uuid = Random::GetRandomUint();
-						name = fileName.c_str();
-						fullPath = ASSETS_TEXTURES_PATH + fileName + TEXTURES_EXTENSION;
+						std::string fullPath = ASSETS_TEXTURES_PATH + fileName + TEXTURES_EXTENSION;
 						//create the resource texture and add it to library
 						fileName = TEXTURES_PATH + std::to_string(uuid) + TEXTURES_EXTENSION;
 						App->fileSystem->DuplicateFile(path, fileName.c_str());
@@ -302,15 +320,13 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 						ResourceBase* temp = new ResourceBase(uuid, fullPath, fileName, ResourceType::TEXTURE);
 						App->resources->library.emplace(uuid, *temp);
 						//write the meta file to connect the assets file with the resource in lib
-						App->resources->SaveMetaFile(*temp, name, uuid);
+						App->resources->SaveMetaFile(*temp, comodínGuapissimo.c_str(), uuid);
 						
 						Resource* texData = App->resources->GetResource(uuid);
 						GO->CreateComponent(texData);
 					}
 					//tempMesh->texture = texData;	//TODO assign the texture to the current mesh
-
 				}
-			
 			}
 			TMYMODEL* myModel = new TMYMODEL();
 			/*for (size_t i = 0; i < currentAiMesh->mNumVertices; i++)
@@ -320,9 +336,9 @@ void ModuleImporter::LoadNode(GameObject* parent, aiNode* currentNode, const aiS
 
 			uint32 UID = 0;
 			if(GO->GetComponentMaterial() != nullptr)
-				UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, path, GO->GetComponentMaterial()->GetResourceUID());
+				UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, path, currentNode->mName.C_Str(), GO->GetComponentMaterial()->GetResourceUID());
 			else
-				UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, path);
+				UID = CreateAndSaveResourceMesh(currentAiMesh, myModel, path, currentNode->mName.C_Str());
 
 			RELEASE(myModel);
 
@@ -527,7 +543,7 @@ void ModuleImporter::ImportToCustomFF(const char* libPath) //this is actually me
 
 }
 
-uint32 ModuleImporter::CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* myModel, const char* assetsPath, uint32 textureUID)
+uint32 ModuleImporter::CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* myModel, const char* name, const char* assetsPath, uint32 textureUID)
 {
 	//create custom file format inside TMYMODEL class
 	myModel = CreateCustomMesh(mesh);
@@ -550,10 +566,7 @@ uint32 ModuleImporter::CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* m
 
 	App->resources->library.emplace(uuid, temp);
 
-	//write the meta file to connect the assets file with the resource in lib
-	std::string name = {};
-	App->fileSystem->SplitFilePathInverse(assetsPath, &name);
-	App->resources->SaveMetaFile(temp, name.c_str(), textureUID);
+	App->resources->SaveMetaFile(temp, name, textureUID);
 	
 	return uuid;
 }

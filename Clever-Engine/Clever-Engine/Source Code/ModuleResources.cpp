@@ -133,9 +133,11 @@ bool ModuleResources::SaveMetaFile(ResourceBase resource, const char* name, uint
 	metaRoot.SetString("Name", name);
 	metaRoot.SetNumber("UID", resource.GetUID());																					
 	metaRoot.SetNumber("Type", (uint)resource.GetType());			
-	if(resource.GetType() == ResourceType::MESH)
+	if (resource.GetType() == ResourceType::MESH)
+	{
 		metaRoot.SetNumber("materialUID", textureUID);
-
+		metaRoot.SetString("texName", App->importer->comodínGuapissimo.c_str()); 
+	}
 
 	//metaRoot.SetString("Name", name); 																							
 	metaRoot.SetString("AssetsPath", resource.GetAssetsPath());

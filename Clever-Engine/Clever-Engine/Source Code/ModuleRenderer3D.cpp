@@ -323,7 +323,7 @@ void ModuleRenderer3D::DrawMesh(c_Mesh* mesh, c_Transform* transform, c_Material
 	
 	if (material != nullptr)
 	{
-		if (!material->isEmpty)
+		//if (!material->isEmpty)
 		{
 			glBindTexture(GL_TEXTURE_2D, 0);
 			glBindTexture(GL_TEXTURE_2D, material->getTextureID());

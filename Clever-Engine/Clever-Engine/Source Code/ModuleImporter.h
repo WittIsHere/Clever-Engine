@@ -41,7 +41,7 @@ public:
 
 	void ImportToCustomFF(const char* libPath);
 
-	uint32 CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* myModel, const char* assetsPath, uint32 textureUID = 0);
+	uint32 CreateAndSaveResourceMesh(const aiMesh* mesh, TMYMODEL* myModel, const char* name, const char* assetsPath, uint32 textureUID = 0);
 
 
 	TMYMODEL* CreateCustomMesh(const aiMesh* m);
@@ -59,6 +59,8 @@ private:
 
 private:
 	const char* textPath;
-	const char* name;
+
+public:
+	std::string comodínGuapissimo;
 
 };
