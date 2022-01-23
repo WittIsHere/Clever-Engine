@@ -30,7 +30,8 @@ public:
 	void RefreshEmitterInstances();
 
 	void GenerateResourcePS(const char* name);
-	void SaveParticleSystem() const;
+	uint SaveParticleSystem() const;
+	bool LoadParticleSystem(ResourceParticleSystem* rParticles, const char* buffer) const;
 
 	bool SetAsDefaultComponent();					//Reset the component, add an emitterInstance to the list and assign it the default emitter
 	void AddNewEmitter();							//Create a default emitter
@@ -41,7 +42,6 @@ public:
 	void ResumeSpawn();
 
 	void StopAndDelete();
-
 
 
 private:

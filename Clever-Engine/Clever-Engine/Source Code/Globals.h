@@ -60,7 +60,7 @@ enum update_status
 #define MESHES_PATH "Library/Meshes/"
 #define MATERIALS_PATH "Library/Materials/"
 #define TEXTURES_PATH "Library/Textures/"
-#define PARTICLESYSTEMS_PATH "Library/ParticleSystems"
+#define PARTICLESYSTEMS_PATH "Library/ParticleSystems/"
 
 #define CUSTOM_FF_EXTENSION ".MYMESH"
 #define JSON_EXTENSION ".json"

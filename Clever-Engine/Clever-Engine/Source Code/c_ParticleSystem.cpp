@@ -64,6 +64,9 @@ bool c_ParticleSystem::Update(float dt)
 		emitterInstances[i]->Update(dt);
 	}
 
+	if (resource == nullptr)
+		return true;
+
 	for (int i = 0; i < resource->emitters.size(); ++i)
 	{
 		if (resource->emitters[i].toDelete == true)
@@ -133,6 +136,9 @@ void c_ParticleSystem::RefreshEmitterInstances()
 
 	emitterInstances.clear();
 
+	if (resource == nullptr)
+		return;
+
 	for (auto emit = resource->emitters.begin(); emit != resource->emitters.end(); ++emit)
 	{
 		EmitterInstance* emitter = new EmitterInstance(&(*emit),this);
@@ -150,12 +156,54 @@ void c_ParticleSystem::GenerateResourcePS(const char* name)
 	RefreshEmitterInstances();
 }
 
-void c_ParticleSystem::SaveParticleSystem() const
+uint c_ParticleSystem::SaveParticleSystem() const
 {
-	//App->resources->SaveResourceToLibrary(resource); TODO: SAVE RESOURCE
-	
-	//char* buffer = nullptr;
-	//Importer::Particles::Save(resource,&buffer);
+	char* buffer = nullptr;
+	uint written = 0;
+
+	ParsonNode particleSystemNode;
+	particleSystemNode.SetString("name", resource->name.c_str());
+
+	ParsonArray particleSystemArray = particleSystemNode.SetArray("Emitters");
+	for (std::vector<Emitter>::iterator emit = resource->emitters.begin(); emit != resource->emitters.end(); ++emit)
+	{
+		ParsonNode emitterNode = particleSystemArray.SetNode("emitter");
+		emit->Save(emitterNode);
+	}
+
+	//std::string assetsPath = ASSETS_PARTICLESYSTEMS_PATH + std::to_string(rParticles->GetUID()) + PARTICLESYSTEMS_AST_EXTENSION;
+	std::string assetsPath = ASSETS_PARTICLESYSTEMS_PATH + resource->name + PARTICLESYSTEMS_AST_EXTENSION;
+	int size = particleSystemNode.SerializeToFile(assetsPath.c_str(), &buffer);
+
+	// --- SAVING THE BUFFER ---
+	std::string libraryPath = PARTICLESYSTEMS_PATH + std::to_string(resource->GetUID()) + PARTICLESYSTEMS_AST_EXTENSION;
+	char* libraryBuffer = nullptr;
+	written = particleSystemNode.SerializeToFile(libraryPath.c_str(), &libraryBuffer);
+
+	RELEASE_ARRAY(libraryBuffer);
+
+	//written = App->fileSystem->Save(path.c_str(), *buffer, size);
+
+	return written;
+}
+
+bool c_ParticleSystem::LoadParticleSystem(ResourceParticleSystem* rParticles, const char* buffer) const
+{
+	uint written = 0;
+
+	ParsonNode particleSystemNode(buffer);
+	rParticles->name = particleSystemNode.GetString("name");
+
+	ParsonArray particleSystemArray = particleSystemNode.GetArray("Emitters");
+	for (int i = 0; i < particleSystemArray.size; ++i)
+	{
+		Emitter emit;
+		ParsonNode emitterNode = particleSystemArray.GetNode(i);
+		emit.Load(emitterNode);
+		rParticles->emitters.push_back(emit);
+	}
+
+	return true;
 }
 
 bool c_ParticleSystem::SetAsDefaultComponent()

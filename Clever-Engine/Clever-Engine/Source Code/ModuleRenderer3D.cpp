@@ -461,11 +461,11 @@ void ParticleRenderer::Render()
 	glEnable(GL_ALPHA_TEST);
 
 	//App->renderer3D->BindCheckerTex();
-	
+	/*
 	if(mat->GetTextureID() != 0)
-		glBindTexture(GL_TEXTURE_2D, mat->GetTextureID());
+		glBindTexture(GL_TEXTURE_2D, mat->GetTextureID());*/
 
-	glColor4b(color.r, color.g, color.b, color.a);
+	glColor4f(color.r, color.g, color.b, color.a);
 
 	glPushMatrix();
 	glMultMatrixf(transform.ptr());

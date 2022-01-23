@@ -757,15 +757,13 @@ void ModuleUI::DrawHierarchySpace(bool* active)
      // save system
      if (ImGui::Button("Save Particle System"))
      {
-         ps->SaveParticleSystem(); //TODO save/load
+         ps->SaveParticleSystem(); 
      }
 
      if (ImGui::BeginCombo("##Particle Systems", ps->resource->name.c_str()))
      {
          std::vector<ResourceBase> particleSystems;
          App->resources->GetResourceBases<ResourceParticleSystem>(particleSystems);
-
-
 
          for (auto it = particleSystems.begin(); it != particleSystems.end(); ++it)
          {
