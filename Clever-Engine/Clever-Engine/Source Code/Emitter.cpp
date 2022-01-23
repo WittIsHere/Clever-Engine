@@ -3,6 +3,7 @@
 
 #include "ResourceBase.h"
 #include "ModuleResources.h"
+#include "ResourceTexture.h"
 
 #include "ParticleModule.h"
 
@@ -13,17 +14,17 @@
 
 Emitter::Emitter()
 {
-	//std::vector<ResourceBase> textures;
-	//App->resources->GetResourceBases<R_Texture>(textures);
-	//emitterTexture = (R_Texture*)App->resources->GetResourceFromLibrary(textures.begin()->assetsPath.c_str());
-	//textures.clear();
+	std::vector<ResourceBase> textures;
+	App->resources->GetResourceBases<ResourceTexture>(textures);
+	emitterTexture = (ResourceTexture*)App->resources->GetResource(textures.begin()->UID);
+	textures.clear();
 }
 
 Emitter::Emitter(const char* name)
 {
-	//std::vector<ResourceBase> textures;
-	/*App->resources->GetResourceBases<R_Texture>(textures);
-	emitterTexture = (R_Texture*)App->resources->GetResourceFromLibrary(textures.begin()->assetsPath.c_str());*/
+	std::vector<ResourceBase> textures;
+	App->resources->GetResourceBases<ResourceTexture>(textures);
+	emitterTexture = (ResourceTexture*)App->resources->GetResource(textures.begin()->UID);
 	this->name = name;
 }
 
@@ -44,25 +45,25 @@ void Emitter::CleanUp()
 
 	modules.clear();
 	
-	/*if (emitterTexture != nullptr) 
+	if (emitterTexture != nullptr) 
 	{
-		App->resources->FreeResource(emitterTexture->GetUID());
+		App->resources->DeleteResource(emitterTexture->GetUID());
 		emitterTexture = nullptr;
-	}*/
+	}
 }
 
 void Emitter::Save(ParsonNode& node)
 {
 	node.SetString("name", name.c_str());
 
-	/*uint32 textureUID = (emitterTexture != nullptr) ? emitterTexture->GetUID() : 0;
+	uint32 textureUID = (emitterTexture != nullptr) ? emitterTexture->GetUID() : 0;
 	node.SetInteger("textureUID", textureUID);
-	*/
-	/*if(emitterTexture != nullptr)
+	
+	if(emitterTexture != nullptr)
 		node.SetString("texturePath", emitterTexture->GetAssetsPath());
 	else
 		node.SetString("texturePath", path.c_str());
-	*/
+	
 
 	node.SetInteger("maxParticleCount", maxParticleCount);
 
@@ -79,8 +80,8 @@ void Emitter::Load(ParsonNode& node)
 {
 	name = node.GetString("name");
 	
-	/*path = node.GetString("texturePath");
-	emitterTexture = (R_Texture*)App->resources->GetResourceFromLibrary(path.c_str());*/
+	uint32 textureUID = node.GetInteger("textureUID");
+	emitterTexture = (ResourceTexture*)App->resources->GetResource(textureUID);
 
 	maxParticleCount = node.GetInteger("maxParticleCount");
 
@@ -101,11 +102,10 @@ void Emitter::Load(ParsonNode& node)
 			case ParticleModule::Type::EMITTER_SPAWN: particleModule = new EmitterSpawn(); break;
 			case ParticleModule::Type::PARTICLE_LIFETIME: particleModule = new ParticleLifetime(); break;
 			case ParticleModule::Type::PARTICLE_MOVEMENT: particleModule = new ParticleMovement(); break;
-			//case ParticleModule::Type::PARTICLE_COLOR: particleModule = new ParticleColor(); break;
-			//case ParticleModule::Type::EMITTER_AREA: particleModule = new EmitterArea(); break;
-			//case ParticleModule::Type::PARTICLE_ROTATION: particleModule = new ParticleRotation(); break;
-			//case ParticleModule::Type::PARTICLE_SIZE: particleModule = new ParticleSize(); break;
-			//case ParticleModule::Type::PARTICLE_BILLBOARDING: particleModule = new ParticleBillboarding(); break;
+			case ParticleModule::Type::PARTICLE_COLOR: particleModule = new ParticleColor(); break;
+			case ParticleModule::Type::EMITTER_AREA: particleModule = new EmitterArea(); break;
+			case ParticleModule::Type::PARTICLE_SIZE: particleModule = new ParticleSize(); break;
+			case ParticleModule::Type::PARTICLE_BILLBOARDING: particleModule = new ParticleBillboarding(); break;
 		}
 
 		if (particleModule != nullptr)
@@ -196,42 +196,36 @@ void Emitter::SetParticleCount(int particleCount)
 {
 	maxParticleCount = particleCount;
 }
-//
-//void Emitter::SetTexture(R_Texture* newTexture)
-//{
-//	if (newTexture != nullptr)
-//	{
-//		R_Texture* a = (R_Texture*)App->resources->GetResourceFromLibrary(newTexture->GetAssetsPath());
-//
-//		if (a != nullptr)
-//		{
-//			App->resources->FreeResource(emitterTexture->GetUID());
-//			emitterTexture = a;
-//		}
-//		else
-//		{
-//			LOG("COuld not find Texture %s for emitter", newTexture->GetAssetsFile());
-//		}
-//
-//	}
-//}
-//
-//void Emitter::SetTexture(ResourceBase newTexture)
-//{
-//	
-//	R_Texture* a = (R_Texture*)App->resourceManager->GetResourceFromLibrary(newTexture.assetsPath.c_str());
-//
-//	if (a != nullptr)
-//	{
-//		if(emitterTexture !=nullptr)
-//			App->resourceManager->FreeResource(emitterTexture->GetUID());
-//
-//		emitterTexture = a;
-//	}
-//	else
-//	{
-//		LOG("COuld not find Texture %s for emitter", newTexture.assetsPath.c_str());
-//	}
-//
-//	
-//}
+
+void Emitter::SetTexture(ResourceTexture* newTexture)
+{
+	if (newTexture != nullptr)
+	{
+		App->resources->DeleteResource(emitterTexture->GetUID());
+		emitterTexture = newTexture;
+	}
+	else
+	{
+		LOG("COuld not find Texture %s for emitter", newTexture->assetsPath.c_str());
+	}
+}
+
+void Emitter::SetTexture(ResourceBase newTexture)
+{
+	
+	ResourceTexture* a = (ResourceTexture*)App->resources->GetResource(newTexture.GetUID());
+
+	if (a != nullptr)
+	{
+		if(emitterTexture !=nullptr)
+			App->resources->DeleteResource(emitterTexture->GetUID());
+
+		emitterTexture = a;
+	}
+	else
+	{
+		LOG("COuld not find Texture %s for emitter", newTexture.assetsPath.c_str());
+	}
+
+	
+}

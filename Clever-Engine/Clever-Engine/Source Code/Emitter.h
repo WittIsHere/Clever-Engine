@@ -8,6 +8,7 @@
 //class R_Texture;
 class ParsonNode;
 class ResourceBase;
+class ResourceTexture;
 
 class Emitter
 {
@@ -29,14 +30,14 @@ public:
 
 	void SetParticleCount(int particleCount);
 
-	//void SetTexture(R_Texture* newTexture);
-	//void SetTexture(ResourceBase newTexture);
+	void SetTexture(ResourceTexture* newTexture);
+	void SetTexture(ResourceBase newTexture);
 
 public:
 	std::vector<ParticleModule*> modules;
 	
 	std::string name = "Particle Emitter";
-	//R_Texture* emitterTexture = nullptr;
+	ResourceTexture* emitterTexture = nullptr;
 
 	std::string path = "None";
 

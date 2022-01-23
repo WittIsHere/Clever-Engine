@@ -99,7 +99,7 @@ void EmitterInstance::DrawParticles()
 		Particle* particle = &particles[particleIndex];
 
 		float4x4 transform = float4x4::FromTRS(particle->position, particle->worldRotation, float3(particle->size, particle->size, particle->size)).Transposed();
-		App->renderer3D->AddParticle(transform, particle->color, particle->distanceToCamera);
+		App->renderer3D->AddParticle(transform, emitter->emitterTexture, particle->color, particle->distanceToCamera);
 	}
 }
 

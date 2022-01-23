@@ -9,6 +9,7 @@
 #include "MathGeoLib/include/Geometry/OBB.h"
 #include "Particle.h"
 
+
 #define MAX_LIGHTS 8
 #define CHECKERS_HEIGHT 128
 #define CHECKERS_WIDTH 128
@@ -19,16 +20,15 @@ class c_Transform;
 class c_Mesh;
 class c_Material;
 class GameObject;
+class ResourceTexture;
 
 struct ParticleRenderer
 {
-	ParticleRenderer(Color color, const float4x4 transform);
+	ParticleRenderer(ResourceTexture* mat, Color color, const float4x4 transform);
 
 	void Render();
-	void LoadBuffers();
 
-	uint		VAO;
-
+	ResourceTexture* mat;
 	Color		color;
 	float4x4	transform;
 };
@@ -66,8 +66,7 @@ public:
 	void DrawRay();
 	//void PollErrors(const char* additionalString);
 
-	//void AddParticle(const float4x4& transform, R_Texture* material, Color color, float distanceToCamera)
-	void AddParticle(const float4x4& transform, Color color, float distanceToCamera);
+	void AddParticle(const float4x4& transform, ResourceTexture* mat, Color color, float distanceToCamera);
 	void DrawParticles();
 	
 private:

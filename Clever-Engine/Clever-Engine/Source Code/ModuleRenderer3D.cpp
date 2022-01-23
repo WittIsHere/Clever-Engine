@@ -12,6 +12,7 @@
 #include "GameObject.h"
 #include "Primitive.h"
 #include "ResourceMesh.h"
+#include "ResourceTexture.h"
 
 #include "OpenGl.h"
 
@@ -260,10 +261,10 @@ void ModuleRenderer3D::PrepareMesh(ResourceMesh* mesh)
 
 }
 
-void ModuleRenderer3D::AddParticle(const float4x4& transform, Color color, float distanceToCamera)
+void ModuleRenderer3D::AddParticle(const float4x4& transform, ResourceTexture* material, Color color, float distanceToCamera)
 {
-	ParticleRenderer renderer = ParticleRenderer(color, transform);
-	particles.emplace(distanceToCamera, renderer);
+	ParticleRenderer renderer = ParticleRenderer(material, color, transform);
+	particles.insert(std::map<float, ParticleRenderer>::value_type(distanceToCamera, renderer));
 }
 
 void ModuleRenderer3D::DrawParticles()
@@ -446,31 +447,25 @@ void ModuleRenderer3D::DrawRay()
 	glColor3f(1.0f, 1.0f, 1.0f);  
 }
 
-ParticleRenderer::ParticleRenderer(Color color, const float4x4 transform) :
+ParticleRenderer::ParticleRenderer(ResourceTexture* material, Color color, const float4x4 transform) :
 	color(color),
 	transform(transform),
-	VAO(0)
+	mat(material)
 {
 
-}
-
-void ParticleRenderer::LoadBuffers()
-{
-	glGenBuffers(1, &VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VAO);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ParticlesCoords), ParticlesCoords, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (GLvoid*)0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ParticleRenderer::Render()
 {
-	App->renderer3D->BindCheckerTex();
+	glEnable(GL_BLEND);
+	glEnable(GL_ALPHA_TEST);
+
+	//App->renderer3D->BindCheckerTex();
 	
-	//glColor4b(color.r, color.g, color.b, color.a);
+	if(mat->GetTextureID() != 0)
+		glBindTexture(GL_TEXTURE_2D, mat->GetTextureID());
+
+	glColor4b(color.r, color.g, color.b, color.a);
 
 	glPushMatrix();
 	glMultMatrixf(transform.ptr());
@@ -495,4 +490,8 @@ void ParticleRenderer::Render()
 	glEnd();
 	glPopMatrix();
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
 }
